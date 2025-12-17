@@ -41,11 +41,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        <div className="relative z-10 flex h-screen w-full font-sans antialiased text-zinc-900 dark:text-zinc-50">
+        <div className="relative z-10 flex h-screen w-full font-sans antialiased text-zinc-900 bg-[#FDFCF8]">
 
             {/* DESKTOP SIDEBAR */}
             {pathname !== "/login" && pathname !== "/onboarding" && pathname !== "/" && (
-                <aside className="w-[260px] border-r border-black/5 dark:border-white/5 bg-zinc-50/50 dark:bg-zinc-900/50 backdrop-blur-xl flex-col hidden md:flex z-50">
+                <aside className="w-[280px] border-r border-zinc-100 bg-white flex-col hidden md:flex z-50">
                     <SidebarContent pathname={pathname} />
                 </aside>
             )}
@@ -66,7 +66,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                             animate={{ x: 0 }}
                             exit={{ x: "-100%" }}
                             transition={{ type: "spring", bounce: 0, duration: 0.3 }}
-                            className="fixed inset-y-0 left-0 w-[280px] bg-white dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800 z-50 flex flex-col md:hidden shadow-2xl"
+                            className="fixed inset-y-0 left-0 w-[280px] bg-[#FDFCF8] border-r border-zinc-200 z-50 flex flex-col md:hidden shadow-2xl text-zinc-900"
                         >
                             <div className="absolute top-4 right-4">
                                 <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-zinc-400 hover:text-zinc-600">
@@ -83,7 +83,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             <main className="flex-1 flex flex-col min-w-0 bg-transparent relative">
                 {/* HEADER */}
                 {pathname !== "/login" && pathname !== "/onboarding" && pathname !== "/" && (
-                    <header className="h-[60px] border-b border-black/5 dark:border-white/5 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-6 transition-all">
+                    <header className="h-[72px] bg-[#FDFCF8] sticky top-0 z-30 flex items-center justify-between px-8 transition-all">
 
                         {/* Mobile Toggle */}
                         <button
@@ -137,13 +137,13 @@ function SidebarContent({ pathname }: { pathname: string }) {
 
     return (
         <>
-            <div className="h-[60px] flex items-center px-6">
-                <div className="flex items-center gap-2">
-                    <div className="h-6 w-6 rounded-md bg-zinc-900 flex items-center justify-center text-white font-bold shadow-sm">
-                        <span className="text-xs">R</span>
+            <div className="h-[72px] flex items-center px-6">
+                <Link href="/dashboard" className="flex items-center gap-2 group">
+                    <div className="h-8 w-8 rounded-xl bg-zinc-900 flex items-center justify-center text-white font-bold shadow-lg shadow-zinc-900/10 group-hover:scale-105 transition-transform">
+                        <span className="text-sm">R</span>
                     </div>
-                    <span className="font-bold text-[15px] tracking-tight text-zinc-900 dark:text-zinc-100">Reput.ai</span>
-                </div>
+                    <span className="font-bold text-lg tracking-tight text-zinc-900">Reput.ai</span>
+                </Link>
             </div>
 
             <div className="px-3 py-6 space-y-0.5 overflow-y-auto flex-1">
@@ -165,10 +165,10 @@ function SidebarContent({ pathname }: { pathname: string }) {
             </div>
 
             <div className="p-4 relative">
-                <div className="p-4 rounded-xl border border-black/5 bg-white shadow-[0_4px_20px_rgba(0,0,0,0.02)] relative overflow-hidden group">
+                <div className="p-5 rounded-2xl border border-zinc-100 bg-zinc-50/50 relative overflow-hidden group">
                     <div className="flex justify-between items-start mb-3">
                         <div className="flex items-center gap-2">
-                            <div className="h-8 w-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
+                            <div className="h-8 w-8 rounded-full bg-[#E85C33]/10 flex items-center justify-center text-[#E85C33]">
                                 <CreditCard size={14} />
                             </div>
                             <div>
@@ -203,13 +203,13 @@ function NavLink({ href, icon, label, active }: { href: string, icon: React.Reac
         <Link
             href={href}
             className={cn(
-                "flex items-center gap-2.5 px-3 py-1.5 rounded-md text-[13px] font-medium transition-all duration-200 border border-transparent",
+                "flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
                 active
-                    ? "bg-white text-zinc-900 shadow-[0_1px_2px_rgba(0,0,0,0.04)] ring-1 ring-black/5"
-                    : "text-zinc-500 hover:text-zinc-900 hover:bg-black/5"
+                    ? "bg-orange-50 text-[#E85C33]"
+                    : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50"
             )}
         >
-            <span className={cn("transition-colors", active ? "text-zinc-900" : "text-zinc-400 group-hover:text-zinc-600")}>{icon}</span>
+            <span className={cn("transition-colors", active ? "text-[#E85C33]" : "text-zinc-400 group-hover:text-zinc-600")}>{icon}</span>
             <span>{label}</span>
         </Link>
     )

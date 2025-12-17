@@ -29,14 +29,15 @@ export function NotificationDropdown() {
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
-                    "text-zinc-400 hover:text-zinc-600 transition-colors relative outline-none",
-                    isOpen && "text-zinc-600"
+                    "h-10 w-10 flex items-center justify-center rounded-full transition-all duration-200 outline-none",
+                    isOpen ? "bg-[#E85C33]/10 text-[#E85C33]" : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900"
                 )}
             >
-                <Bell size={18} />
+                <Bell size={20} className={cn(isOpen && "fill-current")} />
                 {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white ring-2 ring-white dark:ring-zinc-950 shadow-sm animate-pulse">
-                        {unreadCount > 9 ? '9+' : unreadCount}
+                    <span className="absolute top-2 right-2 flex h-2.5 w-2.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E85C33] opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#E85C33] border-2 border-white"></span>
                     </span>
                 )}
             </button>
@@ -44,95 +45,93 @@ export function NotificationDropdown() {
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        initial={{ opacity: 0, y: 8, scale: 0.96 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute right-0 mt-3 w-80 md:w-96 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-2xl z-50 overflow-hidden ring-1 ring-black/5"
+                        exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
+                        className="absolute right-0 mt-2 w-[360px] md:w-[400px] bg-white border border-zinc-200/60 rounded-[32px] shadow-[0_12px_40px_-10px_rgba(0,0,0,0.1)] z-50 overflow-hidden ring-1 ring-black/5 origin-top-right"
                     >
-                        <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 backdrop-blur-sm">
-                            <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">Notifications</span>
+                        <div className="px-6 py-4 border-b border-zinc-100 flex items-center justify-between bg-white/50 backdrop-blur-xl sticky top-0 z-10">
+                            <div>
+                                <h3 className="font-bold text-zinc-900">Notifications</h3>
+                                <p className="text-xs text-zinc-500 font-medium mt-0.5">You have {unreadCount} unread messages</p>
+                            </div>
                             {unreadCount > 0 && (
-                                <span className="text-[10px] font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 px-2 py-0.5 rounded-full">
-                                    {unreadCount} pending
-                                </span>
+                                <button className="text-[10px] font-bold text-[#E85C33] bg-[#FFF8F6] px-3 py-1.5 rounded-full hover:bg-[#E85C33] hover:text-white transition-colors">
+                                    Mark all read
+                                </button>
                             )}
                         </div>
 
-                        <div className="max-h-[320px] overflow-y-auto">
+                        <div className="max-h-[380px] overflow-y-auto p-2 space-y-1">
                             {notifications.length === 0 ? (
-                                <div className="py-12 px-6 text-center text-zinc-400 flex flex-col items-center">
-                                    <div className="h-10 w-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mb-3">
-                                        <Bell size={16} className="text-zinc-300 dark:text-zinc-600" />
+                                <div className="py-16 px-6 text-center flex flex-col items-center justify-center">
+                                    <div className="h-16 w-16 rounded-full bg-zinc-50 flex items-center justify-center mb-4">
+                                        <Bell size={24} className="text-zinc-300" />
                                     </div>
-                                    <p className="text-sm font-medium text-zinc-400">All caught up!</p>
-                                    <p className="text-xs text-zinc-400 mt-1">No pending reviews.</p>
+                                    <p className="font-bold text-zinc-900">All caught up!</p>
+                                    <p className="text-sm text-zinc-500 mt-1 max-w-[200px]">We'll notify you when you receive new reviews or updates.</p>
                                 </div>
                             ) : (
-                                <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
-                                    {notifications.map((notif) => (
-                                        <Link
-                                            key={notif.id}
-                                            href={`/reviews?id=${notif.id}`} // Assuming we handle query param or just simple nav
-                                            onClick={() => setIsOpen(false)}
-                                            className="block px-4 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors group relative"
-                                        >
-                                            <div className="flex gap-3">
-                                                <div className="mt-0.5">
-                                                    {/* Avatar or Source Icon */}
-                                                    <div className="h-8 w-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-xs font-bold text-zinc-500 ring-2 ring-white dark:ring-zinc-950 shadow-sm">
-                                                        {(notif.author || '?').charAt(0)}
-                                                    </div>
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="flex justify-between items-start mb-0.5">
-                                                        <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 truncate pr-2">
-                                                            {notif.author || 'Unknown Author'}
-                                                        </p>
-                                                        <span className="text-[10px] text-zinc-400 whitespace-nowrap">
-                                                            {/* Safe date formatting */}
-                                                            {notif.date ? formatDistanceToNow(new Date(notif.date), { addSuffix: true }) : 'Just now'}
-                                                        </span>
-                                                    </div>
-
-                                                    <div className="flex items-center gap-1 mb-1">
-                                                        <div className="flex">
-                                                            {[...Array(5)].map((_, i) => (
-                                                                <Star
-                                                                    key={i}
-                                                                    size={8}
-                                                                    className={i < (notif.rating || 0) ? "fill-amber-400 text-amber-400" : "fill-zinc-200 text-zinc-200 dark:fill-zinc-800 dark:text-zinc-800"}
-                                                                />
-                                                            ))}
-                                                        </div>
-                                                        <span className="text-[10px] text-zinc-400">•</span>
-                                                        <span className="text-[10px] text-zinc-500 capitalize">{notif.source}</span>
-                                                    </div>
-
-                                                    <p className="text-xs text-zinc-600 dark:text-zinc-300 line-clamp-2 leading-relaxed">
-                                                        {notif.content}
-                                                    </p>
-
-                                                    <div className="mt-2 text-[10px] font-medium text-indigo-600 dark:text-indigo-400 group-hover:underline flex items-center gap-1">
-                                                        Review & Reply <ExternalLink size={10} />
-                                                    </div>
+                                notifications.map((notif) => (
+                                    <Link
+                                        key={notif.id}
+                                        href={`/reviews?id=${notif.id}`}
+                                        onClick={() => setIsOpen(false)}
+                                        className="block p-4 rounded-[20px] hover:bg-zinc-50 transition-all group relative border border-transparent hover:border-zinc-200/60"
+                                    >
+                                        <div className="flex gap-4">
+                                            <div className="mt-1 shrink-0">
+                                                <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center text-sm font-bold text-zinc-700 shadow-sm ring-1 ring-zinc-100 group-hover:ring-zinc-200 group-hover:scale-105 transition-all">
+                                                    {(notif.author || '?').charAt(0).toUpperCase()}
                                                 </div>
                                             </div>
-                                            {/* Status Dot */}
-                                            <div className="absolute top-4 left-2 w-1.5 h-1.5 rounded-full bg-indigo-500 ring-2 ring-white dark:ring-zinc-950 pointer-events-none" />
-                                        </Link>
-                                    ))}
-                                </div>
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex justify-between items-start mb-1">
+                                                    <p className="text-sm font-bold text-zinc-900 truncate pr-2 group-hover:text-[#E85C33] transition-colors">
+                                                        {notif.author || 'Unknown Author'}
+                                                    </p>
+                                                    <span className="text-[10px] font-medium text-zinc-400 whitespace-nowrap bg-zinc-50 px-2 py-0.5 rounded-full">
+                                                        {notif.date ? formatDistanceToNow(new Date(notif.date), { addSuffix: true }) : 'Just now'}
+                                                    </span>
+                                                </div>
+
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <div className="flex bg-amber-50 px-1.5 py-0.5 rounded-md">
+                                                        {[...Array(5)].map((_, i) => (
+                                                            <Star
+                                                                key={i}
+                                                                size={8}
+                                                                className={cn(
+                                                                    "mr-0.5 last:mr-0",
+                                                                    i < (notif.rating || 0) ? "fill-amber-400 text-amber-400" : "fill-zinc-200 text-zinc-200"
+                                                                )}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                    <span className="text-[10px] font-bold text-zinc-400 capitalize bg-zinc-100 px-1.5 py-0.5 rounded-md">{notif.source}</span>
+                                                </div>
+
+                                                <p className="text-xs text-zinc-600 line-clamp-2 leading-relaxed bg-zinc-50/50 p-2 rounded-lg border border-zinc-100/50">
+                                                    "{notif.content}"
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        {/* Unread Indicator */}
+                                        <div className="absolute top-5 left-3 w-1.5 h-1.5 rounded-full bg-[#E85C33] ring-4 ring-white shadow-sm pointer-events-none transform -translate-x-1/2" />
+                                    </Link>
+                                ))
                             )}
                         </div>
 
-                        <div className="p-2 bg-zinc-50 dark:bg-zinc-900 border-t border-zinc-200 dark:border-zinc-800">
+                        <div className="p-3 bg-zinc-50/50 border-t border-zinc-100">
                             <Link
                                 href="/reviews"
                                 onClick={() => setIsOpen(false)}
-                                className="flex items-center justify-center gap-2 w-full py-1.5 rounded-lg text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 transition-colors"
+                                className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl text-xs font-bold text-zinc-600 hover:text-zinc-900 hover:bg-white hover:shadow-sm hover:ring-1 hover:ring-zinc-200 transition-all"
                             >
-                                View all reviews
+                                View all notifications
                             </Link>
                         </div>
                     </motion.div>

@@ -8,8 +8,8 @@ import { Providers } from "@/components/providers"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-    title: "Reputation Cockpit",
-    description: "Manage your reviews with AI",
+    title: "Reput.ai | AI Review Management & Automation Platform",
+    description: "Automate 80% of your customer reviews with AI. Monitor Google, TripAdvisor, and Booking.com in one dashboard. Boost your local ranking today.",
 }
 
 export default function RootLayout({
@@ -19,10 +19,25 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={cn(inter.className, "bg-zinc-50 dark:bg-zinc-950 text-zinc-900 antialiased")}>
-                {/* Background Texture Layer */}
-                <div className="fixed inset-0 z-0 pointer-events-none dot-pattern dark:dot-pattern-dark opacity-50 [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)]" />
-
+            <body className={cn(inter.className, "bg-[#FDFCF8] text-zinc-900 antialiased")}>
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            "@context": "https://schema.org",
+                            "@type": "SoftwareApplication",
+                            "name": "Reput.ai",
+                            "applicationCategory": "BusinessApplication",
+                            "operatingSystem": "Web",
+                            "offers": {
+                                "@type": "Offer",
+                                "price": "0",
+                                "priceCurrency": "USD"
+                            },
+                            "description": "AI-powered reputation management and review automation platform."
+                        })
+                    }}
+                />
                 <Providers>
                     <AppShell>{children}</AppShell>
                 </Providers>

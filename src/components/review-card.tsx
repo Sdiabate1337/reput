@@ -15,7 +15,8 @@ import {
     RotateCw,
     Send,
     Copy,
-    ThumbsUp
+    ArrowUpRight,
+    Loader2
 } from "lucide-react"
 import { format } from "date-fns"
 import { Review, ReviewStatus } from "@/types"
@@ -73,12 +74,10 @@ export function ReviewCard({ review, onStatusChange }: ReviewCardProps) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-            whileHover={{ y: -2 }}
+            whileHover={{ y: -4 }}
             className="group h-full"
         >
-            <div className="relative h-full flex flex-col bg-white dark:bg-zinc-900 rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.06)] ring-1 ring-zinc-950/5 dark:ring-white/10 transition-all duration-300 overflow-hidden">
-                {/* Noise Texture Overlay */}
-                <div className="absolute inset-0 bg-noise opacity-50 pointer-events-none mix-blend-soft-light" />
+            <div className="relative h-full flex flex-col bg-white dark:bg-zinc-900 rounded-3xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-zinc-100 hover:border-orange-100/50 hover:shadow-[0_12px_32px_rgba(232,92,51,0.08)] transition-all duration-300 overflow-hidden">
 
                 {/* Sentiment Indicator Line */}
                 <div className={cn("absolute top-0 left-0 w-full h-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-500",
@@ -168,16 +167,18 @@ export function ReviewCard({ review, onStatusChange }: ReviewCardProps) {
                 {/* AI Draft Response Section (Only for pending reviews) */}
                 {review.status === 'pending' && (
                     <div className="px-5 pb-5">
-                        <div className="p-3 rounded-xl bg-indigo-50/50 dark:bg-indigo-900/10 border border-indigo-100 dark:border-indigo-500/20">
-                            <div className="flex items-center justify-between mb-2">
-                                <div className="flex items-center gap-1.5">
-                                    <Sparkles size={12} className="text-indigo-600 dark:text-indigo-400" />
-                                    <span className="text-xs font-semibold text-indigo-900 dark:text-indigo-300">AI Draft</span>
+                        <div className="p-4 rounded-2xl bg-[#FFF8F6] border border-orange-100/60 dark:bg-orange-900/10 dark:border-orange-500/10">
+                            <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-2">
+                                    <div className="p-1.5 bg-orange-100 rounded-lg">
+                                        <Sparkles size={12} className="text-[#E85C33] fill-orange-500" />
+                                    </div>
+                                    <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100">Suggested Response</span>
                                 </div>
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="h-6 w-6 text-indigo-400 hover:text-indigo-600"
+                                    className="h-7 w-7 text-orange-400 hover:text-[#E85C33] hover:bg-orange-50 rounded-full"
                                     onClick={handleRegenerate}
                                     disabled={isRegenerating}
                                 >
@@ -186,40 +187,41 @@ export function ReviewCard({ review, onStatusChange }: ReviewCardProps) {
                             </div>
 
                             {isRegenerating ? (
-                                <div className="h-16 flex items-center justify-center">
-                                    <span className="text-xs text-indigo-400 animate-pulse">Generating new draft...</span>
+                                <div className="h-20 flex flex-col items-center justify-center gap-2">
+                                    <Loader2 size={16} className="text-[#E85C33] animate-spin" />
+                                    <span className="text-xs text-orange-400 font-medium">Generating magic response...</span>
                                 </div>
                             ) : (
                                 <textarea
-                                    className="w-full bg-transparent text-xs text-indigo-800 dark:text-indigo-200 resize-none focus:outline-none min-h-[60px]"
+                                    className="w-full bg-transparent text-[13px] leading-relaxed text-zinc-700 dark:text-zinc-300 resize-none focus:outline-none min-h-[80px] placeholder:text-zinc-400"
                                     value={draft}
                                     onChange={(e) => setDraft(e.target.value)}
                                     placeholder="Drafting response..."
                                 />
                             )}
 
-                            <div className="flex gap-2 mt-2">
+                            <div className="flex gap-2 mt-4 pt-3 border-t border-orange-100/50 dark:border-orange-500/10">
                                 <Button
                                     size="sm"
-                                    className="flex-1 h-7 text-xs bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm shadow-indigo-200 dark:shadow-none"
+                                    className="flex-1 h-9 text-xs bg-[#E85C33] hover:bg-[#d94a20] text-white shadow-lg shadow-orange-500/20 rounded-xl font-bold transition-all active:scale-[0.98]"
                                     onClick={handlePublish}
                                     disabled={isPublishing || isRegenerating || !draft}
                                 >
                                     {isPublishing ? (
                                         <>Publishing...</>
                                     ) : (
-                                        <><Send size={10} className="mr-1.5" /> Publish</>
+                                        <><Send size={12} className="mr-2" /> Publish to Google</>
                                     )}
                                 </Button>
                                 <Button
                                     size="sm"
                                     variant="outline"
-                                    className="h-7 text-xs border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-50"
+                                    className="h-9 w-9 p-0 rounded-xl border-orange-200 text-orange-600 hover:bg-orange-50 hover:text-orange-700 hover:border-orange-300"
                                     onClick={() => {
                                         navigator.clipboard.writeText(draft)
                                     }}
                                 >
-                                    <Copy size={10} />
+                                    <Copy size={14} />
                                 </Button>
                             </div>
                         </div>
@@ -229,14 +231,12 @@ export function ReviewCard({ review, onStatusChange }: ReviewCardProps) {
                 {/* Published Response Section */}
                 {review.status === 'published' && (review.publishedResponse || review.draftResponse) && (
                     <div className="px-5 pb-5">
-                        <div className="p-3 rounded-xl bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-500/20">
-                            <div className="flex items-center gap-1.5 mb-2">
-                                <div className="h-4 w-4 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                                    <CheckCircle2 size={10} className="text-emerald-600 dark:text-emerald-400" />
-                                </div>
-                                <span className="text-xs font-semibold text-emerald-900 dark:text-emerald-300">Published Response</span>
+                        <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-100 dark:bg-zinc-800/30 dark:border-zinc-700/30">
+                            <div className="flex items-center gap-2 mb-2">
+                                <CheckCircle2 size={14} className="text-emerald-500" />
+                                <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Published</span>
                             </div>
-                            <p className="text-xs text-emerald-800 dark:text-emerald-200 leading-relaxed whitespace-pre-wrap">
+                            <p className="text-[13px] text-zinc-600 dark:text-zinc-400 leading-relaxed whitespace-pre-wrap pl-6 border-l-2 border-zinc-200 ml-1">
                                 {review.publishedResponse || review.draftResponse}
                             </p>
                         </div>
@@ -244,10 +244,12 @@ export function ReviewCard({ review, onStatusChange }: ReviewCardProps) {
                 )}
 
                 {/* Additional Footer if needed */}
-                <div className="px-5 py-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between bg-zinc-50/30 dark:bg-black/20">
-                    <span className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">{review.source}</span>
-                    <Button variant="ghost" size="sm" className="h-6 text-[10px] text-zinc-400 hover:text-zinc-600">
-                        View Thread <MoreHorizontal size={12} className="ml-1" />
+                <div className="px-5 py-4 border-t border-zinc-50 dark:border-zinc-800 flex items-center justify-between bg-zinc-50/50 dark:bg-black/20">
+                    <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider flex items-center gap-1">
+                        {review.source} review
+                    </span>
+                    <Button variant="ghost" size="sm" className="h-6 text-[11px] text-zinc-400 hover:text-[#E85C33] hover:bg-orange-50 transition-colors">
+                        View Thread <ArrowUpRight size={12} className="ml-1" />
                     </Button>
                 </div>
 
