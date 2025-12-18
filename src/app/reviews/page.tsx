@@ -8,6 +8,7 @@ import { ReviewCard } from "@/components/review-card"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { createClient } from "@/lib/supabase/client"
+import { useBusiness } from "@/lib/use-business"
 
 // --- MOCK DATA REMOVED ---
 
@@ -18,14 +19,18 @@ export default function ReviewsPage() {
     const [filterSentiment, setFilterSentiment] = useState<Sentiment | 'all'>('all')
     const [filterStatus, setFilterStatus] = useState<ReviewStatus | 'all'>('pending') // Default to Pending for Inbox feel
 
+    const { businessId, loading: businessLoading } = useBusiness()
+
     const supabase = createClient()
 
     const fetchReviews = async () => {
+        if (!businessId) return
+
         setLoading(true)
         const { data, error } = await supabase
             .from('reviews')
             .select('*')
-            .eq('business_id', '00000000-0000-0000-0000-000000000001') // Test Business ID
+            .eq('business_id', businessId) // Dynamic Business ID
             .order('created_at', { ascending: false })
 
         if (error) {
@@ -64,8 +69,15 @@ export default function ReviewsPage() {
     }
 
     useEffect(() => {
+        if (businessLoading) return
+
+        if (!businessId) {
+            setLoading(false)
+            return
+        }
+
         fetchReviews()
-    }, [])
+    }, [businessId, businessLoading])
 
     const handleStatusChange = (id: string, newStatus: ReviewStatus) => {
         setReviews(prev => prev.map(r =>

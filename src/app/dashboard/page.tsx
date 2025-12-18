@@ -12,6 +12,7 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { useBusiness } from "@/lib/use-business"
 // Ensure createClient is imported from the correct path. It was used in previous file.
 import { createClient } from "@/lib/supabase/client"
 import { format, parseISO } from "date-fns"
@@ -33,15 +34,24 @@ export default function DashboardPage() {
     const [trendData, setTrendData] = useState<any[]>([])
     const [platformData, setPlatformData] = useState<any[]>([])
 
+    const { businessId, loading: businessLoading } = useBusiness()
+
     const supabase = createClient()
 
     useEffect(() => {
+        if (businessLoading) return
+
+        if (!businessId) {
+            setLoading(false)
+            return
+        }
+
         const fetchData = async () => {
             setLoading(true)
             const { data: rawReviews, error } = await supabase
                 .from('reviews')
                 .select('*')
-                .eq('business_id', '00000000-0000-0000-0000-000000000001')
+                .eq('business_id', businessId)
                 .order('created_at', { ascending: false })
 
             if (error || !rawReviews) {
@@ -108,8 +118,9 @@ export default function DashboardPage() {
 
             setLoading(false)
         }
+
         fetchData()
-    }, [])
+    }, [businessId, businessLoading])
 
     return (
         <div className="space-y-8 pb-12 w-full max-w-[1600px] mx-auto">
@@ -185,12 +196,16 @@ export default function DashboardPage() {
                                 </div>
                                 <span className="font-bold text-amber-900/60 uppercase tracking-widest text-xs">Trust Score</span>
                             </div>
-                            <h2 className="text-6xl font-extrabold text-zinc-900 tracking-tighter mt-4">{stats.avgRating}</h2>
+                            <h2 className="text-6xl font-extrabold text-zinc-900 tracking-tighter mt-4">
+                                {reviews.length > 0 ? stats.avgRating : "N/A"}
+                            </h2>
                             <div className="flex items-center gap-2 mt-2">
                                 <span className="text-zinc-400 font-medium text-sm">out of 5.0</span>
-                                <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full flex items-center gap-1">
-                                    <TrendingUp size={10} /> +0.2 this week
-                                </span>
+                                {reviews.length > 0 && (
+                                    <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full flex items-center gap-1">
+                                        <TrendingUp size={10} /> +0.2 this week
+                                    </span>
+                                )}
                             </div>
                         </div>
 
@@ -205,7 +220,7 @@ export default function DashboardPage() {
                         </div>
                     </motion.div>
 
-                    {/* 2. INBOX ACTION CARD (Span 4) - Dark/Orange Accent */}
+                    {/* 2. INBOX ACTION CARD (Span 4) */}
                     <motion.div
                         variants={{ hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1 } }}
                         whileHover={{ scale: 1.02, transition: { type: "spring", stiffness: 300 } }}
@@ -245,7 +260,7 @@ export default function DashboardPage() {
                         </div>
 
                         <div className="space-y-4 flex-1">
-                            {platformData.slice(0, 3).map((p, i) => (
+                            {reviews.length > 0 ? platformData.slice(0, 3).map((p, i) => (
                                 <div key={p.name} className="group/item">
                                     <div className="flex justify-between text-sm font-medium mb-1.5">
                                         <div className="flex items-center gap-2">
@@ -264,7 +279,11 @@ export default function DashboardPage() {
                                         />
                                     </div>
                                 </div>
-                            ))}
+                            )) : (
+                                <div className="h-full flex items-center justify-center text-zinc-400 text-sm font-medium">
+                                    No sources connected
+                                </div>
+                            )}
                         </div>
                     </motion.div>
 
@@ -286,31 +305,39 @@ export default function DashboardPage() {
                         </div>
 
                         <div className="flex-1 w-full relative">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={trendData}>
-                                    <defs>
-                                        <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#E85C33" stopOpacity={0.1} />
-                                            <stop offset="95%" stopColor="#E85C33" stopOpacity={0} />
-                                        </linearGradient>
-                                    </defs>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#f4f4f5" vertical={false} />
-                                    <XAxis dataKey="date" stroke="#d4d4d8" fontSize={11} tickLine={false} axisLine={false} dy={10} />
-                                    <YAxis stroke="#d4d4d8" fontSize={11} tickLine={false} axisLine={false} domain={[0, 5]} />
-                                    <Tooltip
-                                        contentStyle={{ backgroundColor: '#fff', borderRadius: '12px', border: 'none', boxShadow: '0 10px 30px -10px rgba(0,0,0,0.1)' }}
-                                        cursor={{ stroke: '#E85C33', strokeWidth: 1, strokeDasharray: '4 4' }}
-                                    />
-                                    <Area
-                                        type="monotone"
-                                        dataKey="rating"
-                                        stroke="#E85C33"
-                                        strokeWidth={3}
-                                        fill="url(#chartGradient)"
-                                        animationDuration={1500}
-                                    />
-                                </AreaChart>
-                            </ResponsiveContainer>
+                            {reviews.length > 0 ? (
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <AreaChart data={trendData}>
+                                        <defs>
+                                            <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#E85C33" stopOpacity={0.1} />
+                                                <stop offset="95%" stopColor="#E85C33" stopOpacity={0} />
+                                            </linearGradient>
+                                        </defs>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#f4f4f5" vertical={false} />
+                                        <XAxis dataKey="date" stroke="#d4d4d8" fontSize={11} tickLine={false} axisLine={false} dy={10} />
+                                        <YAxis stroke="#d4d4d8" fontSize={11} tickLine={false} axisLine={false} domain={[0, 5]} />
+                                        <Tooltip
+                                            contentStyle={{ backgroundColor: '#fff', borderRadius: '12px', border: 'none', boxShadow: '0 10px 30px -10px rgba(0,0,0,0.1)' }}
+                                            cursor={{ stroke: '#E85C33', strokeWidth: 1, strokeDasharray: '4 4' }}
+                                        />
+                                        <Area
+                                            type="monotone"
+                                            dataKey="rating"
+                                            stroke="#E85C33"
+                                            strokeWidth={3}
+                                            fill="url(#chartGradient)"
+                                            animationDuration={1500}
+                                        />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            ) : (
+                                <div className="absolute inset-0 flex flex-col items-center justify-center text-zinc-400">
+                                    <Activity size={48} className="mb-4 opacity-20" />
+                                    <p className="font-medium">No trend data available yet.</p>
+                                    <p className="text-xs opacity-70">Trends will appear once reviews are synced.</p>
+                                </div>
+                            )}
                         </div>
                     </motion.div>
 
@@ -327,8 +354,8 @@ export default function DashboardPage() {
                             </Link>
                         </div>
 
-                        <div className="space-y-6 overflow-hidden relative">
-                            {reviews.slice(0, 4).map((r, i) => (
+                        <div className="space-y-6 overflow-hidden relative flex-1">
+                            {reviews.length > 0 ? reviews.slice(0, 4).map((r, i) => (
                                 <div key={r.id || i} className="flex gap-4 items-start group/item">
                                     <div className={cn(
                                         "w-2 h-2 rounded-full mt-2 shrink-0",
@@ -343,9 +370,14 @@ export default function DashboardPage() {
                                         </div>
                                     </div>
                                 </div>
-                            ))}
-                            {/* Fade out bottom */}
-                            <div className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-white to-transparent pointer-events-none" />
+                            )) : (
+                                <div className="h-full flex flex-col items-center justify-center text-zinc-400">
+                                    <MessageSquare size={32} className="mb-3 opacity-20" />
+                                    <p className="text-sm">No recent activity</p>
+                                </div>
+                            )}
+                            {/* Fade out bottom only if data exists */}
+                            {reviews.length > 0 && <div className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-white to-transparent pointer-events-none" />}
                         </div>
                     </motion.div>
                 </motion.div>

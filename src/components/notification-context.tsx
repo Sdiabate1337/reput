@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/client"
 import { useAuth } from "@/lib/auth-context"
 import { Review } from "@/types"
 
+import { useBusiness } from "@/lib/use-business"
+
 interface NotificationContextType {
     unreadCount: number
     notifications: Review[]
@@ -17,15 +19,18 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     const [unreadCount, setUnreadCount] = useState(0)
     const [notifications, setNotifications] = useState<Review[]>([])
     const { user } = useAuth()
+    const { businessId } = useBusiness()
     const supabase = createClient()
 
     const fetchNotifications = async () => {
+        if (!businessId) return
+
         // Fetch count
         const { count, error: countError } = await supabase
             .from('reviews')
             .select('*', { count: 'exact', head: true })
             .or('status.eq.PENDING_ANALYSIS,status.eq.PENDING_VALIDATION')
-            .eq('business_id', '00000000-0000-0000-0000-000000000001')
+            .eq('business_id', businessId)
 
         if (!countError && count !== null) {
             setUnreadCount(count)
@@ -36,7 +41,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
             .from('reviews')
             .select('*')
             .or('status.eq.PENDING_ANALYSIS,status.eq.PENDING_VALIDATION')
-            .eq('business_id', '00000000-0000-0000-0000-000000000001')
+            .eq('business_id', businessId)
             .order('created_at', { ascending: false })
             .limit(5)
 
@@ -73,29 +78,31 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     }
 
     useEffect(() => {
-        fetchNotifications()
+        if (businessId) {
+            fetchNotifications()
 
-        const channel = supabase
-            .channel('realtime-reviews')
-            .on(
-                'postgres_changes',
-                {
-                    event: '*',
-                    schema: 'public',
-                    table: 'reviews',
-                    filter: `business_id=eq.00000000-0000-0000-0000-000000000001`
-                },
-                () => {
-                    console.log("Realtime update received!")
-                    fetchNotifications()
-                }
-            )
-            .subscribe()
+            const channel = supabase
+                .channel('realtime-reviews')
+                .on(
+                    'postgres_changes',
+                    {
+                        event: '*',
+                        schema: 'public',
+                        table: 'reviews',
+                        filter: `business_id=eq.${businessId}`
+                    },
+                    () => {
+                        console.log("Realtime update received!")
+                        fetchNotifications()
+                    }
+                )
+                .subscribe()
 
-        return () => {
-            supabase.removeChannel(channel)
+            return () => {
+                supabase.removeChannel(channel)
+            }
         }
-    }, [supabase])
+    }, [businessId, supabase])
 
     return (
         <NotificationContext.Provider value={{ unreadCount, notifications, refresh: fetchNotifications }}>

@@ -94,15 +94,19 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                         </button>
 
                         {/* Search Bar - Modernized */}
-                        <div className="hidden md:flex items-center gap-2 group">
+                        <div className="hidden md:flex items-center gap-2 group relative z-50">
                             <div className="relative">
-                                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-zinc-600 transition-colors" />
+                                <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[#E85C33] transition-colors duration-300" />
                                 <input
                                     type="text"
                                     placeholder="Search..."
-                                    className="pl-9 pr-8 py-1.5 bg-zinc-100/50 dark:bg-zinc-800/50 rounded-lg border border-transparent focus:bg-white focus:border-zinc-200 focus:shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all w-64 text-sm outline-none placeholder:text-zinc-400 font-medium"
+                                    className="pl-10 pr-12 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl w-64 focus:w-96 transition-all duration-300 ease-out outline-none focus:bg-white focus:border-[#E85C33]/30 focus:ring-4 focus:ring-[#E85C33]/10 focus:shadow-xl shadow-sm placeholder:text-zinc-400 text-sm font-medium"
                                 />
-                                <div className="absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-px rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-[9px] font-bold text-zinc-400 shadow-sm">⌘K</div>
+                                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 pointer-events-none opacity-100 group-focus-within:opacity-0 transition-opacity duration-200">
+                                    <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-zinc-200 bg-zinc-100 px-1.5 font-mono text-[10px] font-medium text-zinc-500 border-b-2">
+                                        <span className="text-xs">⌘</span>K
+                                    </kbd>
+                                </div>
                             </div>
                         </div>
 
