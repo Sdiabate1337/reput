@@ -251,15 +251,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* LOGO STRIP */}
-        <section className="mb-32 overflow-hidden border-y border-zinc-100 bg-white/50 backdrop-blur-3xl py-12">
-          <div className="max-w-7xl mx-auto px-6 flex justify-between items-center opacity-40 grayscale mix-blend-multiply">
-            {['Hilton', 'Marriott', 'Accor', 'Hyatt', 'Radisson'].map((logo, i) => (
-              <span key={i} className="text-3xl font-serif font-bold text-zinc-900">{logo}</span>
-            ))}
-          </div>
-        </section>
-
         {/* DASHBOARD PREVIEW */}
         <section className="mb-40 px-6">
           <div className="max-w-7xl mx-auto text-center mb-16">
