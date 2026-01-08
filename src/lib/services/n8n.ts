@@ -67,9 +67,9 @@ export const n8nService = {
             if (!res.ok) throw new Error("API call failed");
 
             const result = await res.json();
-            if (!result.success) throw new Error(result.message);
+            if (result.success === false) throw new Error(result.message);
 
-            return result;
+            return { success: true, data: result };
         } catch (error) {
             console.error("Publish Response Error:", error);
             return { success: false, message: "Failed to publish response" };

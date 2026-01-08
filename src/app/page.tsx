@@ -3,7 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
-import { ArrowRight, Star, Shield, Zap, BarChart3, MessageSquare, Menu, X, Check, Play, ChevronRight, Quote, Download, Inbox, Clock, ChevronDown, Share2, Bot, Sparkles, CheckCircle2, MousePointer2, User, TrendingUp, Search, Coffee, Wifi, ThumbsUp } from "lucide-react"
+import { ArrowRight, Star, Shield, Zap, BarChart3, MessageSquare, Menu, X, Check, Play, ChevronRight, Quote, Download, Inbox, Clock, ChevronDown, Share2, Bot, Sparkles, CheckCircle2, MousePointer2, User, TrendingUp, Search, Coffee, Wifi, ThumbsUp, Mail, MessageCircle, Phone, QrCode } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState, useRef, useEffect } from "react"
 import { cn } from "@/lib/utils"
@@ -27,17 +27,17 @@ export default function LandingPage() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1 bg-white/50 backdrop-blur-md px-2 py-1.5 rounded-full border border-zinc-200/50 shadow-sm">
-            <NavLink href="#features">Features</NavLink>
-            <NavLink href="#pricing">Pricing</NavLink>
-            <NavLink href="#testimonials">Stories</NavLink>
-            <NavLink href="#about">About</NavLink>
+            <NavLink href="/#features">Fonctionnalités</NavLink>
+            <NavLink href="/pricing">Tarifs</NavLink>
+            <NavLink href="/#testimonials">Témoignages</NavLink>
+            <NavLink href="#about">À propos</NavLink>
           </div>
 
           <div className="hidden md:flex items-center gap-4">
-            <Link href="/login" className="font-medium text-sm text-zinc-600 hover:text-zinc-900 transition-colors">Log in</Link>
+            <Link href="/login" className="font-medium text-sm text-zinc-600 hover:text-zinc-900 transition-colors">Se connecter</Link>
             <Link href="/login?intent=demo">
               <Button className="rounded-full bg-[#E85C33] hover:bg-[#D54D26] text-white px-6 h-11 shadow-lg shadow-orange-500/20 font-semibold text-sm transition-all hover:scale-105 active:scale-95">
-                Book a Demo
+                Réserver une démo
               </Button>
             </Link>
           </div>
@@ -59,10 +59,10 @@ export default function LandingPage() {
             className="fixed inset-0 z-40 bg-white pt-24 px-6 md:hidden"
           >
             <div className="flex flex-col gap-6 text-2xl font-bold">
-              <Link href="#features" onClick={() => setIsMenuOpen(false)}>Features</Link>
-              <Link href="#pricing" onClick={() => setIsMenuOpen(false)}>Pricing</Link>
-              <Link href="/login" onClick={() => setIsMenuOpen(false)}>Log in</Link>
-              <Link href="/login?intent=demo" onClick={() => setIsMenuOpen(false)} className="text-[#E85C33]">Book a Demo</Link>
+              <Link href="/#features" onClick={() => setIsMenuOpen(false)}>Fonctionnalités</Link>
+              <Link href="/pricing" onClick={() => setIsMenuOpen(false)}>Tarifs</Link>
+              <Link href="/login" onClick={() => setIsMenuOpen(false)}>Se connecter</Link>
+              <Link href="/login?intent=demo" onClick={() => setIsMenuOpen(false)} className="text-[#E85C33]">Réserver une démo</Link>
             </div>
           </motion.div>
         )}
@@ -82,24 +82,16 @@ export default function LandingPage() {
               style={{ opacity: heroOpacity }}
               className="max-w-2xl"
             >
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 border border-orange-100 text-[#E85C33] text-xs font-bold uppercase tracking-wider mb-6"
-              >
-                <Zap size={12} fill="currentColor" />
-                New: AI Context Awareness
-              </motion.div>
-
+              {/* Badge removed */}
               <motion.h1
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                className="text-5xl md:text-7xl lg:text-[5rem] font-extrabold tracking-tight text-zinc-900 leading-[1.05] mb-6"
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className="text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold tracking-tight text-zinc-900 leading-[1.05] mb-8"
               >
-                Turn Reviews into <br />
+                Reprenez le contrôle de votre <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E85C33] to-[#ef8e72] relative inline-block">
-                  Revenue.
+                  réputation.
                   <svg className="absolute w-full h-3 -bottom-1 left-0 text-[#E85C33]/20" viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" /></svg>
                 </span>
               </motion.h1>
@@ -110,7 +102,7 @@ export default function LandingPage() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="text-xl text-zinc-600 mb-8 leading-relaxed font-medium max-w-lg"
               >
-                The automated reputation engine that monitors, analyzes, and responds to reviews 24/7. <span className="text-zinc-900 font-semibold">Boost your local ranking in weeks.</span>
+                Collectez plus d’avis positifs, et filtrez vos mauvais avis pour une gestion interne plus efficace.
               </motion.p>
 
               <motion.div
@@ -121,34 +113,18 @@ export default function LandingPage() {
               >
                 <Link href="/login?intent=demo">
                   <Button size="lg" className="rounded-full bg-[#E85C33] hover:bg-[#D54D26] text-white h-14 px-8 text-base shadow-xl shadow-orange-500/20 font-bold transition-transform hover:-translate-y-1 w-full sm:w-auto">
-                    Book a Demo
+                    Réserver une démo
                   </Button>
                 </Link>
-                <Link href="#features" className="group flex items-center gap-3 pl-2 pr-6 py-2 rounded-full bg-white border border-zinc-200 text-zinc-600 font-semibold hover:bg-zinc-50 hover:border-zinc-300 transition-all shadow-sm w-full sm:w-auto h-14">
-                  <div className="w-10 h-10 bg-zinc-100 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Play size={16} fill="currentColor" className="text-zinc-500 ml-0.5" />
+                <Link href="/login" className="group flex items-center gap-3 pl-2 pr-6 py-2 rounded-full bg-white border border-zinc-200/60 text-zinc-600 font-semibold hover:bg-zinc-50 hover:border-zinc-300 transition-all shadow-sm hover:shadow-md w-full sm:w-auto h-14">
+                  <div className="w-10 h-10 bg-orange-50 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <ArrowRight size={16} className="text-[#E85C33]" />
                   </div>
-                  <span>See how it works</span>
+                  <span>Démarrer maintenant</span>
                 </Link>
               </motion.div>
 
-              <div className="mt-10 flex items-center gap-4 text-sm font-medium text-zinc-500">
-                <div className="flex -space-x-3">
-                  {[1, 2, 3, 4].map(i => (
-                    <Image key={i} src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i + 10}`} alt="User" width={36} height={36} className="w-9 h-9 rounded-full border-2 border-white bg-zinc-100" />
-                  ))}
-                </div>
-                <div className="flex flex-col">
-                  <div className="flex items-center gap-1 text-[#E85C33]">
-                    <Star size={12} fill="currentColor" />
-                    <Star size={12} fill="currentColor" />
-                    <Star size={12} fill="currentColor" />
-                    <Star size={12} fill="currentColor" />
-                    <Star size={12} fill="currentColor" />
-                  </div>
-                  <p className="text-xs text-zinc-400">Trusted by <span className="text-zinc-700 font-bold">2,000+ businesses</span></p>
-                </div>
-              </div>
+              {/* Trusted by section removed */}
             </motion.div>
 
             {/* Hero Visuals - Floating Cards */}
@@ -176,11 +152,11 @@ export default function LandingPage() {
                       <Star size={12} fill="currentColor" />
                     </div>
                     <div className="bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1 border border-emerald-100">
-                      <Clock size={10} /> 50h saved/mo
+                      <Clock size={10} /> 50h gagnées/mois
                     </div>
                   </div>
                   <p className="text-sm text-zinc-700 font-medium leading-relaxed mb-3">
-                    "The AI drafts are <span className="text-zinc-900 font-bold bg-orange-100/50 px-1 rounded">100% human-like</span>. My team loves it."
+                    "Les brouillons IA sont <span className="text-zinc-900 font-bold bg-orange-100/50 px-1 rounded">100% humains</span>. Mon équipe adore."
                   </p>
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 rounded-full bg-zinc-100 flex items-center justify-center text-[10px] font-bold text-zinc-500">SM</div>
@@ -201,13 +177,13 @@ export default function LandingPage() {
                     <Bot size={24} />
                   </div>
                   <div>
-                    <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-0.5">AI Auto-Pilot</div>
+                    <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-0.5">Pilote Automatique IA</div>
                     <div className="text-sm font-bold text-zinc-900 flex items-center gap-2">
                       <span className="relative flex h-2.5 w-2.5">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                       </span>
-                      Active
+                      Actif
                     </div>
                   </div>
                 </div>
@@ -221,19 +197,19 @@ export default function LandingPage() {
                       <Star size={12} fill="currentColor" />
                       <Star size={12} fill="currentColor" />
                     </div>
-                    <p className="text-xs text-zinc-600 italic leading-relaxed line-clamp-2">"Impressive service! The team went above and beyond to make our stay comfortable."</p>
+                    <p className="text-xs text-zinc-600 italic leading-relaxed line-clamp-2">"Service impressionnant ! L'équipe s'est surpassée pour rendre notre séjour confortable."</p>
                   </div>
 
                   <div className="relative pl-4 border-l-2 border-[#E85C33]/20">
-                    <div className="text-[10px] font-extrabold text-[#E85C33] mb-1.5 flex items-center gap-1.5 uppercase tracking-wider"><Sparkles size={10} /> AI Drafting</div>
+                    <div className="text-[10px] font-extrabold text-[#E85C33] mb-1.5 flex items-center gap-1.5 uppercase tracking-wider"><Sparkles size={10} /> Rédaction IA</div>
                     <p className="text-sm text-zinc-800 leading-relaxed font-medium">
-                      Thank you! We're thrilled <br /> to hear you had a great experience.
+                      Merci ! Nous sommes ravis <br /> d'apprendre que vous avez apprécié.
                       <span className="inline-block w-1.5 h-4 bg-[#E85C33] ml-1 align-middle animate-pulse rounded-full" />
                     </p>
 
                     {/* Cursor Overlay */}
                     <div className="absolute -bottom-3 -right-2 bg-zinc-900 text-white text-[10px] px-3 py-1.5 rounded-full rounded-tl-none font-bold shadow-xl flex items-center gap-1.5 transform translate-x-4 translate-y-4 border-[3px] border-white">
-                      <MousePointer2 size={10} className="-rotate-90" fill="currentColor" /> Auto-Reply
+                      <MousePointer2 size={10} className="-rotate-90" fill="currentColor" /> Réponse Auto
                     </div>
                   </div>
                 </div>
@@ -244,7 +220,7 @@ export default function LandingPage() {
                 className="bottom-20 right-20 z-20"
                 delay={0.6}
                 author="Le Petit Chef"
-                text="Finally a dashboard that makes sense. Love it."
+                text="Enfin un tableau de bord qui a du sens. J'adore."
                 stars={4}
               />
             </motion.div>
@@ -255,7 +231,7 @@ export default function LandingPage() {
         <section className="mb-40 px-6">
           <div className="max-w-7xl mx-auto text-center mb-16">
             <h2 className="text-5xl md:text-6xl font-bold tracking-tight text-zinc-900 mb-6">
-              Turn noise into <span className="text-[#E85C33]">clear signals.</span>
+              Transformez le bruit <br className="hidden md:block" /> en <span className="text-[#E85C33]">signaux clairs.</span>
             </h2>
           </div>
 
@@ -275,7 +251,7 @@ export default function LandingPage() {
                   <div className="bg-zinc-100/50 border border-zinc-200/50 rounded-md px-3 py-1 flex items-center gap-2 text-[10px] text-zinc-400 font-medium">
                     <Shield size={10} className="text-zinc-500" />
                     <span className="text-zinc-500 md:hidden">reput.ai</span>
-                    <span className="text-zinc-500 hidden md:inline">app.reput.ai/dashboard</span>
+                    <span className="text-zinc-500 hidden md:inline">app.reput.ai/tableau-de-bord</span>
                   </div>
                 </div>
               </div>
@@ -286,17 +262,17 @@ export default function LandingPage() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
                   <div>
                     <h3 className="text-xl md:text-2xl font-bold text-zinc-900 tracking-tight">
-                      <span className="md:hidden">Overview</span>
-                      <span className="hidden md:inline">Dashboard</span>
+                      <span className="md:hidden">Aperçu</span>
+                      <span className="hidden md:inline">Tableau de bord</span>
                     </h3>
-                    <p className="text-xs md:text-sm text-zinc-500 font-medium mt-1">Good afternoon, here is your reputation at a glance.</p>
+                    <p className="text-xs md:text-sm text-zinc-500 font-medium mt-1">Bonjour, voici votre réputation en un coup d'œil.</p>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
                     <Button className="rounded-lg bg-[#E85C33] hover:bg-[#D54D26] text-white shadow-sm transition-all h-9 font-bold border border-orange-400/20 text-xs px-3">
-                      <Share2 size={14} className="mr-2" /> Showcase
+                      <Share2 size={14} className="mr-2" /> Vitrine
                     </Button>
                     <Button variant="outline" className="rounded-lg border-zinc-200 text-zinc-600 hover:bg-zinc-50 h-9 bg-white font-medium shadow-sm text-xs px-3">
-                      <Clock size={14} className="mr-2" /> 30 Days <ChevronDown size={12} className="ml-2 opacity-50" />
+                      <Clock size={14} className="mr-2" /> 30 Jours <ChevronDown size={12} className="ml-2 opacity-50" />
                     </Button>
                     <Button variant="outline" className="rounded-lg border-zinc-200 text-zinc-600 hover:bg-zinc-50 h-9 bg-white font-medium shadow-sm px-2.5">
                       <Download size={14} />
@@ -314,17 +290,17 @@ export default function LandingPage() {
                         <div className="p-1.5 bg-amber-50 rounded-lg border border-amber-100/50">
                           <Star size={14} className="fill-amber-400 text-amber-400" />
                         </div>
-                        <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Trust Score</span>
+                        <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Score de Confiance</span>
                       </div>
                       <div className="text-4xl md:text-5xl leading-none font-bold text-zinc-900 tracking-tighter mb-2">3.5</div>
                       <div className="text-xs text-zinc-500 font-medium flex items-center gap-2">
-                        out of 5.0
-                        <span className="bg-emerald-50 border border-emerald-100/50 text-emerald-600 px-2 py-0.5 rounded-full text-[10px] font-bold">+0.2 this week</span>
+                        sur 5.0
+                        <span className="bg-emerald-50 border border-emerald-100/50 text-emerald-600 px-2 py-0.5 rounded-full text-[10px] font-bold">+0.2 cette semaine</span>
                       </div>
                     </div>
                     <div>
                       <div className="flex justify-between text-[10px] font-bold text-zinc-400 mb-1.5 uppercase tracking-wide">
-                        <span>Response Rate</span>
+                        <span>Taux de Réponse</span>
                         <span>60%</span>
                       </div>
                       <div className="h-1.5 w-full bg-zinc-100 rounded-full overflow-hidden border border-zinc-100">
@@ -350,15 +326,15 @@ export default function LandingPage() {
                         <div className="p-2 bg-white/10 backdrop-blur-md border border-white/10 rounded-lg">
                           <Inbox size={18} className="text-white" />
                         </div>
-                        <span className="bg-white/10 backdrop-blur-md border border-white/10 px-2.5 py-1 rounded-full text-[10px] font-bold shadow-sm">Action Required</span>
+                        <span className="bg-white/10 backdrop-blur-md border border-white/10 px-2.5 py-1 rounded-full text-[10px] font-bold shadow-sm">Action Requise</span>
                       </div>
                       <div className="relative z-10">
                         <div className="text-4xl md:text-5xl leading-none font-bold tracking-tighter mb-1">43</div>
-                        <div className="font-medium text-orange-50/90 text-sm">Pending Reviews</div>
+                        <div className="font-medium text-orange-50/90 text-sm">Avis en attente</div>
                       </div>
                     </div>
                     <Button className="w-full bg-white text-[#E85C33] hover:bg-orange-50 font-bold rounded-lg h-10 relative z-10 mt-4 shadow-sm border border-white/20 text-xs">
-                      Go to Inbox <ArrowRight size={14} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                      Aller à la boîte de réception <ArrowRight size={14} className="ml-2 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </div>
 
@@ -373,7 +349,7 @@ export default function LandingPage() {
                     <div className="space-y-4 flex-1 flex flex-col justify-center">
                       {[
                         { name: 'Google', count: 101, color: 'bg-blue-500' },
-                        { name: 'Internal', count: 5, color: 'bg-zinc-400' },
+                        { name: 'Interne', count: 5, color: 'bg-zinc-400' },
                         { name: 'Booking', count: 1, color: 'bg-blue-800' }
                       ].map((source, i) => (
                         <div key={i} className="flex flex-col gap-1.5">
@@ -403,11 +379,11 @@ export default function LandingPage() {
                   <div className="md:col-span-2 p-6 rounded-2xl bg-gradient-to-b from-white to-zinc-50/30 border border-zinc-200/60 shadow-sm min-h-[260px]">
                     <div className="flex justify-between items-start mb-6">
                       <div>
-                        <h4 className="text-base font-bold text-zinc-900 tracking-tight">Reputation Trend</h4>
-                        <p className="text-xs text-zinc-500 font-medium">Rating evolution over the last 14 days</p>
+                        <h4 className="text-base font-bold text-zinc-900 tracking-tight">Tendance de Réputation</h4>
+                        <p className="text-xs text-zinc-500 font-medium">Évolution sur les 14 derniers jours</p>
                       </div>
                       <div className="hidden md:flex bg-zinc-100/80 p-1 rounded-lg border border-zinc-200/50">
-                        <div className="px-3 py-1 bg-white rounded-md text-[10px] font-bold shadow-sm text-zinc-900 border border-zinc-200/50">Rating</div>
+                        <div className="px-3 py-1 bg-white rounded-md text-[10px] font-bold shadow-sm text-zinc-900 border border-zinc-200/50">Note</div>
                         <div className="px-3 py-1 rounded-md text-[10px] font-bold text-zinc-500 hover:text-zinc-700 cursor-pointer transition-colors">Volume</div>
                       </div>
                     </div>
@@ -447,7 +423,7 @@ export default function LandingPage() {
                   {/* Recent Activity */}
                   <div className="p-6 rounded-2xl bg-gradient-to-b from-white to-zinc-50/30 border border-zinc-200/60 shadow-sm min-h-[260px]">
                     <div className="flex justify-between items-center mb-6">
-                      <h4 className="text-base font-bold text-zinc-900 tracking-tight">Recent Activity</h4>
+                      <h4 className="text-base font-bold text-zinc-900 tracking-tight">Activité Récente</h4>
                       <div className="w-6 h-6 rounded-full bg-zinc-50 border border-zinc-100 flex items-center justify-center text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 transition-all cursor-pointer"><ArrowRight size={12} className="-rotate-45" /></div>
                     </div>
                     <div className="space-y-4">
@@ -483,7 +459,7 @@ export default function LandingPage() {
                   className="relative md:absolute md:-bottom-12 md:-left-12 bg-white/95 backdrop-blur-xl p-6 rounded-[32px] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] md:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] border border-white/50 ring-1 ring-zinc-200/50 w-full md:w-72 z-20"
                 >
                   <div className="flex justify-between items-center mb-4">
-                    <h4 className="text-sm font-bold text-zinc-900">Ratings over time</h4>
+                    <h4 className="text-sm font-bold text-zinc-900">Notes au fil du temps</h4>
                     <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">+4.2%</span>
                   </div>
                   <div className="h-24 relative overflow-hidden">
@@ -508,7 +484,7 @@ export default function LandingPage() {
                   transition={{ delay: 0.4, duration: 0.7, type: "spring" }}
                   className="relative md:absolute md:-bottom-20 md:-right-12 bg-white/95 backdrop-blur-xl p-6 rounded-[32px] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] md:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] border border-white/50 ring-1 ring-zinc-200/50 w-full md:w-72 z-30 mt-4 md:mt-0"
                 >
-                  <h4 className="text-sm font-bold text-zinc-900 mb-6">Sentiment Analysis</h4>
+                  <h4 className="text-sm font-bold text-zinc-900 mb-6">Analyse de Sentiment</h4>
                   <div className="flex justify-between items-end text-center gap-2">
                     <div className="flex flex-col items-center gap-2 flex-1 group cursor-default">
                       <div className="w-10 h-10 bg-red-50/50 rounded-xl flex items-center justify-center text-red-500 group-hover:scale-110 transition-transform">
@@ -539,14 +515,264 @@ export default function LandingPage() {
 
           <div className="text-center mt-12">
             <div className="inline-flex items-center gap-2 bg-white border border-zinc-200 rounded-full pl-1 pr-4 py-1 shadow-sm">
-              <span className="bg-[#E85C33] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">NEW</span>
-              <span className="text-sm font-medium text-zinc-600">See the product tour</span>
+              <span className="bg-[#E85C33] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">NOUVEAU</span>
+              <span className="text-sm font-medium text-zinc-600">Voir la visite produit</span>
             </div>
           </div>
         </section>
 
+        {/* THE PROBLEM SECTION */}
+        <section className="w-full bg-[#E85C33] py-24 md:py-32 mb-32 overflow-hidden relative group">
+          {/* Subtle Background Elements */}
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-400/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-orange-600/20 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2" />
 
-        {/* FEATURE: AUTOMATE */}
+          <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center relative z-10">
+            {/* Left Content */}
+            <div className="text-white space-y-8">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/30 bg-white/10 backdrop-blur-md text-sm font-medium w-fit">
+                <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                Le problème
+              </div>
+              <h2 className="text-4xl md:text-5xl lg:text-5xl font-bold tracking-tight leading-[1.15]">
+                Votre réputation en ligne est votre premier vendeur, ne le laissez pas à l'abandon.
+              </h2>
+              <p className="text-orange-50 text-lg leading-relaxed opacity-90 max-w-lg">
+                Remerciez à temps ceux qui vous recommandent, gérez les mécontents à temps.
+              </p>
+            </div>
+
+            {/* Right Content - Chart Card - Enhanced */}
+            <div className="relative group">
+              {/* Glow effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-orange-400 to-pink-400 rounded-[2.2rem] blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200" />
+
+              <div className="bg-white/95 backdrop-blur-xl rounded-[2rem] p-8 shadow-2xl relative z-10 w-full aspect-[4/3] flex flex-col transform transition-transform duration-500 border border-white/50">
+                {/* Legend */}
+                <div className="flex gap-6 mb-8 text-[11px] font-bold uppercase tracking-widest justify-end">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-zinc-300" />
+                    <span className="text-zinc-400">Avant</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex h-2.5 w-2.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E85C33] opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#E85C33]"></span>
+                    </span>
+                    <span className="text-[#E85C33]">Avec Reput.ai</span>
+                  </div>
+                </div>
+
+                {/* Chart Area */}
+                <div className="relative flex-1 w-full flex items-center justify-center">
+                  {/* Grid Lines */}
+                  <div className="absolute inset-x-0 inset-y-4 flex flex-col justify-between pointer-events-none opacity-50">
+                    <div className="w-full h-px bg-zinc-100 border-t border-dashed border-zinc-200" />
+                    <div className="w-full h-px bg-zinc-100 border-t border-dashed border-zinc-200" />
+                    <div className="w-full h-px bg-zinc-100 border-t border-dashed border-zinc-200" />
+                    <div className="w-full h-px bg-zinc-100 border-t border-dashed border-zinc-200" />
+                  </div>
+
+                  {/* Lines SVG */}
+                  <svg className="w-full h-full overflow-visible" viewBox="0 0 400 200" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="gradientGrowth" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#E85C33" stopOpacity="0.5" />
+                        <stop offset="100%" stopColor="#FB923C" stopOpacity="1" />
+                      </linearGradient>
+                      <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+                        <feMerge>
+                          <feMergeNode in="coloredBlur" />
+                          <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                      </filter>
+                    </defs>
+
+                    {/* Old Way Line (Flat/Dipping) */}
+                    <motion.path
+                      initial={{ pathLength: 0, opacity: 0 }}
+                      whileInView={{ pathLength: 1, opacity: 1 }}
+                      transition={{ duration: 1.5, ease: "easeInOut" }}
+                      d="M0,120 C50,115 100,130 150,125 C200,120 250,140 400,135"
+                      fill="none"
+                      stroke="#e4e4e7"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      strokeDasharray="8 8"
+                    />
+
+                    {/* Growth Line (Exponential) */}
+                    <motion.path
+                      initial={{ pathLength: 0, opacity: 0 }}
+                      whileInView={{ pathLength: 1, opacity: 1 }}
+                      transition={{ duration: 1.5, delay: 0.3, ease: "easeInOut" }}
+                      d="M0,120 C80,115 120,100 180,90 C240,80 300,50 400,20"
+                      fill="none"
+                      stroke="url(#gradientGrowth)"
+                      strokeWidth="5"
+                      strokeLinecap="round"
+                      filter="url(#glow)"
+                    />
+
+                    {/* Floating Data Point */}
+                    <motion.g
+                      initial={{ opacity: 0, scale: 0 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 1.5, type: "spring" }}
+                    >
+                      <circle cx="300" cy="50" r="6" fill="white" stroke="#E85C33" strokeWidth="3" />
+                      <foreignObject x="270" y="0" width="100" height="40">
+                        <div className="bg-zinc-900 text-white text-[10px] font-bold px-2 py-1 rounded-lg text-center shadow-lg transform -translate-x-2">
+                          +45% Ventes
+                        </div>
+                      </foreignObject>
+                    </motion.g>
+
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CONCRETE IMPACT SECTION */}
+        <section className="mb-40 px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-24">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-zinc-900 mb-6 tracking-tight">
+                Ce que Reput.ai change <span className="text-[#E85C33]">concrètement</span>
+              </h2>
+              <p className="text-xl text-zinc-500 max-w-2xl mx-auto leading-relaxed font-medium">
+                Nous automatisons la collecte, la réponse et le pilotage de vos avis pour transformer chaque retour en levier de croissance.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8 lg:gap-10">
+              {/* Card 1: Collecte Intelligente */}
+              <div className="bg-white p-10 lg:p-12 rounded-[3.5rem] border border-zinc-100 shadow-[0_40px_100px_-30px_rgba(0,0,0,0.06)] hover:shadow-[0_60px_120px_-20px_rgba(232,92,51,0.1)] transition-all duration-500 flex flex-col justify-between h-[520px] overflow-hidden relative group cursor-default">
+                <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:opacity-[0.06] transition-all duration-700 transform group-hover:rotate-12 group-hover:scale-125">
+                  <MessageCircle size={240} />
+                </div>
+
+                {/* Visual Area */}
+                <div className="flex-1 flex items-center justify-center mb-10 relative">
+                  {/* Glowing blobs */}
+                  <div className="absolute w-32 h-32 bg-green-200/40 rounded-full blur-3xl -left-10 -top-10 animate-pulse" />
+                  <div className="absolute w-32 h-32 bg-blue-200/40 rounded-full blur-3xl -right-10 -bottom-10 animate-pulse delay-700" />
+
+                  <div className="flex items-center gap-8 relative z-10">
+                    <div className="w-24 h-24 bg-gradient-to-br from-[#25D366] to-[#128c7e] rounded-[2.5rem] flex items-center justify-center text-white shadow-[0_20px_40px_-12px_rgba(37,211,102,0.5)] transform -rotate-12 transition-transform duration-500 group-hover:rotate-0 border-[6px] border-white z-10"><MessageCircle size={42} fill="currentColor" /></div>
+                    <div className="w-24 h-24 bg-gradient-to-br from-zinc-700 to-zinc-900 rounded-[2.5rem] flex items-center justify-center text-white shadow-[0_20px_40px_-12px_rgba(0,0,0,0.3)] transform rotate-12 transition-transform duration-500 group-hover:rotate-0 border-[6px] border-white z-10"><QrCode size={42} /></div>
+                  </div>
+
+                  {/* Animated Connection Line */}
+                  <svg className="absolute w-[140%] h-full pointer-events-none top-8" viewBox="0 0 400 200">
+                    <path d="M 0 100 Q 200 180 400 100" stroke="#E85C33" strokeWidth="3" fill="none" className="opacity-0 group-hover:opacity-20 transition-opacity duration-700" strokeDasharray="8 8">
+                      <animate attributeName="stroke-dashoffset" from="100" to="0" dur="2s" repeatCount="indefinite" />
+                    </path>
+                  </svg>
+                </div>
+
+                <div className="relative z-10">
+                  <h3 className="text-3xl font-bold text-zinc-900 mb-4 group-hover:text-[#E85C33] transition-colors duration-300">Collecte intelligente</h3>
+                  <p className="text-zinc-500 font-medium leading-relaxed text-xl">
+                    Enquêtes brandées aux couleurs de votre marque. WhatsApp ou QR Code.
+                  </p>
+                </div>
+              </div>
+
+              {/* Card 2: Pilotage Clair */}
+              <div className="bg-white p-10 lg:p-12 rounded-[3.5rem] border border-zinc-100 shadow-[0_40px_100px_-30px_rgba(0,0,0,0.06)] hover:shadow-[0_60px_120px_-20px_rgba(59,130,246,0.1)] transition-all duration-500 flex flex-col justify-between h-[520px] overflow-hidden relative group cursor-default">
+                <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:opacity-[0.06] transition-all duration-700 transform group-hover:-rotate-12 group-hover:scale-125">
+                  <BarChart3 size={240} />
+                </div>
+
+                {/* Visual Area */}
+                <div className="flex-1 flex flex-col items-center justify-center gap-6 mb-10">
+                  <div className="flex gap-4">
+                    <span className="bg-gradient-to-b from-zinc-50 to-zinc-100 border border-zinc-200 text-zinc-600 px-6 py-3 rounded-full font-bold text-lg shadow-sm">NPS : 72</span>
+                    <span className="bg-gradient-to-b from-blue-50 to-blue-100 border border-blue-200 text-blue-700 px-6 py-3 rounded-full font-bold text-lg shadow-sm flex items-center gap-2">CSAT <Star size={18} fill="currentColor" /> : 94%</span>
+                  </div>
+                  <div className="bg-white border border-zinc-100 px-10 py-6 rounded-[2rem] shadow-[0_20px_50px_-15px_rgba(0,0,0,0.15)] flex items-center gap-5 group-hover:scale-105 transition-transform duration-500 relative">
+                    <div className="absolute -inset-1 rounded-[2rem] bg-gradient-to-r from-emerald-400 to-green-500 opacity-20 blur-lg group-hover:opacity-40 transition-opacity" />
+                    <div className="w-4 h-4 rounded-full bg-emerald-500 animate-pulse ring-4 ring-emerald-100 relative z-10" />
+                    <span className="font-bold text-zinc-900 text-2xl relative z-10">Note : 4.9<span className="text-zinc-400 text-lg">/5</span></span>
+                  </div>
+                </div>
+
+                <div className="relative z-10">
+                  <h3 className="text-3xl font-bold text-zinc-900 mb-4 group-hover:text-[#E85C33] transition-colors duration-300">Pilotage clair</h3>
+                  <p className="text-zinc-500 font-medium leading-relaxed text-xl">
+                    Dashboard unifié pour piloter votre e-réputation. Analysez vos performances par canal et par établissement.
+                  </p>
+                </div>
+              </div>
+
+              {/* Card 3: Gain de Temps */}
+              <div className="bg-white p-10 lg:p-12 rounded-[3.5rem] border border-zinc-100 shadow-[0_40px_100px_-30px_rgba(0,0,0,0.06)] hover:shadow-[0_60px_120px_-20px_rgba(251,146,60,0.1)] transition-all duration-500 flex flex-col justify-between h-[520px] overflow-hidden relative group cursor-default">
+                <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:opacity-[0.06] transition-all duration-700 transform group-hover:translate-x-10">
+                  <Zap size={240} />
+                </div>
+
+                {/* Visual Area */}
+                <div className="flex-1 flex items-center justify-center mb-10 pl-8">
+                  <div className="relative w-full max-w-[340px]">
+                    <div className="absolute -left-6 top-0 w-12 h-12 bg-white rounded-full border border-zinc-100 flex items-center justify-center z-10 shadow-[0_10px_20px_-5px_rgba(0,0,0,0.1)] text-zinc-400"><User size={20} /></div>
+                    <div className="bg-white p-5 rounded-[2rem] rounded-tl-none mb-6 text-base text-zinc-500 border border-zinc-100 ml-4 shadow-[0_4px_20px_-8px_rgba(0,0,0,0.05)] font-medium">
+                      Super service, merci beaucoup !
+                    </div>
+
+                    <div className="absolute -right-6 top-24 w-12 h-12 bg-gradient-to-br from-[#E85C33] to-[#ff8c69] rounded-full ring-4 ring-white flex items-center justify-center z-10 text-white shadow-xl"><Sparkles size={20} /></div>
+                    <div className="bg-gradient-to-br from-orange-50 to-orange-100/50 p-6 rounded-[2rem] rounded-tr-none text-base text-zinc-800 border border-orange-100/50 ml-auto mr-4 shadow-[0_10px_30px_-10px_rgba(232,92,51,0.15)] w-fit relative group-hover:-translate-y-2 transition-transform duration-500 ease-out backdrop-blur-sm">
+                      <span className="font-bold text-[#E85C33] block mb-1 text-xs uppercase tracking-wide">Réponse IA générée</span>
+                      Merci pour votre retour ! Ravi que vous ayez apprécié...
+                    </div>
+                  </div>
+                </div>
+
+                <div className="relative z-10">
+                  <h3 className="text-3xl font-bold text-zinc-900 mb-4 group-hover:text-[#E85C33] transition-colors duration-300">Gain de temps</h3>
+                  <p className="text-zinc-500 font-medium leading-relaxed text-xl">
+                    Laissez notre IA rédiger des réponses parfaites et personnalisées en quelques secondes.
+                  </p>
+                </div>
+              </div>
+
+              {/* Card 4: Conversion */}
+              <div className="bg-white p-10 lg:p-12 rounded-[3.5rem] border border-zinc-100 shadow-[0_40px_100px_-30px_rgba(0,0,0,0.06)] hover:shadow-[0_60px_120px_-20px_rgba(16,185,129,0.1)] transition-all duration-500 flex flex-col justify-between h-[520px] overflow-hidden relative group cursor-default">
+                <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:opacity-[0.06] transition-all duration-700">
+                  <Share2 size={240} />
+                </div>
+
+                {/* Visual Area */}
+                <div className="flex-1 flex items-center justify-center mb-10 perspective-[1000px]">
+                  <div className="bg-white border border-zinc-200/60 p-6 rounded-3xl shadow-[0_30px_60px_-12px_rgba(0,0,0,0.15)] w-[80%] rotate-y-12 rotate-x-12 group-hover:rotate-y-0 group-hover:rotate-x-0 transition-transform duration-700 ease-out relative z-10">
+                    <div className="absolute -top-4 -right-4 bg-zinc-900 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg ring-4 ring-white">Widget</div>
+                    <div className="flex items-center gap-1.5 text-[#E85C33] mb-4">
+                      <Star size={20} fill="currentColor" /><Star size={20} fill="currentColor" /><Star size={20} fill="currentColor" /><Star size={20} fill="currentColor" /><Star size={20} fill="currentColor" />
+                    </div>
+                    <div className="h-3 w-3/4 bg-zinc-100 rounded-full mb-3" />
+                    <div className="h-3 w-1/2 bg-zinc-100 rounded-full" />
+                  </div>
+
+                  {/* Floating QR Code */}
+                  <div className="absolute bg-gradient-to-br from-[#E85C33] to-[#d4481f] w-20 h-20 rounded-3xl flex items-center justify-center text-white shadow-[0_20px_40px_-10px_rgba(232,92,51,0.4)] -left-2 top-1/2 -translate-y-1/2 -rotate-12 group-hover:rotate-12 group-hover:scale-110 transition-transform duration-500 border-4 border-white z-20">
+                    <QrCode size={32} />
+                  </div>
+                </div>
+
+                <div className="relative z-10">
+                  <h3 className="text-3xl font-bold text-zinc-900 mb-4 group-hover:text-[#E85C33] transition-colors duration-300">Convertissez & Fidélisez</h3>
+                  <p className="text-zinc-500 font-medium leading-relaxed text-xl">
+                    Affichez votre réputation sur votre site avec nos widgets et collectez des avis via QR codes.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
         <section className="mb-32 px-4 md:px-6">
           <div className="max-w-6xl mx-auto bg-white rounded-3xl md:rounded-[3rem] p-6 md:p-16 shadow-[0_40px_100px_-30px_rgba(0,0,0,0.08)] border border-zinc-100 overflow-visible relative">
             <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
@@ -554,19 +780,19 @@ export default function LandingPage() {
               {/* Left Column: Copy */}
               <div className="relative z-10 order-2 lg:order-1">
                 <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-100 rounded-full pl-1 pr-3 py-1 mb-6">
-                  <span className="bg-[#E85C33] text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded-full">Auto-Pilot</span>
-                  <span className="text-xs font-bold text-[#E85C33]">GPT-4o Integration</span>
+                  <span className="bg-[#E85C33] text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded-full">Pilote Auto</span>
+                  <span className="text-xs font-bold text-[#E85C33]">Intégration GPT-4o</span>
                 </div>
-                <h3 className="text-3xl md:text-5xl font-bold text-zinc-900 mb-4 md:mb-6 leading-tight">Reputation management on Autopilot.</h3>
+                <h3 className="text-3xl md:text-5xl font-bold text-zinc-900 mb-4 md:mb-6 leading-tight">Gestion de réputation en Pilote Automatique.</h3>
                 <p className="text-base md:text-lg text-zinc-500 mb-6 md:mb-8 leading-relaxed">
-                  Let AI handle the 80% of standard reviews with human-like accuracy. You just approve, and we publish. It's like having a full-time reputation manager, for free.
+                  Laissez l'IA gérer 80% des avis standards avec une précision humaine. Vous validez, et nous publions. C'est comme avoir un responsable réputation à temps plein, gratuitement.
                 </p>
 
                 <div className="space-y-3 md:space-y-4 mb-8">
                   {[
-                    "Replies generated in your brand voice",
-                    "Multi-language support (Detects & Replies)",
-                    "Smart escalation for negative reviews"
+                    "Réponses générées avec le ton de votre marque",
+                    "Support multi-langues (Détection & Réponse)",
+                    "Escalade intelligente pour les avis négatifs"
                   ].map((item, i) => (
                     <div key={i} className="flex items-center gap-3">
                       <div className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
@@ -578,7 +804,7 @@ export default function LandingPage() {
                 </div>
 
                 <Button className="w-full md:w-auto rounded-full bg-zinc-900 text-white hover:bg-zinc-800 h-12 px-6 text-base font-medium shadow-lg hover:shadow-xl transition-all">
-                  Start automating now <ArrowRight size={18} className="ml-2" />
+                  Commencer l'automatisation <ArrowRight size={18} className="ml-2" />
                 </Button>
               </div>
 
@@ -595,7 +821,7 @@ export default function LandingPage() {
                       <div className="w-8 h-8 bg-white rounded-lg border border-zinc-200 flex items-center justify-center text-[#E85C33]">
                         <Bot size={18} />
                       </div>
-                      <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">AI Assistant Agent</span>
+                      <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Agent Assistant IA</span>
                     </div>
                     <div className="flex gap-1.5">
                       <div className="w-2.5 h-2.5 rounded-full bg-zinc-200" />
@@ -621,13 +847,13 @@ export default function LandingPage() {
                           <Star size={12} fill="currentColor" />
                         </div>
                       </div>
-                      <p className="text-sm text-zinc-600 italic">"Absolutely loved the ambiance! The staff was incredibly friendly..."</p>
+                      <p className="text-sm text-zinc-600 italic">"J'ai adoré l'ambiance ! Le personnel était incroyablement sympa..."</p>
                     </div>
 
                     {/* AI Reply Simulation */}
                     <div className="relative">
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xs font-bold text-[#E85C33] flex items-center gap-1"><Sparkles size={12} /> Generating Reply...</span>
+                        <span className="text-xs font-bold text-[#E85C33] flex items-center gap-1"><Sparkles size={12} /> Génération de réponse...</span>
                       </div>
                       <div className="bg-orange-50/50 rounded-2xl p-4 border border-orange-100/50 min-h-[100px]">
                         <p className="text-sm text-zinc-700 leading-relaxed">
@@ -637,7 +863,7 @@ export default function LandingPage() {
                             viewport={{ once: true }}
                             transition={{ duration: 2, ease: "linear" }}
                           >
-                            Thank you so much Sarah! 🧡 We're thrilled to hear you enjoyed the ambiance and our coffee.
+                            Merci beaucoup Sarah ! 🧡 Nous sommes ravis de savoir que vous avez apprécié l'ambiance et notre café.
                           </motion.span>
                           <span className="inline-block w-1.5 h-4 bg-[#E85C33] ml-1 align-middle animate-pulse" />
                         </p>
@@ -652,7 +878,7 @@ export default function LandingPage() {
                         transition={{ duration: 1.5, delay: 0.5, ease: "easeOut" }}
                       >
                         <div className="bg-[#E85C33] text-white px-3 py-1.5 rounded-full rounded-tl-none font-bold text-xs shadow-lg flex items-center gap-1">
-                          <MousePointer2 size={12} className="-rotate-90" fill="currentColor" /> Auto-Reply
+                          <MousePointer2 size={12} className="-rotate-90" fill="currentColor" /> Réponse Auto
                         </div>
                       </motion.div>
                     </div>
@@ -660,9 +886,9 @@ export default function LandingPage() {
 
                   {/* Footer Actions */}
                   <div className="p-4 border-t border-zinc-100 bg-zinc-50/30 flex justify-end gap-2">
-                    <div className="px-4 py-2 bg-white border border-zinc-200 text-zinc-400 rounded-lg text-xs font-bold uppercase tracking-wider">Edit</div>
+                    <div className="px-4 py-2 bg-white border border-zinc-200 text-zinc-400 rounded-lg text-xs font-bold uppercase tracking-wider">Éditer</div>
                     <div className="px-4 py-2 bg-[#E85C33] text-white rounded-lg text-xs font-bold uppercase tracking-wider shadow-lg shadow-orange-500/20 flex items-center gap-1">
-                      <CheckCircle2 size={12} /> Published
+                      <CheckCircle2 size={12} /> Publié
                     </div>
                   </div>
                 </div>
@@ -678,8 +904,8 @@ export default function LandingPage() {
                     <Clock size={16} className="md:w-5 md:h-5" />
                   </div>
                   <div>
-                    <div className="text-[10px] md:text-xs text-zinc-500 font-bold uppercase">Time Saved</div>
-                    <div className="text-sm md:text-lg font-bold text-zinc-900">12h / week</div>
+                    <div className="text-[10px] md:text-xs text-zinc-500 font-bold uppercase">Temps Gagné</div>
+                    <div className="text-sm md:text-lg font-bold text-zinc-900">12h / semaine</div>
                   </div>
                 </motion.div>
 
@@ -690,24 +916,21 @@ export default function LandingPage() {
 
 
         {/* BANNER 1 - DARK PREMIUM CTA */}
-        <section className="px-6 mb-32">
-          <div className="max-w-5xl mx-auto bg-zinc-900 rounded-[3rem] p-16 md:p-24 text-center relative overflow-hidden group">
+        <section className="mb-32 w-full bg-zinc-900 py-24 md:py-32 relative overflow-hidden group">
+          {/* Background Effects */}
+          <div className="absolute inset-0 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px] opacity-[0.03]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-orange-500/20 rounded-full blur-[120px] opacity-50 pointer-events-none" />
 
-            {/* Background Effects */}
-            <div className="absolute inset-0 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px] opacity-[0.03]" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-orange-500/20 rounded-full blur-[120px] opacity-50 pointer-events-none" />
-
-            <div className="relative z-10">
-              <h3 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">How serious are you <br className="hidden md:block" /> about review management?</h3>
-              <p className="text-zinc-400 mb-10 max-w-xl mx-auto text-lg font-medium leading-relaxed">
-                Don't let a bad review sit unanswered for days. In the reputation game, speed is everything.
-              </p>
-              <Link href="/login">
-                <Button className="rounded-full bg-white text-zinc-900 hover:bg-zinc-100 px-10 h-14 text-lg shadow-[0_20px_40px_-10px_rgba(255,255,255,0.1)] font-bold transition-all hover:scale-105">
-                  Take Control Now
-                </Button>
-              </Link>
-            </div>
+          <div className="max-w-5xl mx-auto px-6 text-center relative z-10">
+            <h3 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">À quel point votre réputation <br className="hidden md:block" /> compte pour vous ?</h3>
+            <p className="text-zinc-400 mb-10 max-w-xl mx-auto text-lg font-medium leading-relaxed">
+              Ne laissez pas un avis négatif sans réponse. Dans le jeu de la réputation, la vitesse est reine.
+            </p>
+            <Link href="/login">
+              <Button className="rounded-full bg-white text-zinc-900 hover:bg-zinc-100 px-10 h-14 text-lg shadow-[0_20px_40px_-10px_rgba(255,255,255,0.1)] font-bold transition-all hover:scale-105">
+                Prendre le contrôle
+              </Button>
+            </Link>
           </div>
         </section>
 
@@ -719,12 +942,12 @@ export default function LandingPage() {
               {/* Left Column: Copy */}
               <div className="space-y-8">
                 <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-full pl-1 pr-3 py-1">
-                  <span className="bg-blue-600 text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded-full">Insights</span>
-                  <span className="text-xs font-bold text-blue-600">Sentiment Analysis</span>
+                  <span className="bg-blue-600 text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded-full">Analyses</span>
+                  <span className="text-xs font-bold text-blue-600">Analyse de Sentiment</span>
                 </div>
-                <h3 className="text-4xl md:text-5xl font-bold text-zinc-900 leading-tight">Decode your guest feedback.</h3>
+                <h3 className="text-4xl md:text-5xl font-bold text-zinc-900 leading-tight">Décodez les avis de vos clients.</h3>
                 <p className="text-lg text-zinc-500 leading-relaxed">
-                  Is it the breakfast? The noise? The WiFi? Our AI reads between the lines of every review to tell you exactly what to fix to get that 5th star.
+                  Est-ce le petit-déjeuner ? Le bruit ? Le WiFi ? Notre IA lit entre les lignes pour vous dire exactement quoi corriger pour obtenir cette 5ème étoile.
                 </p>
 
                 <div className="grid gap-6">
@@ -733,23 +956,15 @@ export default function LandingPage() {
                       <Search size={24} />
                     </div>
                     <div>
-                      <h4 className="font-bold text-zinc-900 text-lg">Keyword Tracking</h4>
-                      <p className="text-zinc-500 text-sm">Monitor specific terms like "Cleanliness" or "Staff" over time.</p>
+                      <h4 className="font-bold text-zinc-900 text-lg">Suivi de Mots-clés</h4>
+                      <p className="text-zinc-500 text-sm">Suivez des termes comme "Propreté" ou "Personnel" dans le temps.</p>
                     </div>
                   </div>
-                  <div className="flex gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center flex-shrink-0 text-[#E85C33]">
-                      <BarChart3 size={24} />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-zinc-900 text-lg">Competitor Benchmarking</h4>
-                      <p className="text-zinc-500 text-sm">See how your "Breakfast" score compares to the hotel next door.</p>
-                    </div>
-                  </div>
+
                 </div>
 
                 <Button variant="outline" className="rounded-full border-zinc-200 text-zinc-900 hover:bg-zinc-50 px-8 h-12 font-bold shadow-sm">
-                  Explore Insights
+                  Explorer les Analyses
                 </Button>
               </div>
 
@@ -761,12 +976,12 @@ export default function LandingPage() {
                 <div className="bg-white rounded-[2rem] border border-zinc-200/60 shadow-2xl p-6 md:p-8 relative">
                   <div className="flex items-center justify-between mb-8">
                     <div>
-                      <h4 className="text-xl font-bold text-zinc-900">Keyword Insights</h4>
-                      <p className="text-sm text-zinc-500">Impact on Global Rating</p>
+                      <h4 className="text-xl font-bold text-zinc-900">Dimensions Clés</h4>
+                      <p className="text-sm text-zinc-500">Impact sur la Note Globale</p>
                     </div>
                     <div className="bg-zinc-100 p-1 rounded-lg flex text-xs font-bold text-zinc-500">
-                      <span className="bg-white text-zinc-900 shadow-sm px-3 py-1 rounded-md">Positive</span>
-                      <span className="px-3 py-1 hover:text-zinc-700 cursor-pointer">Negative</span>
+                      <span className="bg-white text-zinc-900 shadow-sm px-3 py-1 rounded-md">Positif</span>
+                      <span className="px-3 py-1 hover:text-zinc-700 cursor-pointer">Négatif</span>
                     </div>
                   </div>
 
@@ -776,7 +991,7 @@ export default function LandingPage() {
                       <div className="flex justify-between items-center mb-2">
                         <div className="flex items-center gap-2">
                           <div className="p-1.5 bg-zinc-100 rounded-lg text-zinc-500"><Coffee size={14} /></div>
-                          <span className="font-bold text-zinc-700">Coffee</span>
+                          <span className="font-bold text-zinc-700">Café</span>
                         </div>
                         <span className="text-emerald-600 font-bold text-sm">+4.8 Impact</span>
                       </div>
@@ -795,7 +1010,7 @@ export default function LandingPage() {
                       <div className="flex justify-between items-center mb-2">
                         <div className="flex items-center gap-2">
                           <div className="p-1.5 bg-zinc-100 rounded-lg text-zinc-500"><User size={14} /></div>
-                          <span className="font-bold text-zinc-700">Staff Friendliness</span>
+                          <span className="font-bold text-zinc-700">Amabilité du Staff</span>
                         </div>
                         <span className="text-emerald-600 font-bold text-sm">+3.2 Impact</span>
                       </div>
@@ -814,7 +1029,7 @@ export default function LandingPage() {
                       <div className="flex justify-between items-center mb-2">
                         <div className="flex items-center gap-2">
                           <div className="p-1.5 bg-zinc-100 rounded-lg text-zinc-500"><Wifi size={14} /></div>
-                          <span className="font-bold text-zinc-700">WiFi Connection</span>
+                          <span className="font-bold text-zinc-700">Connexion WiFi</span>
                         </div>
                         <span className="text-red-500 font-bold text-sm">-2.1 Impact</span>
                       </div>
@@ -838,8 +1053,8 @@ export default function LandingPage() {
                   >
                     <div className="p-2 bg-white rounded-full text-red-500 shadow-sm h-fit"><TrendingUp size={16} /></div>
                     <div>
-                      <h5 className="font-bold text-red-900 text-sm">Critical Alert</h5>
-                      <p className="text-xs text-red-700 mt-0.5">WiFi complaints have increased by 15% this week.</p>
+                      <h5 className="font-bold text-red-900 text-sm">Alerte Critique</h5>
+                      <p className="text-xs text-red-700 mt-0.5">Les plaintes WiFi ont augmenté de 15% cette semaine.</p>
                     </div>
                   </motion.div>
 
@@ -853,25 +1068,25 @@ export default function LandingPage() {
         {/* TESTIMONIALS */}
         <section id="testimonials" className="mb-40 px-6">
           <div className="max-w-7xl mx-auto text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-zinc-900 mb-6">Turn happy customers into <br /> more customers.</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-zinc-900 mb-6">Transformez vos clients heureux en <br /> nouveaux clients.</h2>
           </div>
 
           <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-8">
             <TestimonialCard
-              quote="I used to spend 2 hours a day on reviews. Now I spend 10 minutes. The ROI is immediate."
+              quote="Je passais 2h par jour sur les avis. Maintenant 10 minutes. Le ROI est immédiat."
               author="Marc Dubois"
-              role="Owner, Le Petit Bistro"
+              role="Propriétaire, Le Petit Bistro"
               image="https://i.pravatar.cc/150?u=1"
             />
             <TestimonialCard
-              quote="Reput.ai caught a 1-star review about a cold room 5 minutes after it was posted. We fixed it before the guest checked out."
+              quote="Reput.ai a détecté un avis 1 étoile sur une chambre froide 5 minutes après sa publication. On a réglé ça avant le départ du client."
               author="Sarah Jenkins"
-              role="GM, Horizon Hotel"
+              role="DG, Hôtel Horizon"
               image="https://i.pravatar.cc/150?u=2"
               highlight
             />
             <TestimonialCard
-              quote="The 'Draft Response' feature is magic. It sounds exactly like me, but without the typos."
+              quote="La fonction 'Brouillon' est magique. Ça sonne exactement comme moi, sans les fautes."
               author="David Chen"
               role="Manager, Blue Bay Resort"
               image="https://i.pravatar.cc/150?u=3"
@@ -885,21 +1100,21 @@ export default function LandingPage() {
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-zinc-800 via-zinc-900 to-zinc-950" />
 
             <div className="relative z-10 max-w-3xl mx-auto space-y-10">
-              <h2 className="text-5xl md:text-7xl font-bold tracking-tight">Ready to take control?</h2>
-              <p className="text-xl text-zinc-400 max-w-xl mx-auto">Join 2,000+ businesses growing with Reput.ai today. No credit card required.</p>
+              <h2 className="text-5xl md:text-7xl font-bold tracking-tight">Prêt à prendre le contrôle ?</h2>
+              <p className="text-xl text-zinc-400 max-w-xl mx-auto">Rejoignez +2,000 entreprises qui grandissent avec Reput.ai. Pas de carte requise.</p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link href="/login?intent=demo" className="w-full sm:w-auto">
                   <Button className="w-full sm:w-auto rounded-full bg-[#E85C33] hover:bg-[#D54D26] text-white px-10 h-16 text-lg font-bold shadow-2xl shadow-orange-500/20">
-                    Book a Demo
+                    Réserver une démo
                   </Button>
                 </Link>
                 <Link href="#demo" className="w-full sm:w-auto">
                   <Button variant="outline" className="w-full sm:w-auto rounded-full border-zinc-700 text-white hover:bg-zinc-800 hover:text-white px-10 h-16 text-lg font-bold bg-transparent">
-                    Talk to Sales
+                    Parler à un vendeur
                   </Button>
                 </Link>
               </div>
-              <p className="text-xs text-zinc-600 font-medium uppercase tracking-widest">Cancel anytime • Instant setup</p>
+              <p className="text-xs text-zinc-600 font-medium uppercase tracking-widest">Annulable à tout moment • Installation instantanée</p>
             </div>
           </div>
         </section>
@@ -913,10 +1128,10 @@ export default function LandingPage() {
             </div>
 
             <div className="flex gap-8 text-sm font-semibold text-zinc-500">
-              <a href="#" className="hover:text-zinc-900 transition-colors">Features</a>
-              <a href="#" className="hover:text-zinc-900 transition-colors">Pricing</a>
+              <Link href="/#features" className="hover:text-zinc-900 transition-colors">Fonctionnalités</Link>
+              <Link href="/pricing" className="hover:text-zinc-900 transition-colors">Tarifs</Link>
               <a href="#" className="hover:text-zinc-900 transition-colors">Blog</a>
-              <a href="#" className="hover:text-zinc-900 transition-colors">Careers</a>
+              <a href="#" className="hover:text-zinc-900 transition-colors">Carrières</a>
               <a href="#" className="hover:text-zinc-900 transition-colors">Contact</a>
             </div>
 

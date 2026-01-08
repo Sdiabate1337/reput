@@ -78,7 +78,7 @@ export default function LoginPage() {
                                     <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
                                     <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                                 </svg>
-                                Continue with Google
+                                Continuer avec Google
                             </Button>
                         </div>
 
@@ -87,7 +87,7 @@ export default function LoginPage() {
                                 <span className="w-full border-t border-zinc-200" />
                             </div>
                             <div className="relative flex justify-center text-xs uppercase font-semibold tracking-wider">
-                                <span className="bg-white px-3 text-zinc-400">Or with Email</span>
+                                <span className="bg-white px-3 text-zinc-400">Ou par Email</span>
                             </div>
                         </div>
 
@@ -104,21 +104,21 @@ export default function LoginPage() {
                                 <div className="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center mx-auto text-green-600 mb-2">
                                     <Check size={24} />
                                 </div>
-                                <h3 className="text-green-800 font-bold">Check your inbox!</h3>
-                                <p className="text-green-700 text-sm">We sent a magic link to <span className="font-semibold">{email}</span>.</p>
-                                <Button variant="ghost" className="text-green-700 hover:text-green-800 hover:bg-green-100 mt-2 h-auto py-1 px-3 text-xs" onClick={() => setIsSent(false)}>Use a different email</Button>
+                                <h3 className="text-green-800 font-bold">Vérifiez votre boîte de réception !</h3>
+                                <p className="text-green-700 text-sm">Nous avons envoyé un lien magique à <span className="font-semibold">{email}</span>.</p>
+                                <Button variant="ghost" className="text-green-700 hover:text-green-800 hover:bg-green-100 mt-2 h-auto py-1 px-3 text-xs" onClick={() => setIsSent(false)}>Utiliser un autre email</Button>
                             </motion.div>
                         ) : (
                             <form onSubmit={handleEmailLogin} className="space-y-4">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-semibold text-zinc-700">Email address</label>
+                                    <label className="text-sm font-semibold text-zinc-700">Adresse Email</label>
                                     <div className="relative">
                                         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400">
                                             <Mail size={20} />
                                         </div>
                                         <input
                                             type="email"
-                                            placeholder="name@company.com"
+                                            placeholder="nom@entreprise.com"
                                             className="flex h-12 w-full rounded-xl border border-zinc-200 bg-white pl-11 pr-4 py-2 text-base shadow-sm transition-all outline-none focus:border-[#E85C33] focus:ring-4 focus:ring-[#E85C33]/10 placeholder:text-zinc-400"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
@@ -133,10 +133,10 @@ export default function LoginPage() {
                                     {isLoading ? (
                                         <span className="flex items-center gap-2">
                                             <Loader2 className="h-5 w-5 animate-spin text-white/80" />
-                                            Sending Link...
+                                            Envoi du lien...
                                         </span>
                                     ) : (
-                                        "Send Magic Link"
+                                        "Envoyer le lien magique"
                                     )}
                                 </Button>
                             </form>
@@ -166,8 +166,8 @@ export default function LoginPage() {
 function LoginHeader() {
     return (
         <div className="space-y-3">
-            <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900">Welcome back</h1>
-            <p className="text-base text-zinc-500 font-medium">Log in to your command center.</p>
+            <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900">Bon retour</h1>
+            <p className="text-base text-zinc-500 font-medium">Connectez-vous à votre espace.</p>
         </div>
     )
 }
@@ -179,8 +179,8 @@ function DynamicLoginHeader() {
     if (intent === 'demo') {
         return (
             <div className="space-y-3">
-                <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900">Book your Demo</h1>
-                <p className="text-base text-zinc-500 font-medium">Create an account to schedule a personalized tour.</p>
+                <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900">Réservez votre Démo</h1>
+                <p className="text-base text-zinc-500 font-medium">Créez un compte pour planifier une visite personnalisée.</p>
             </div>
         )
     }
@@ -188,8 +188,8 @@ function DynamicLoginHeader() {
     if (intent === 'signup') {
         return (
             <div className="space-y-3">
-                <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900">Start 14-Day Free Trial</h1>
-                <p className="text-base text-zinc-500 font-medium">No credit card required. Cancel anytime.</p>
+                <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900">Essai gratuit de 14 jours</h1>
+                <p className="text-base text-zinc-500 font-medium">Aucune carte requise. Annulable à tout moment.</p>
             </div>
         )
     }
@@ -201,21 +201,21 @@ function LoginVisuals() {
     const [index, setIndex] = useState(0)
     const testimonials = [
         {
-            quote: "Reput has completely changed how we handle guest feedback. It's like having a full-time reputation manager.",
+            quote: "Reput.ai a radicalement changé notre gestion des avis clients. C'est comme avoir un expert dédié à temps plein.",
             author: "James Lewis",
-            role: "General Manager, Hyatt Regency",
+            role: "Directeur Général, Hyatt Regency",
             initials: "JL"
         },
         {
-            quote: "We caught a 1-star review about a cold room and fixed it before the guest even checked out. Magic.",
+            quote: "Nous avons intercepté un avis 1 étoile sur une chambre froide et réglé le problème avant le départ du client. Magique.",
             author: "Sarah Jenkins",
-            role: "GM, Horizon Hotel",
+            role: "DG, Horizon Hotel",
             initials: "SJ"
         },
         {
-            quote: "I used to spend 2 hours a day on reviews. Now I spend 10 minutes. The ROI was immediate.",
+            quote: "Je passais 2h par jour sur les avis. Maintenant, j'y passe 10 minutes. Le ROI a été immédiat.",
             author: "Marc Dubois",
-            role: "Owner, Le Petit Bistro",
+            role: "Propriétaire, Le Petit Bistro",
             initials: "MD"
         }
     ]
@@ -242,7 +242,7 @@ function LoginVisuals() {
 
             <div className="relative z-10 w-full h-full flex flex-col justify-center items-center p-12">
                 <Link href="/" className="absolute top-12 right-12 text-zinc-500 font-bold text-sm bg-white/50 px-4 py-2 rounded-full hover:bg-white transition-all cursor-pointer">
-                    Back to Home
+                    Retour à l'accueil
                 </Link>
 
                 <div className="max-w-md w-full h-[400px] flex items-center">

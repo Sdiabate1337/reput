@@ -32,7 +32,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     }, [pathname])
 
     // Landing Page - Full Screen, Native Scroll (Fixes Framer Motion useScroll & Layout Constraints)
-    if (pathname === "/") {
+    if (pathname === "/" || pathname === "/pricing") {
         return (
             <div className="font-sans antialiased text-zinc-900 dark:text-zinc-50">
                 {children}
