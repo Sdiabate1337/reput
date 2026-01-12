@@ -2,11 +2,10 @@
 
 import { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Bell, Check, MessageSquare, Star, ExternalLink, Inbox } from "lucide-react"
+import { Bell } from "lucide-react"
 import Link from "next/link"
 import { useNotifications } from "@/components/notification-context"
 import { cn } from "@/lib/utils"
-import { formatDistanceToNow } from "date-fns"
 
 export function NotificationDropdown() {
     const { unreadCount, notifications } = useNotifications()
@@ -70,57 +69,17 @@ export function NotificationDropdown() {
                                         <Bell size={24} className="text-zinc-300" />
                                     </div>
                                     <p className="font-bold text-zinc-900">All caught up!</p>
-                                    <p className="text-sm text-zinc-500 mt-1 max-w-[200px]">We'll notify you when you receive new reviews or updates.</p>
+                                    <p className="text-sm text-zinc-500 mt-1 max-w-[200px]">We&apos;ll notify you when you receive new reviews or updates.</p>
                                 </div>
                             ) : (
                                 notifications.map((notif) => (
-                                    <Link
+                                    <div
                                         key={notif.id}
-                                        href={`/reviews?id=${notif.id}`}
-                                        onClick={() => setIsOpen(false)}
                                         className="block p-4 rounded-[20px] hover:bg-zinc-50 transition-all group relative border border-transparent hover:border-zinc-200/60"
                                     >
-                                        <div className="flex gap-4">
-                                            <div className="mt-1 shrink-0">
-                                                <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center text-sm font-bold text-zinc-700 shadow-sm ring-1 ring-zinc-100 group-hover:ring-zinc-200 group-hover:scale-105 transition-all">
-                                                    {(notif.author || '?').charAt(0).toUpperCase()}
-                                                </div>
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex justify-between items-start mb-1">
-                                                    <p className="text-sm font-bold text-zinc-900 truncate pr-2 group-hover:text-[#E85C33] transition-colors">
-                                                        {notif.author || 'Unknown Author'}
-                                                    </p>
-                                                    <span className="text-[10px] font-medium text-zinc-400 whitespace-nowrap bg-zinc-50 px-2 py-0.5 rounded-full">
-                                                        {notif.date ? formatDistanceToNow(new Date(notif.date), { addSuffix: true }) : 'Just now'}
-                                                    </span>
-                                                </div>
-
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <div className="flex bg-amber-50 px-1.5 py-0.5 rounded-md">
-                                                        {[...Array(5)].map((_, i) => (
-                                                            <Star
-                                                                key={i}
-                                                                size={8}
-                                                                className={cn(
-                                                                    "mr-0.5 last:mr-0",
-                                                                    i < (notif.rating || 0) ? "fill-amber-400 text-amber-400" : "fill-zinc-200 text-zinc-200"
-                                                                )}
-                                                            />
-                                                        ))}
-                                                    </div>
-                                                    <span className="text-[10px] font-bold text-zinc-400 capitalize bg-zinc-100 px-1.5 py-0.5 rounded-md">{notif.source}</span>
-                                                </div>
-
-                                                <p className="text-xs text-zinc-600 line-clamp-2 leading-relaxed bg-zinc-50/50 p-2 rounded-lg border border-zinc-100/50">
-                                                    "{notif.content}"
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        {/* Unread Indicator */}
-                                        <div className="absolute top-5 left-3 w-1.5 h-1.5 rounded-full bg-[#E85C33] ring-4 ring-white shadow-sm pointer-events-none transform -translate-x-1/2" />
-                                    </Link>
+                                        <p className="text-sm text-zinc-700">{notif.message}</p>
+                                        <p className="text-xs text-zinc-400 mt-1">{notif.createdAt}</p>
+                                    </div>
                                 ))
                             )}
                         </div>

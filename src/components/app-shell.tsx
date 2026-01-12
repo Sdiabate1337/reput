@@ -115,7 +115,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                             <NotificationDropdown />
                             <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-zinc-200 to-zinc-100 p-[1px] cursor-pointer ring-offset-2 hover:ring-2 ring-black/5 transition-all shadow-sm">
                                 <img
-                                    src={user?.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.email || 'User'}`}
+                                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.email || 'User'}`}
                                     alt="User"
                                     className="h-full w-full rounded-full bg-white object-cover"
                                 />
@@ -136,7 +136,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 }
 
 function SidebarContent({ pathname }: { pathname: string }) {
-    const { logout } = useAuth()
+    const { signOut } = useAuth()
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
 
     return (
@@ -192,7 +192,7 @@ function SidebarContent({ pathname }: { pathname: string }) {
             <ConfirmationModal
                 isOpen={isLogoutModalOpen}
                 onClose={() => setIsLogoutModalOpen(false)}
-                onConfirm={logout}
+                onConfirm={signOut}
                 title="Log out"
                 description="Are you sure you want to log out of your account?"
                 confirmText="Log out"

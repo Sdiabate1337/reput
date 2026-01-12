@@ -1,64 +1,46 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
-import { User } from "@supabase/supabase-js"
+import { createContext, useContext, useState, ReactNode } from "react"
+
+// Placeholder auth context - to be replaced with real PostgreSQL auth
+interface User {
+    id: string
+    email: string
+}
 
 interface AuthContextType {
     user: User | null
-    isLoading: boolean
-    loginWithGoogle: () => Promise<void>
-    logout: () => Promise<void>
+    loading: boolean
+    signIn: (email: string) => Promise<void>
+    signOut: () => Promise<void>
 }
 
-const AuthContext = createContext<AuthContextType>({} as AuthContextType)
+const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null)
-    const [isLoading, setIsLoading] = useState(true)
-    const router = useRouter()
-    const supabase = createClient()
+    const [loading, setLoading] = useState(false)
 
-    useEffect(() => {
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(
-            (event: string, session: any) => {
-                setUser(session?.user ?? null)
-                setIsLoading(false)
-
-                if (event === 'SIGNED_IN') {
-                    router.refresh()
-                }
-                if (event === 'SIGNED_OUT') {
-                    router.refresh()
-                    router.push('/login')
-                }
-            }
-        )
-
-        return () => {
-            subscription.unsubscribe()
-        }
-    }, [router, supabase])
-
-    const loginWithGoogle = async () => {
-        await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-                redirectTo: `${window.location.origin}/auth/callback`,
-            },
-        })
+    const signIn = async (email: string) => {
+        // TODO: Implement real PostgreSQL auth
+        console.log('Sign in:', email)
     }
 
-    const logout = async () => {
-        await supabase.auth.signOut()
+    const signOut = async () => {
+        setUser(null)
     }
 
     return (
-        <AuthContext.Provider value={{ user, isLoading, loginWithGoogle, logout }}>
+        <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
             {children}
         </AuthContext.Provider>
     )
 }
 
-export const useAuth = () => useContext(AuthContext)
+export function useAuth() {
+    const context = useContext(AuthContext)
+    if (context === undefined) {
+        throw new Error('useAuth must be used within an AuthProvider')
+    }
+    return context
+}
