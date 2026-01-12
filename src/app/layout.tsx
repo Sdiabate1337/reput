@@ -1,11 +1,19 @@
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Outfit, Playfair_Display } from "next/font/google"
 import "./globals.css"
 import { cn } from "@/lib/utils"
 import AppShell from "@/components/app-shell"
 import { Providers } from "@/components/providers"
 
-const inter = Inter({ subsets: ["latin"] })
+const outfit = Outfit({
+    subsets: ["latin"],
+    variable: "--font-outfit",
+})
+
+const playfair = Playfair_Display({
+    subsets: ["latin"],
+    variable: "--font-playfair",
+})
 
 export const metadata: Metadata = {
     title: "Reput.ai | AI Review Management & Automation Platform",
@@ -19,7 +27,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={cn(inter.className, "bg-[#FDFCF8] text-zinc-900 antialiased")}>
+            <body className={cn(outfit.variable, playfair.variable, "bg-[#FDFCF8] text-zinc-900 antialiased font-sans")}>
                 <script
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{
