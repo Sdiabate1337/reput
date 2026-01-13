@@ -1,20 +1,26 @@
-import { type NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
-    // Simple passthrough middleware
-    // TODO: Add custom authentication logic when needed
+export function middleware(request: NextRequest) {
+    const session = request.cookies.get('session')
+    const { pathname } = request.nextUrl
+
+    // Protected routes
+    const protectedRoutes = ['/dashboard', '/settings', '/reviews', '/onboarding']
+    const isProtected = protectedRoutes.some(route => pathname.startsWith(route))
+
+    if (isProtected && !session) {
+        return NextResponse.redirect(new URL('/login', request.url))
+    }
+
+    // Redirect logged-in users away from login
+    if (pathname === '/login' && session) {
+        return NextResponse.redirect(new URL('/dashboard', request.url))
+    }
+
     return NextResponse.next()
 }
 
 export const config = {
-    matcher: [
-        /*
-         * Match all request paths except:
-         * - _next/static (static files)
-         * - _next/image (image optimization files)
-         * - favicon.ico (favicon file)
-         * - public folder
-         */
-        '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-    ],
+    matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 }

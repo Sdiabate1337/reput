@@ -26,13 +26,18 @@ export async function generateQRCode(
             return { success: false, error: 'Aucun établissement trouvé' }
         }
 
-        if (!establishment.twilio_number) {
+
+
+
+        const twilioNumber = establishment.twilio_number || process.env.TWILIO_WHATSAPP_NUMBER
+
+        if (!twilioNumber) {
             return { success: false, error: 'Numéro WhatsApp non configuré' }
         }
 
         // Build WhatsApp link
         // Format: wa.me/1234567890?text=Avis%20[establishment_id]
-        const phoneNumber = establishment.twilio_number
+        const phoneNumber = twilioNumber
             .replace('whatsapp:', '')
             .replace('+', '')
 
@@ -87,11 +92,16 @@ export async function generateQRCodeByEstablishmentId(
             return { success: false, error: 'Établissement non trouvé' }
         }
 
-        if (!establishment.twilio_number) {
+
+
+
+        const twilioNumber = establishment.twilio_number || process.env.TWILIO_WHATSAPP_NUMBER
+
+        if (!twilioNumber) {
             return { success: false, error: 'Numéro WhatsApp non configuré' }
         }
 
-        const phoneNumber = establishment.twilio_number
+        const phoneNumber = twilioNumber
             .replace('whatsapp:', '')
             .replace('+', '')
 
@@ -142,11 +152,16 @@ export async function generateQRCodeWithRef(
             return { success: false, error: 'Aucun établissement trouvé' }
         }
 
-        if (!establishment.twilio_number) {
+
+
+
+        const twilioNumber = establishment.twilio_number || process.env.TWILIO_WHATSAPP_NUMBER
+
+        if (!twilioNumber) {
             return { success: false, error: 'Numéro WhatsApp non configuré' }
         }
 
-        const phoneNumber = establishment.twilio_number
+        const phoneNumber = twilioNumber
             .replace('whatsapp:', '')
             .replace('+', '')
 

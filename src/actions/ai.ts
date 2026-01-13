@@ -46,7 +46,7 @@ export async function analyzeAndRespond(params: {
 
         // If positive sentiment, include Google link in reply
         if (result.shouldIncludeGoogleLink && params.googleMapsLink) {
-            result.replyText = `${result.replyText}\n\n📍 Laissez-nous un avis: ${params.googleMapsLink}`
+            result.replyText = `${result.replyText}\n\n⭐ Cela nous aiderait beaucoup si vous laissiez un avis ici :\n${params.googleMapsLink}`
         }
 
         return { success: true, data: result }
@@ -80,7 +80,7 @@ function buildSystemPrompt(establishmentName: string, googleMapsLink: string): s
 ## Règles de réponse
 - Si POSITIVE: Réponse chaleureuse + shouldIncludeGoogleLink = true
 - Si NEUTRAL: Réponse informative, shouldIncludeGoogleLink = false
-- Si NEGATIVE: Réponse empathique, excuses, proposition de contact direct, shouldIncludeGoogleLink = false
+- Si NEGATIVE/NEUTRAL: Ne pas simplement s'excuser. Tu DOIS poser une question polie pour comprendre la raison (ex: "Qu'est-ce qui vous a déplu ?", "Un détail à améliorer ?"). But : obtenir du feedback concret. shouldIncludeGoogleLink = false
 - Si CRITICAL: Réponse urgente, excuses sincères, promesse d'action immédiate, isCritical = true
 
 ## Détection Darija (Arabe Marocain)
@@ -105,5 +105,10 @@ ${googleMapsLink || 'Non configuré'}
 - Court et direct (max 3 phrases)
 - Emoji occasionnel pour les réponses positives 🧡
 - En Darija/Arabe si le client écrit en Darija/Arabe
-- Ne JAMAIS inclure le lien Google directement dans replyText (il sera ajouté automatiquement si shouldIncludeGoogleLink=true)`
+- Ne JAMAIS inclure le lien Google directement dans replyText (il sera ajouté automatiquement si shouldIncludeGoogleLink=true)
+
+## Règle Spéciale "Premier Message"
+Si le message utilisateur commence par "Avis" (QR code scan), ta réponse DOIT être :
+"Marhba! Sur une échelle de 1 à 5, comment s'est passé votre expérience ?"
+(Adapte la langue selon le contexte si nécessaire, mais garde le sens "Notez-nous 1-5")`
 }

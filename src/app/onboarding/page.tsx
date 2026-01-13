@@ -1,26 +1,106 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Building2, MapPin, Phone, ArrowRight, Loader2, Check } from "lucide-react"
+import { Building2, MapPin, ArrowRight, Loader2, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import {
+    createEstablishment,
+    updateEstablishment,
+    validateGoogleMapsLink,
+    getEstablishmentByUserId
+} from "@/actions/establishments"
+import { useAuth } from "@/lib/auth-context"
 
 export default function OnboardingPage() {
+    const router = useRouter()
+    const { user } = useAuth()
+
+    // State
     const [step, setStep] = useState(1)
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+
+    // Data
+    const [establishmentId, setEstablishmentId] = useState<string | null>(null)
     const [name, setName] = useState("")
     const [googleLink, setGoogleLink] = useState("")
-    const [phone, setPhone] = useState("")
-    const [isLoading, setIsLoading] = useState(false)
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    // Load existing data
+    useEffect(() => {
+        async function loadData() {
+            if (!user) return
+            const result = await getEstablishmentByUserId()
+            if (result.success && result.data) {
+                setEstablishmentId(result.data.id)
+                setName(result.data.name)
+                if (result.data.google_maps_link) {
+                    setGoogleLink(result.data.google_maps_link)
+                    setStep(3) // Already done
+                } else {
+                    setStep(2) // Name set, link missing
+                }
+            }
+        }
+        loadData()
+    }, [user])
+
+    // Step 1: Create Establishment Name
+    const handleNameSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        setError(null)
         setIsLoading(true)
-        // TODO: Implement real onboarding with PostgreSQL
-        setTimeout(() => {
+
+        try {
+            const result = await createEstablishment({ name })
+
+            if (result.success && result.data) {
+                setEstablishmentId(result.data.id)
+                setStep(2)
+            } else {
+                setError(result.error || "Erreur lors de la création")
+            }
+        } catch (err) {
+            setError("Une erreur est survenue")
+        } finally {
             setIsLoading(false)
-            setStep(step + 1)
-        }, 1000)
+        }
+    }
+
+    // Step 2: Google Maps Link
+    const handleLinkSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setError(null)
+        setIsLoading(true)
+
+        try {
+            // Validate link
+            const validation = await validateGoogleMapsLink(googleLink)
+            if (!validation.success || !validation.data?.valid) {
+                setError("Lien Google Maps invalide. Utilisez un lien 'maps.google.com' ou 'foo.gl'.")
+                setIsLoading(false)
+                return
+            }
+
+            // Save link
+            if (establishmentId) {
+                const update = await updateEstablishment(establishmentId, {
+                    google_maps_link: validation.data.normalizedLink || googleLink
+                })
+
+                if (update.success) {
+                    setStep(3)
+                } else {
+                    setError(update.error || "Erreur de sauvegarde")
+                }
+            }
+        } catch (err) {
+            setError("Une erreur est survenue")
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return (
@@ -35,14 +115,14 @@ export default function OnboardingPage() {
                     {[1, 2, 3].map((s) => (
                         <div
                             key={s}
-                            className={`flex-1 h-2 rounded-full ${s <= step ? "bg-[#E85C33]" : "bg-zinc-100"
+                            className={`flex-1 h-2 rounded-full transition-colors duration-300 ${s <= step ? "bg-[#E85C33]" : "bg-zinc-100"
                                 }`}
                         />
                     ))}
                 </div>
 
                 {step === 1 && (
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form onSubmit={handleNameSubmit} className="space-y-6">
                         <div className="text-center mb-6">
                             <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
                                 <Building2 className="text-[#E85C33]" size={32} />
@@ -60,10 +140,12 @@ export default function OnboardingPage() {
                             required
                         />
 
+                        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+
                         <Button
                             type="submit"
                             disabled={isLoading || !name}
-                            className="w-full h-14 rounded-xl bg-[#E85C33] hover:bg-[#d54d26] text-white font-bold text-base"
+                            className="w-full h-14 rounded-xl bg-[#E85C33] hover:bg-[#d54d26] text-white font-bold text-base shadow-lg shadow-orange-500/10"
                         >
                             {isLoading ? <Loader2 className="animate-spin" /> : <>Continuer <ArrowRight size={18} className="ml-2" /></>}
                         </Button>
@@ -71,7 +153,7 @@ export default function OnboardingPage() {
                 )}
 
                 {step === 2 && (
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form onSubmit={handleLinkSubmit} className="space-y-6">
                         <div className="text-center mb-6">
                             <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
                                 <MapPin className="text-[#E85C33]" size={32} />
@@ -86,15 +168,24 @@ export default function OnboardingPage() {
                             onChange={(e) => setGoogleLink(e.target.value)}
                             placeholder="https://maps.google.com/..."
                             className="w-full h-14 px-4 rounded-xl border border-zinc-200 focus:border-[#E85C33] focus:ring-2 focus:ring-orange-100 outline-none transition-all"
+                            required
                         />
+
+                        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
                         <Button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full h-14 rounded-xl bg-[#E85C33] hover:bg-[#d54d26] text-white font-bold text-base"
+                            className="w-full h-14 rounded-xl bg-[#E85C33] hover:bg-[#d54d26] text-white font-bold text-base shadow-lg shadow-orange-500/10"
                         >
                             {isLoading ? <Loader2 className="animate-spin" /> : <>Continuer <ArrowRight size={18} className="ml-2" /></>}
                         </Button>
+
+                        <div className="text-center">
+                            <button type="button" onClick={() => setStep(3)} className="text-sm text-zinc-400 hover:text-zinc-600">
+                                Passer pour l'instant
+                            </button>
+                        </div>
                     </form>
                 )}
 
@@ -109,7 +200,7 @@ export default function OnboardingPage() {
                         </p>
                         <Link
                             href="/dashboard"
-                            className="inline-flex items-center gap-2 px-8 py-4 bg-[#E85C33] text-white font-bold rounded-xl hover:bg-[#d54d26] transition-colors"
+                            className="inline-flex items-center gap-2 px-8 py-4 bg-[#E85C33] text-white font-bold rounded-xl hover:bg-[#d54d26] transition-colors shadow-lg shadow-orange-500/20"
                         >
                             Accéder au Dashboard
                         </Link>

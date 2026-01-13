@@ -10,6 +10,9 @@ import type {
     ConversationStatus,
     ConversationSource
 } from '@/types/database'
+import { sendWhatsAppMessage } from '@/lib/twilio'
+
+// ... existing code ...
 
 // ===========================================
 // Create or Get Conversation
@@ -32,6 +35,14 @@ export async function getOrCreateConversation(params: {
         )
 
         if (existing) {
+            // Update client name if provided and missing/different
+            if (params.clientName && existing.client_name !== params.clientName) {
+                await execute(
+                    `UPDATE conversations SET client_name = $1 WHERE id = $2`,
+                    [params.clientName, existing.id]
+                )
+                existing.client_name = params.clientName
+            }
             return { success: true, data: existing }
         }
 
@@ -260,6 +271,80 @@ export async function takeoverConversation(conversationId: string): Promise<Acti
     }
 }
 
+
+// ===========================================
+// Toggle AI Status
+// ===========================================
+
+export async function toggleConversationAi(conversationId: string, enabled: boolean): Promise<ActionResult> {
+    try {
+        await execute(
+            `UPDATE conversations SET ai_enabled = $1, updated_at = NOW() WHERE id = $2`,
+            [enabled, conversationId]
+        )
+        return { success: true }
+    } catch (error) {
+        console.error('toggleConversationAi error:', error)
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Erreur inconnue'
+        }
+    }
+}
+
+// ===========================================
+// Send Manual Reply (User initiated from Dashboard)
+// ===========================================
+
+export async function sendManualReply(
+    conversationId: string,
+    messageContent: string
+): Promise<ActionResult> {
+    try {
+        // 1. Get conversation info
+        const conversation = await queryOne<Conversation>(
+            'SELECT * FROM conversations WHERE id = $1',
+            [conversationId]
+        )
+
+        if (!conversation) {
+            return { success: false, error: 'Conversation non trouvée' }
+        }
+
+        // 2. Disable AI automatically if we reply manually? 
+        // US-4.5 implies user must "Take Over" first, or this does it implicitely.
+        // Let's force AI disable to be safe.
+        await execute(
+            `UPDATE conversations SET ai_enabled = false WHERE id = $1`,
+            [conversationId]
+        )
+
+        // 3. Send WhatsApp
+        const result = await sendWhatsAppMessage({
+            to: conversation.client_phone,
+            body: messageContent
+        })
+
+        if (!result.success) {
+            return { success: false, error: result.error || 'Erreur d\'envoi Twilio' }
+        }
+
+        // 4. Save to history
+        await addMessageToConversation(conversationId, {
+            role: 'assistant',
+            content: messageContent
+        })
+
+        return { success: true }
+    } catch (error) {
+        console.error('sendManualReply error:', error)
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Erreur inconnue'
+        }
+    }
+}
+
 // ===========================================
 // Mark Conversation as Converted
 // ===========================================
@@ -287,6 +372,85 @@ export async function markAsConverted(conversationId: string): Promise<ActionRes
         return { success: true }
     } catch (error) {
         console.error('markAsConverted error:', error)
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Erreur inconnue'
+        }
+    }
+}
+
+// ===========================================
+// Close / Archive Conversation
+// ===========================================
+
+export async function closeConversation(conversationId: string): Promise<ActionResult> {
+    try {
+        await execute(
+            `UPDATE conversations SET status = 'CLOSED', updated_at = NOW() WHERE id = $1`,
+            [conversationId]
+        )
+
+        const conversation = await queryOne<Conversation>(
+            'SELECT establishment_id FROM conversations WHERE id = $1',
+            [conversationId]
+        )
+
+        if (conversation) {
+            await execute(
+                `INSERT INTO events (conversation_id, establishment_id, type, payload)
+         VALUES ($1, $2, 'CLOSE', '{}'::jsonb)`,
+                [conversationId, conversation.establishment_id]
+            )
+        }
+
+        return { success: true }
+    } catch (error) {
+        console.error('closeConversation error:', error)
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Erreur inconnue'
+        }
+    }
+}
+
+// ===========================================
+// Get Dashboard Stats
+// ===========================================
+
+export async function getDashboardStats(establishmentId: string): Promise<ActionResult<{
+    total: number
+    sentimentCounts: Record<Sentiment, number>
+    statusCounts: Record<ConversationStatus, number>
+}>> {
+    try {
+        const stats = await query<{
+            sentiment: Sentiment
+            status: ConversationStatus
+            count: string
+        }>(
+            `SELECT sentiment, status, COUNT(*) as count 
+       FROM conversations 
+       WHERE establishment_id = $1 
+       GROUP BY sentiment, status`,
+            [establishmentId]
+        )
+
+        const result = {
+            total: 0,
+            sentimentCounts: { POSITIVE: 0, NEUTRAL: 0, NEGATIVE: 0, CRITICAL: 0 },
+            statusCounts: { OPEN: 0, NEEDS_ATTENTION: 0, CLOSED: 0, CONVERTED: 0 }
+        }
+
+        stats.forEach(row => {
+            const count = parseInt(row.count, 10)
+            result.total += count
+            if (row.sentiment) result.sentimentCounts[row.sentiment] += count
+            if (row.status) result.statusCounts[row.status] += count
+        })
+
+        return { success: true, data: result }
+    } catch (error) {
+        console.error('getDashboardStats error:', error)
         return {
             success: false,
             error: error instanceof Error ? error.message : 'Erreur inconnue'

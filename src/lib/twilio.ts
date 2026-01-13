@@ -44,9 +44,16 @@ export async function sendWhatsAppMessage(params: SendMessageParams): Promise<{
     try {
         const client = getTwilioClient()
 
+        // Remove spaces from env var just in case
+        const cleanTwilioNumber = twilioNumber.trim()
+        const from = cleanTwilioNumber.startsWith('whatsapp:') ? cleanTwilioNumber : `whatsapp:${cleanTwilioNumber}`
+        const to = `whatsapp:${params.to}`
+
+        console.log(`[Twilio] Sending from ${from} to ${to}`)
+
         const message = await client.messages.create({
-            from: twilioNumber,
-            to: `whatsapp:${params.to}`,
+            from,
+            to,
             body: params.body,
         })
 
@@ -75,7 +82,7 @@ export async function sendWhatsAppTemplate(params: SendTemplateParams): Promise<
         const client = getTwilioClient()
 
         const message = await client.messages.create({
-            from: twilioNumber,
+            from: twilioNumber.startsWith('whatsapp:') ? twilioNumber : `whatsapp:${twilioNumber}`,
             to: `whatsapp:${params.to}`,
             contentSid: params.templateSid,
             contentVariables: params.contentVariables

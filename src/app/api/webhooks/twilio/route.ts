@@ -3,7 +3,8 @@ import { headers } from 'next/headers'
 import {
     validateTwilioSignature,
     extractPhoneFromWhatsApp,
-    sendWhatsAppMessage
+    sendWhatsAppMessage,
+    formatPhoneForWhatsApp
 } from '@/lib/twilio'
 import {
     getEstablishmentByTwilioNumber
@@ -42,8 +43,9 @@ export async function POST(request: NextRequest) {
         const from = body.From // "whatsapp:+212..."
         const to = body.To // "whatsapp:+1..."
         const messageBody = body.Body || ''
+        const profileName = body.ProfileName || '' // Twilio sends this
 
-        console.log(`[Twilio Webhook] Received message from ${from} to ${to}: ${messageBody}`)
+        console.log(`[Twilio Webhook] Received message from ${from} (${profileName}) to ${to}: ${messageBody}`)
 
         if (!from || !to) {
             return new NextResponse('Missing From or To', { status: 400 })
@@ -66,6 +68,7 @@ export async function POST(request: NextRequest) {
         const conversationResult = await getOrCreateConversation({
             establishmentId: establishment.id,
             clientPhone: extractPhoneFromWhatsApp(from),
+            clientName: profileName, // Pass the name here
             source,
             qrRef: customRef || undefined
         })
@@ -106,6 +109,25 @@ export async function POST(request: NextRequest) {
                     language,
                     status: isCritical ? 'NEEDS_ATTENTION' : 'OPEN'
                 })
+
+                // Flow 3: Critical Alert to Admin
+                console.log(`[Critical Check] isCritical=${isCritical}, admin_phone=${establishment.admin_phone}`)
+
+                if (isCritical && establishment.admin_phone) {
+                    const adminNumber = formatPhoneForWhatsApp(establishment.admin_phone)
+                    const clientName = conversation.client_name || from
+                    // Construct deep link (assuming app is at APP_URL)
+                    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+                    const dashboardLink = `${baseUrl}/dashboard?conversationId=${conversation.id}`
+
+                    console.log(`[Critical Alert] Sending to ${adminNumber}...`)
+
+                    const alertResult = await sendWhatsAppMessage({
+                        to: adminNumber,
+                        body: `🚨 ALERT: Critical Review from ${clientName}.\nLink: ${dashboardLink}`
+                    })
+                    console.log(`[Critical Alert] Result:`, alertResult)
+                }
 
                 // Send Reply via Twilio
                 await sendWhatsAppMessage({

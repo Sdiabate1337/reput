@@ -1,14 +1,26 @@
 'use server'
 
-import { query, queryOne, execute } from '@/lib/db'
+import { queryOne, execute } from '@/lib/db'
+import { getSession } from '@/lib/auth'
 import type { Establishment, ActionResult } from '@/types/database'
+
+// ===========================================
+// Helpers
+// ===========================================
+
+async function getAuthenticatedUserId(): Promise<string> {
+    const session = await getSession()
+    if (!session) {
+        throw new Error('Non authentifié')
+    }
+    return session.userId
+}
 
 // ===========================================
 // US-1.1: Create/Update Establishment
 // ===========================================
 
 export async function createEstablishment(
-    userId: string,
     data: {
         name: string
         googleMapsLink?: string
@@ -16,6 +28,8 @@ export async function createEstablishment(
     }
 ): Promise<ActionResult<{ id: string }>> {
     try {
+        const userId = await getAuthenticatedUserId()
+
         // Check if user already has an establishment
         const existing = await queryOne<{ id: string }>(
             'SELECT id FROM establishments WHERE user_id = $1',
@@ -92,10 +106,11 @@ export async function validateGoogleMapsLink(link: string): Promise<ActionResult
 // ===========================================
 
 export async function saveTwilioNumber(
-    userId: string,
     twilioNumber: string
 ): Promise<ActionResult> {
     try {
+        const userId = await getAuthenticatedUserId()
+
         const { rowCount } = await execute(
             `UPDATE establishments SET twilio_number = $1, updated_at = NOW() WHERE user_id = $2`,
             [twilioNumber, userId]
@@ -120,9 +135,20 @@ export async function saveTwilioNumber(
 // ===========================================
 
 export async function getEstablishmentByUserId(
-    userId: string
+    // Optional userId override, otherwise uses session
+    targetUserId?: string
 ): Promise<ActionResult<Establishment>> {
     try {
+        let userId = targetUserId
+        if (!userId) {
+            const session = await getSession()
+            if (session) userId = session.userId
+        }
+
+        if (!userId) {
+            return { success: false, error: 'Non authentifié' }
+        }
+
         const establishment = await queryOne<Establishment>(
             'SELECT * FROM establishments WHERE user_id = $1',
             [userId]
@@ -150,6 +176,10 @@ export async function getEstablishmentById(
     id: string
 ): Promise<ActionResult<Establishment>> {
     try {
+        // Authenticate request (user must be logged in to view any establishment? 
+        // Or restricted? For now, public/internal use is fine, but let's at least check session if needed)
+        // await getAuthenticatedUserId() 
+
         const establishment = await queryOne<Establishment>(
             'SELECT * FROM establishments WHERE id = $1',
             [id]
@@ -183,6 +213,17 @@ export async function getEstablishmentByTwilioNumber(
         )
 
         if (!establishment) {
+            // FALLBACK FOR SANDBOX MVP:
+            // If we receive a message on the Sandbox number but no establishment is explicitly linked,
+            // assume it's for the most recently active establishment (Single Tenant Dev Mode).
+            if (twilioNumber.includes('14155238886')) {
+                const fallback = await queryOne<Establishment>(
+                    'SELECT * FROM establishments ORDER BY updated_at DESC LIMIT 1'
+                )
+                if (fallback) {
+                    return { success: true, data: fallback }
+                }
+            }
             return { success: false, error: 'Établissement non trouvé' }
         }
 
@@ -205,6 +246,18 @@ export async function updateEstablishment(
     updates: Partial<Pick<Establishment, 'name' | 'google_maps_link' | 'admin_phone'>>
 ): Promise<ActionResult> {
     try {
+        const userId = await getAuthenticatedUserId()
+
+        // Verify ownership
+        const establishment = await queryOne<Establishment>(
+            'SELECT id FROM establishments WHERE id = $1 AND user_id = $2',
+            [id, userId]
+        )
+
+        if (!establishment) {
+            return { success: false, error: 'Non autorisé' }
+        }
+
         const setClauses: string[] = []
         const values: unknown[] = []
         let paramIndex = 1
