@@ -10,6 +10,7 @@ export interface Establishment {
     twilio_number: string | null
     admin_phone: string | null
     plan: 'startup' | 'pro' | 'enterprise'
+    whatsapp_onboarding_status: 'PENDING' | 'REQUESTED' | 'CODE_SENT' | 'VERIFYING' | 'ACTIVE' | 'FAILED'
     outbound_quota_used: number
     outbound_quota_limit: number
     created_at: string

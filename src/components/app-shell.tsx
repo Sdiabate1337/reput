@@ -20,6 +20,7 @@ import { useAuth } from "@/lib/auth-context"
 import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 import { useNotifications } from "@/components/notification-context"
 import { NotificationDropdown } from "@/components/notification-dropdown"
+import { BottomNav } from "@/components/dashboard/bottom-nav"
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
     const { user } = useAuth()
@@ -45,7 +46,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
             {/* DESKTOP SIDEBAR */}
             {pathname !== "/login" && pathname !== "/onboarding" && pathname !== "/" && (
-                <aside className="w-[280px] border-r border-zinc-100 bg-white flex-col hidden md:flex z-50">
+                <aside className="w-[280px] bg-[#E85C33] bg-noise flex-col hidden md:flex z-50 shadow-xl border-r border-[#d44922]">
                     <SidebarContent pathname={pathname} />
                 </aside>
             )}
@@ -59,17 +60,17 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setIsMobileMenuOpen(false)}
-                            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 md:hidden"
+                            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
                         />
                         <motion.aside
                             initial={{ x: "-100%" }}
                             animate={{ x: 0 }}
                             exit={{ x: "-100%" }}
                             transition={{ type: "spring", bounce: 0, duration: 0.3 }}
-                            className="fixed inset-y-0 left-0 w-[280px] bg-[#FDFCF8] border-r border-zinc-200 z-50 flex flex-col md:hidden shadow-2xl text-zinc-900"
+                            className="fixed inset-y-0 left-0 w-[280px] bg-[#E85C33] bg-noise z-50 flex flex-col md:hidden shadow-2xl text-white"
                         >
                             <div className="absolute top-4 right-4">
-                                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-zinc-400 hover:text-zinc-600">
+                                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-white/70 hover:text-white">
                                     <X size={20} />
                                 </button>
                             </div>
@@ -125,11 +126,16 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 )}
 
                 {/* PAGE CONTENT CONTAINER */}
-                <div className="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth">
+                <div className="flex-1 overflow-y-auto p-4 pb-24 md:p-8 md:pb-8 scroll-smooth">
                     <div className="max-w-6xl mx-auto w-full h-full">
                         {children}
                     </div>
                 </div>
+
+                {/* Mobile Bottom Nav (Global) */}
+                {pathname !== "/login" && pathname !== "/onboarding" && pathname !== "/" && (
+                    <BottomNav />
+                )}
             </main>
         </div>
     )
@@ -143,49 +149,49 @@ function SidebarContent({ pathname }: { pathname: string }) {
         <>
             <div className="h-[72px] flex items-center px-6">
                 <Link href="/dashboard" className="flex items-center gap-2 group">
-                    <div className="h-8 w-8 rounded-xl bg-zinc-900 flex items-center justify-center text-white font-bold shadow-lg shadow-zinc-900/10 group-hover:scale-105 transition-transform">
+                    <div className="h-8 w-8 rounded-xl bg-white flex items-center justify-center text-[#E85C33] font-bold shadow-lg shadow-black/5 group-hover:scale-105 transition-transform">
                         <span className="text-sm">R</span>
                     </div>
-                    <span className="font-bold text-lg tracking-tight text-zinc-900">Reput.ai</span>
+                    <span className="font-bold text-lg tracking-tight text-white">Reput.ai</span>
                 </Link>
             </div>
 
-            <div className="px-3 py-6 space-y-0.5 overflow-y-auto flex-1">
-                <div className="text-[10px] font-semibold text-zinc-400 mb-2 px-3 uppercase tracking-widest">General</div>
+            <div className="px-3 py-6 space-y-1 overflow-y-auto flex-1">
+                <div className="text-[10px] font-semibold text-white/50 mb-2 px-3 uppercase tracking-widest">General</div>
 
-                <NavLink href="/dashboard" icon={<LayoutDashboard size={15} />} label="Overview" active={pathname === '/dashboard'} />
-                <NavLink href="/reviews" icon={<MessageSquare size={15} />} label="Inbox" active={pathname === '/reviews'} />
-                <NavLink href="/settings" icon={<Settings size={15} />} label="Settings" active={pathname === '/settings'} />
+                <NavLink href="/dashboard" icon={<LayoutDashboard size={18} />} label="Overview" active={pathname === '/dashboard'} />
+                <NavLink href="/reviews" icon={<MessageSquare size={18} />} label="Inbox" active={pathname === '/reviews'} />
+                <NavLink href="/settings" icon={<Settings size={18} />} label="Settings" active={pathname === '/settings'} />
             </div>
 
             <div className="p-3 mt-auto">
                 <button
                     onClick={() => setIsLogoutModalOpen(true)}
-                    className="flex w-full items-center gap-2.5 px-3 py-2 rounded-md text-[13px] font-medium text-zinc-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 dark:hover:text-red-400 transition-all duration-200"
+                    className="flex w-full items-center gap-2.5 px-4 py-3 rounded-xl text-[13px] font-medium text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200"
                 >
-                    <LogOut size={15} />
+                    <LogOut size={18} />
                     <span>Log out</span>
                 </button>
             </div>
 
             <div className="p-4 relative">
-                <div className="p-5 rounded-2xl border border-zinc-100 bg-zinc-50/50 relative overflow-hidden group">
+                <div className="p-5 rounded-2xl border border-white/10 bg-white/10 relative overflow-hidden group backdrop-blur-sm">
                     <div className="flex justify-between items-start mb-3">
                         <div className="flex items-center gap-2">
-                            <div className="h-8 w-8 rounded-full bg-[#E85C33]/10 flex items-center justify-center text-[#E85C33]">
+                            <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center text-white">
                                 <CreditCard size={14} />
                             </div>
                             <div>
-                                <p className="text-[13px] font-semibold text-zinc-800">Pro Plan</p>
-                                <p className="text-[10px] text-zinc-500">12 days left</p>
+                                <p className="text-[13px] font-semibold text-white">Pro Plan</p>
+                                <p className="text-[10px] text-white/70">12 days left</p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="w-full bg-zinc-100 h-1.5 rounded-full overflow-hidden">
-                        <div className="bg-zinc-900 h-full w-[65%] rounded-full" />
+                    <div className="w-full bg-black/20 h-1.5 rounded-full overflow-hidden">
+                        <div className="bg-white h-full w-[65%] rounded-full shadow-[0_0_10px_rgba(255,255,255,0.5)]" />
                     </div>
-                    <p className="text-[10px] text-zinc-400 mt-2 font-medium">1,240 / 2,000 credits used</p>
+                    <p className="text-[10px] text-white/60 mt-2 font-medium">1,240 / 2,000 credits used</p>
                 </div>
             </div>
 
@@ -207,13 +213,13 @@ function NavLink({ href, icon, label, active }: { href: string, icon: React.Reac
         <Link
             href={href}
             className={cn(
-                "flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
+                "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200",
                 active
-                    ? "bg-orange-50 text-[#E85C33]"
-                    : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50"
+                    ? "bg-white text-[#E85C33] shadow-lg shadow-black/5"
+                    : "text-white/70 hover:text-white hover:bg-white/10"
             )}
         >
-            <span className={cn("transition-colors", active ? "text-[#E85C33]" : "text-zinc-400 group-hover:text-zinc-600")}>{icon}</span>
+            <span className={cn("transition-colors", active ? "text-[#E85C33]" : "text-white/70 group-hover:text-white")}>{icon}</span>
             <span>{label}</span>
         </Link>
     )

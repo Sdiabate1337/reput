@@ -2,51 +2,57 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Settings, Save, Loader2, MessageSquare, Link as LinkIcon, Copy, CheckCircle2 } from "lucide-react"
+import { Settings, Save, Loader2, MessageSquare, Link as LinkIcon, Copy, CheckCircle2, History, AlertTriangle, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/lib/auth-context"
-import { getEstablishmentByUserId, getWebhookUrl, updateEstablishment } from "@/actions/establishments"
+import { getEstablishmentByUserId, updateEstablishment } from "@/actions/establishments"
+import { WhatsAppConnectionDialog } from "@/components/dashboard/whatsapp-connection-dialog"
+import { Input } from "@/components/ui/input"
+
+type WhatsAppStatus = 'PENDING' | 'REQUESTED' | 'CODE_SENT' | 'VERIFYING' | 'ACTIVE' | 'FAILED'
 
 export default function SettingsPage() {
     const { user } = useAuth()
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const [isSaving, setIsSaving] = useState(false)
 
     // Data
     const [name, setName] = useState("")
     const [adminPhone, setAdminPhone] = useState("")
+    const [googleMapsLink, setGoogleMapsLink] = useState("")
+    const [
+        whatsappStatus,
+        setWhatsappStatus
+    ] = useState<WhatsAppStatus>('PENDING')
     const [twilioNumber, setTwilioNumber] = useState("")
-    const [webhookUrl, setWebhookUrl] = useState("")
+
     const [establishmentId, setEstablishmentId] = useState<string | null>(null)
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
+    const [isWhatsAppDialogOpen, setIsWhatsAppDialogOpen] = useState(false)
 
     useEffect(() => {
-        async function loadSettings() {
-            if (!user) return
-            setIsLoading(true)
-            try {
-                // 1. Get Establishment
-                const estResult = await getEstablishmentByUserId()
-                if (estResult.success && estResult.data) {
-                    setEstablishmentId(estResult.data.id)
-                    setName(estResult.data.name)
-                    setAdminPhone(estResult.data.admin_phone || "") // Load existing
-                    setTwilioNumber(estResult.data.twilio_number || "Non configuré (Sandbox)")
-                }
-
-                // 2. Get Webhook URL
-                const hookResult = await getWebhookUrl()
-                if (hookResult.success && hookResult.data) {
-                    setWebhookUrl(hookResult.data.url)
-                }
-            } catch (error) {
-                console.error("Error loading settings", error)
-            } finally {
-                setIsLoading(false)
-            }
-        }
-        loadSettings()
+        if (user) loadSettings()
     }, [user])
+
+    const loadSettings = async () => {
+        setIsLoading(true)
+        try {
+            const estResult = await getEstablishmentByUserId()
+            if (estResult.success && estResult.data) {
+                const data = estResult.data
+                setEstablishmentId(data.id)
+                setName(data.name)
+                setAdminPhone(data.admin_phone || "")
+                setGoogleMapsLink(data.google_maps_link || "")
+                setWhatsappStatus(data.whatsapp_onboarding_status || 'PENDING')
+                setTwilioNumber(data.twilio_number || "")
+            }
+        } catch (error) {
+            console.error("Error loading settings", error)
+        } finally {
+            setIsLoading(false)
+        }
+    }
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -56,8 +62,12 @@ export default function SettingsPage() {
         setMessage(null)
 
         try {
-            // Update name AND adminPhone
-            const result = await updateEstablishment(establishmentId, { name, admin_phone: adminPhone })
+            const result = await updateEstablishment(establishmentId, {
+                name,
+                admin_phone: adminPhone,
+                google_maps_link: googleMapsLink
+            })
+
             if (result.success) {
                 setMessage({ type: 'success', text: 'Paramètres enregistrés' })
             } else {
@@ -70,139 +80,166 @@ export default function SettingsPage() {
         }
     }
 
-    const copyWebhook = () => {
-        navigator.clipboard.writeText(webhookUrl)
-        // Simple toast
-    }
-
     if (isLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="min-h-screen flex items-center justify-center bg-[#FDFCF8]">
                 <Loader2 className="animate-spin text-[#E85C33]" size={32} />
             </div>
         )
     }
 
     return (
-        <div className="min-h-screen bg-[#FDFCF8] p-6 md:p-8">
-            <div className="max-w-2xl mx-auto">
-                <div className="flex items-center gap-3 mb-8">
-                    <div className="w-12 h-12 bg-zinc-100 rounded-xl flex items-center justify-center">
-                        <Settings className="text-zinc-600" size={24} />
+        <div className="min-h-screen bg-[#FDFCF8] p-4 pb-32 md:p-8">
+            <div className="max-w-3xl mx-auto">
+                {/* Header */}
+                <div className="flex items-center gap-4 mb-8 md:mb-10">
+                    <div className="w-12 h-12 md:w-14 md:h-14 bg-white border border-zinc-200 rounded-2xl flex items-center justify-center shadow-sm shrink-0">
+                        <Settings className="text-zinc-700" size={24} />
                     </div>
                     <div>
-                        <h1 className="text-2xl font-bold text-zinc-900">Paramètres</h1>
-                        <p className="text-zinc-500">Gérez votre établissement et connectivité</p>
+                        <h1 className="text-2xl md:text-3xl font-bold text-zinc-900 tracking-tight">Paramètres</h1>
+                        <p className="text-sm md:text-base text-zinc-500 font-medium">Gérez votre établissement et vos connectivités</p>
                     </div>
                 </div>
 
-                <div className="space-y-6">
-                    {/* General Settings */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="bg-white rounded-2xl border border-zinc-100 p-8"
-                    >
-                        <h2 className="text-lg font-bold text-zinc-900 mb-6">Général</h2>
-                        <form onSubmit={handleSave} className="space-y-6">
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-zinc-700">Nom de l'établissement</label>
-                                <input
-                                    type="text"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    className="w-full h-12 px-4 rounded-xl border border-zinc-200 focus:border-[#E85C33] focus:ring-2 focus:ring-orange-100 outline-none transition-all"
-                                />
+                <div className="grid gap-6 md:gap-8">
+                    {/* WhatsApp Status Card */}
+                    <div className="bg-white rounded-3xl border border-zinc-200 p-6 md:p-8 shadow-sm overflow-hidden relative">
+                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 md:gap-4">
+                            <div className="flex gap-4">
+                                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${whatsappStatus === 'ACTIVE' ? 'bg-green-100 text-green-600' :
+                                    whatsappStatus === 'VERIFYING' ? 'bg-blue-100 text-blue-600' :
+                                        'bg-orange-100 text-orange-600'
+                                    }`}>
+                                    <MessageSquare size={24} />
+                                </div>
+                                <div>
+                                    <h2 className="text-lg md:text-xl font-bold text-zinc-900">Connexion WhatsApp</h2>
+                                    <p className="text-zinc-500 text-sm mt-1 flex flex-wrap items-center gap-1">
+                                        Status:
+                                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold ${whatsappStatus === 'ACTIVE' ? 'bg-green-100 text-green-700' :
+                                            whatsappStatus === 'VERIFYING' ? 'bg-blue-100 text-blue-700' :
+                                                'bg-orange-100 text-orange-700'
+                                            }`}>
+                                            {whatsappStatus === 'ACTIVE' ? 'Actif' :
+                                                whatsappStatus === 'VERIFYING' ? 'Vérification...' :
+                                                    whatsappStatus === 'PENDING' ? 'Non configuré' :
+                                                        'En cours...'}
+                                        </span>
+                                    </p>
+                                </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-zinc-700">Numéro Admin (Alertes Critiques)</label>
-                                <input
-                                    type="text"
-                                    value={adminPhone}
-                                    onChange={(e) => setAdminPhone(e.target.value)}
-                                    placeholder="+212..."
-                                    className="w-full h-12 px-4 rounded-xl border border-zinc-200 focus:border-[#E85C33] focus:ring-2 focus:ring-orange-100 outline-none transition-all"
-                                />
-                                <p className="text-xs text-zinc-400">Reçoit les alertes WhatsApp en cas d'avis critique/grave.</p>
-                            </div>
+                            {whatsappStatus !== 'ACTIVE' && (
+                                <Button
+                                    onClick={() => setIsWhatsAppDialogOpen(true)}
+                                    className={`${whatsappStatus === 'VERIFYING'
+                                        ? 'bg-blue-600 hover:bg-blue-700'
+                                        : 'bg-[#E85C33] hover:bg-[#d54d26]'
+                                        } text-white rounded-xl font-bold px-6 w-full md:w-auto h-12 md:h-10`}
+                                >
+                                    {whatsappStatus === 'PENDING' ? 'Connecter' : 'Continuer'}
+                                </Button>
+                            )}
+                        </div>
 
-                            {message && (
-                                <div className={`p-3 rounded-lg text-sm flex items-center gap-2 ${message.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
-                                    {message.type === 'success' && <CheckCircle2 size={16} />}
-                                    {message.text}
+                        <div className="mt-6 pt-6 border-t border-zinc-100">
+                            {whatsappStatus === 'ACTIVE' ? (
+                                <div className="flex flex-col md:flex-row items-start md:items-center gap-3 text-sm text-zinc-600 bg-zinc-50 p-4 rounded-xl border border-zinc-200">
+                                    <div className="flex items-center gap-2">
+                                        <CheckCircle2 className="text-green-500 shrink-0" size={18} />
+                                        <span>Numéro connecté :</span>
+                                    </div>
+                                    <code className="bg-white px-2 py-1 rounded border border-zinc-100 font-mono font-bold">{twilioNumber}</code>
+                                </div>
+                            ) : (
+                                <div className="text-sm text-zinc-500 leading-relaxed">
+                                    <p className="flex items-start gap-2 mb-2">
+                                        <AlertTriangle size={16} className="text-orange-500 shrink-0 mt-0.5" />
+                                        <span>Configuration requise pour répondre aux avis.</span>
+                                    </p>
+                                    <p className="pl-6 text-xs md:text-sm">
+                                        Nous connectons votre numéro via l'API officielle WhatsApp Business.
+                                        <br className="hidden md:block" /> Aucun smartphone requis pour que ça fonctionne.
+                                    </p>
                                 </div>
                             )}
-
-                            <Button
-                                type="submit"
-                                disabled={isSaving}
-                                className="w-full h-12 rounded-xl bg-[#E85C33] hover:bg-[#d54d26] text-white font-bold"
-                            >
-                                {isSaving ? (
-                                    <Loader2 className="animate-spin" size={20} />
-                                ) : (
-                                    <>
-                                        <Save size={18} className="mr-2" /> Enregistrer
-                                    </>
-                                )}
-                            </Button>
-                        </form>
-                    </motion.div>
-
-                    {/* WhatsApp Configuration (US-1.3) */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
-                        className="bg-white rounded-2xl border border-zinc-100 p-8"
-                    >
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center text-green-600">
-                                <MessageSquare size={20} />
-                            </div>
-                            <div>
-                                <h2 className="text-lg font-bold text-zinc-900">Configuration WhatsApp</h2>
-                                <p className="text-sm text-zinc-500">Connexion à Twilio</p>
-                            </div>
                         </div>
+                    </div>
 
-                        <div className="space-y-6">
-                            <div className="p-4 bg-zinc-50 rounded-xl border border-zinc-100">
-                                <p className="text-sm font-medium text-zinc-500 mb-1">Numéro Connecté</p>
-                                <p className="text-zinc-900 font-mono">{twilioNumber}</p>
+                    {/* General Form */}
+                    <div className="bg-white rounded-3xl border border-zinc-200 p-6 md:p-8 shadow-sm">
+                        <h2 className="text-lg md:text-xl font-bold text-zinc-900 mb-6">Informations Générales</h2>
+
+                        <form onSubmit={handleSave} className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-bold text-zinc-700">Nom de l'établissement</label>
+                                    <Input
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        className="h-12 bg-zinc-50 border-zinc-200 text-base"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-bold text-zinc-700">Numéro Admin</label>
+                                    <Input
+                                        value={adminPhone}
+                                        onChange={(e) => setAdminPhone(e.target.value)}
+                                        placeholder="+212..."
+                                        className="h-12 bg-zinc-50 border-zinc-200 text-base"
+                                    />
+                                    <p className="text-[10px] text-zinc-400 font-medium">Pour les alertes urgentes</p>
+                                </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-zinc-700">Webhook URL</label>
-                                <div className="flex gap-2">
-                                    <code className="flex-1 bg-zinc-100 p-3 rounded-xl text-xs font-mono text-zinc-600 truncate">
-                                        {webhookUrl || "Chargement..."}
-                                    </code>
-                                    <Button onClick={copyWebhook} variant="outline" size="icon" className="shrink-0">
-                                        <Copy size={16} />
-                                    </Button>
+                                <label className="text-sm font-bold text-zinc-700">Lien des Avis</label>
+                                <div className="flex gap-3">
+                                    <div className="h-12 w-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center shrink-0 border border-blue-100">
+                                        <LinkIcon size={20} />
+                                    </div>
+                                    <Input
+                                        value={googleMapsLink}
+                                        onChange={(e) => setGoogleMapsLink(e.target.value)}
+                                        placeholder="https://g.page/..."
+                                        className="h-12 bg-zinc-50 border-zinc-200 text-base"
+                                    />
                                 </div>
-                                <p className="text-xs text-zinc-400">
-                                    À configurer dans votre console Twilio pour recevoir les messages.
-                                </p>
                             </div>
 
-                            <div className="p-4 bg-blue-50 text-blue-800 rounded-xl text-sm leading-relaxed">
-                                <p className="font-bold mb-2 flex items-center gap-2">
-                                    <LinkIcon size={16} /> Instructions
-                                </p>
-                                <ol className="list-decimal list-inside space-y-1 ml-1 opacity-90">
-                                    <li>Créez un compte sur Twilio.com</li>
-                                    <li>Achetez un numéro compatible WhatsApp</li>
-                                    <li>Dans "Messaging &gt; Senders &gt; WhatsApp", configurez le Webhook ci-dessus.</li>
-                                    <li>Contactez le support pour valider votre numéro Business API.</li>
-                                </ol>
+                            <div className="pt-4 flex flex-col-reverse md:flex-row items-center justify-between gap-4">
+                                {message ? (
+                                    <div className={`w-full md:w-auto p-3 rounded-lg text-sm font-medium flex items-center gap-2 justify-center md:justify-start ${message.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                                        {message.type === 'success' ? <CheckCircle2 size={18} /> : <AlertTriangle size={18} />}
+                                        {message.text}
+                                    </div>
+                                ) : <div />}
+
+                                <Button
+                                    type="submit"
+                                    disabled={isSaving}
+                                    className="w-full md:w-auto h-12 px-8 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white font-bold text-base"
+                                >
+                                    {isSaving ? <Loader2 className="animate-spin" /> : "Enregistrer"}
+                                </Button>
                             </div>
-                        </div>
-                    </motion.div>
+                        </form>
+                    </div>
                 </div>
             </div>
+
+            {establishmentId && (
+                <WhatsAppConnectionDialog
+                    open={isWhatsAppDialogOpen}
+                    onOpenChange={(open) => {
+                        setIsWhatsAppDialogOpen(open)
+                        if (!open) loadSettings() // Refresh status on close
+                    }}
+                    establishmentId={establishmentId}
+                    currentStatus={whatsappStatus}
+                />
+            )}
         </div>
     )
 }

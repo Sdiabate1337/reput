@@ -71,12 +71,12 @@ export default function PricingPage() {
                 {/* HEADER */}
                 <section className="px-6 mb-16 text-center">
                     <h1 className="text-4xl md:text-6xl font-bold text-zinc-900 mb-6 tracking-tight">
-                        Des tarifs adaptés à votre <br />
-                        <span className="text-[#E85C33]">croissance</span>
+                        Des tarifs simples, sans <br />
+                        <span className="text-[#E85C33]">mauvaises surprises</span>
                     </h1>
                     <p className="text-xl text-zinc-500 max-w-2xl mx-auto mb-10">
-                        Une tarification transparente basée sur le volume d'avis que vous traitez.
-                        <br className="hidden md:block" /> Commencez petit, grandissez sans limites.
+                        Choisissez le plan adapté à votre établissement.
+                        <br className="hidden md:block" /> Sans engagement, annulable à tout moment.
                     </p>
 
                     {/* TOGGLE */}
@@ -96,102 +96,110 @@ export default function PricingPage() {
 
                     {/* PRICING CARDS */}
                     <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-8 text-left">
-                        {/* STARTER */}
+                        {/* STARTUP */}
                         <PricingCard
-                            title="Starter"
+                            title="Pack Startup"
                             price={isAnnual ? "290" : "390"}
-                            description="Pour les petites entreprises qui débutent leur gestion de réputation."
+                            description="L'essentiel pour automatiser votre collecte d'avis."
                             features={[
-                                "Jusqu'à 50 avis/mois",
-                                "Sources: Google & Facebook",
-                                "1 Utilisateur",
-                                "Collecte par QR Code & Email",
-                                "Réponses IA (Validation manuelle)",
-                                "Dashboard essentiel"
+                                "QR Code WhatsApp (Inbound illimité)",
+                                "Dashboard & Stats Live",
+                                "IA: Suggestions de réponses",
+                                "1 Kit QR Physique offert",
+                                "Sources: Google"
                             ]}
                         />
 
                         {/* PRO */}
                         <PricingCard
-                            title="Pro"
+                            title="Pack Pro"
                             price={isAnnual ? "790" : "990"}
-                            description="Le choix idéal pour les entreprises en croissance."
+                            description="Pour piloter votre réputation en pilote automatique."
                             popular
                             features={[
-                                "Jusqu'à 200 avis/mois",
-                                "Sources: + WhatsApp & TripAdvisor",
-                                "3 Utilisateurs",
-                                "Campagnes SMS & WhatsApp",
-                                "Réponses IA Auto-pilot",
-                                "Analyses sémantiques",
-                                "Widget Site Web"
+                                "Tout du Pack Startup",
+                                "IA: Auto-Réponse (Autonome)",
+                                "Relances Manuelles WhatsApp (100/mois)",
+                                "Alertes Admin WhatsApp (Critiques)",
+                                isAnnual ? "10 Kits QR Physiques offerts" : "3 Kits QR Physiques offerts",
+                                "Support Prioritaire"
                             ]}
                         />
 
-                        {/* BUSINESS */}
-                        <PricingCard
-                            title="Business"
-                            price={isAnnual ? "1,490" : "1,890"}
-                            description="Pour les établissements à fort volume."
-                            features={[
-                                "Jusqu'à 500 avis/mois",
-                                "Toutes les sources d'avis",
-                                "Utilisateurs illimités",
-                                "Support Prioritaire (WhatsApp)",
-                                "Accès API & Webhooks",
-                                "Gestion Multi-établissements",
-                                "Rapports personnalisés"
-                            ]}
-                        />
+                        {/* ENTERPRISE */}
+                        <div className="p-8 rounded-[2.5rem] bg-zinc-900 text-white border border-zinc-800 flex flex-col h-full relative group transition-all duration-300 hover:shadow-2xl">
+                            <div className="mb-6">
+                                <h3 className="text-2xl font-bold mb-2">Grand Comptes</h3>
+                                <p className="text-zinc-400 text-sm leading-relaxed min-h-[40px]">
+                                    Pour les chaînes et franchises.
+                                </p>
+                            </div>
+                            <div className="mb-8">
+                                <div className="text-3xl font-bold">Sur Mesure</div>
+                                <div className="text-xs text-zinc-500 font-bold mt-2">Facturation centralisée</div>
+                            </div>
+
+                            <Link href="/login?intent=demo" className="mb-8 block">
+                                <Button className="w-full rounded-2xl h-12 font-bold bg-white text-zinc-900 hover:bg-zinc-100">
+                                    Contacter l'équipe
+                                </Button>
+                            </Link>
+
+                            <div className="space-y-4 flex-1">
+                                {[
+                                    "Gestion Multi-établissements",
+                                    "API & Webhooks",
+                                    "Quota Relances Illimité",
+                                    "Account Manager dédié",
+                                    "Formation équipes"
+                                ].map((feature, i) => (
+                                    <div key={i} className="flex items-start gap-3 text-sm font-medium text-zinc-300">
+                                        <CheckCircle2 size={18} className="mt-0.5 flex-shrink-0 text-zinc-500" />
+                                        <span>{feature}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </section>
 
                 {/* COMPARISON TABLE */}
                 <section className="px-6 mb-32 max-w-5xl mx-auto">
-                    <h3 className="text-2xl font-bold text-center mb-12">Comparatif détaillé des fonctionnalités</h3>
+                    <h3 className="text-2xl font-bold text-center mb-12">Comparatif détaillé</h3>
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm text-left">
                             <thead className="bg-zinc-50 border-b border-zinc-200">
                                 <tr>
                                     <th className="py-4 px-6 font-bold text-zinc-900 w-1/3">Fonctionnalité</th>
-                                    <th className="py-4 px-6 font-bold text-zinc-900 text-center">Starter</th>
+                                    <th className="py-4 px-6 font-bold text-zinc-900 text-center">Startup</th>
                                     <th className="py-4 px-6 font-bold text-[#E85C33] text-center">Pro</th>
-                                    <th className="py-4 px-6 font-bold text-zinc-900 text-center">Business</th>
+                                    <th className="py-4 px-6 font-bold text-zinc-900 text-center">Empire</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-zinc-100">
                                 {/* COLLECTE */}
-                                <tr className="bg-zinc-50/50"><td colSpan={4} className="py-3 px-6 font-bold text-zinc-500 text-xs uppercase tracking-widest mt-4">Collecte</td></tr>
-                                <TableRow feature="Demandes par Email" starter={true} pro={true} business={true} />
-                                <TableRow feature="QR Code Packs" starter={true} pro={true} business={true} />
-                                <TableRow feature="Demandes SMS" starter={false} pro={true} business={true} />
-                                <TableRow feature="Demandes WhatsApp" starter={false} pro={true} business={true} />
+                                <tr className="bg-zinc-50/50"><td colSpan={4} className="py-3 px-6 font-bold text-zinc-500 text-xs uppercase tracking-widest mt-4">Collecte & Canaux</td></tr>
+                                <TableRow feature="QR Code WhatsApp" starter={true} pro={true} business={true} />
+                                <TableRow feature="Kit QR Physique offert" starter="1 Kit" pro={isAnnual ? "10 Kits" : "3 Kits"} business="Sur mesure" />
+                                <TableRow feature="Relances Manuelles WhatsApp" starter={false} pro="100 / mois" business="Illimité" />
+                                <TableRow feature="Import CSV" starter={true} pro={true} business={true} />
 
-                                {/* REPONSES */}
-                                <tr className="bg-zinc-50/50"><td colSpan={4} className="py-3 px-6 font-bold text-zinc-500 text-xs uppercase tracking-widest mt-4">Réponses IA</td></tr>
-                                <TableRow feature="Génération de brouillons" starter={true} pro={true} business={true} />
-                                <TableRow feature="Personnalisation du ton" starter="Basique" pro="Avancé" business="Expert" />
-                                <TableRow feature="Mode Auto-pilot" starter={false} pro={true} business={true} />
-                                <TableRow feature="Support Multilingue" starter={true} pro={true} business={true} />
+                                {/* IA & REPONSES */}
+                                <tr className="bg-zinc-50/50"><td colSpan={4} className="py-3 px-6 font-bold text-zinc-500 text-xs uppercase tracking-widest mt-4">Intelligence Artificielle</td></tr>
+                                <TableRow feature="Suggestions de Réponses" starter={true} pro={true} business={true} />
+                                <TableRow feature="Auto-Réponse (Mode Pilote Auto)" starter={false} pro={true} business={true} />
+                                <TableRow feature="Analyse de Sentiment" starter={true} pro={true} business={true} />
+                                <TableRow feature="Détection Langue" starter={true} pro={true} business={true} />
 
-                                {/* ANALYTICS */}
-                                <tr className="bg-zinc-50/50"><td colSpan={4} className="py-3 px-6 font-bold text-zinc-500 text-xs uppercase tracking-widest mt-4">Analyses</td></tr>
-                                <TableRow feature="Dashboard Performance" starter={true} pro={true} business={true} />
-                                <TableRow feature="Analyse de Sentiment" starter={false} pro={true} business={true} />
-                                <TableRow feature="Rapports PDF/Excel" starter={false} pro={true} business={true} />
+                                {/* GESTION */}
+                                <tr className="bg-zinc-50/50"><td colSpan={4} className="py-3 px-6 font-bold text-zinc-500 text-xs uppercase tracking-widest mt-4">Gestion & Alertes</td></tr>
+                                <TableRow feature="Dashboard Live" starter={true} pro={true} business={true} />
+                                <TableRow feature="Alertes Critiques (WhatsApp Admin)" starter={false} pro={true} business={true} />
+                                <TableRow feature="Multi-établissements" starter={false} pro={false} business={true} />
                             </tbody>
                         </table>
-                    </div>
-
-                    <div className="mt-12 p-8 bg-zinc-900 rounded-3xl text-center text-white relative overflow-hidden">
-                        <div className="relative z-10 flex flex-col items-center gap-6">
-                            <h4 className="text-2xl font-bold">Besoin de plus de 500 avis/mois ?</h4>
-                            <p className="text-zinc-400 max-w-lg">
-                                Contactez notre équipe commerciale pour une offre sur mesure adaptée aux réseaux de franchises et grands comptes.
-                            </p>
-                            <Link href="/login?intent=demo">
-                                <Button className="bg-white text-zinc-900 hover:bg-zinc-100 rounded-full px-8 h-12 font-bold">Contacter les ventes</Button>
-                            </Link>
+                        <div className="mt-4 text-xs text-zinc-400 text-center italic">
+                            * Coût kit supplémentaire : 250 MAD / unité
                         </div>
                     </div>
                 </section>
@@ -200,10 +208,10 @@ export default function PricingPage() {
                 <section className="px-6 mb-32 max-w-3xl mx-auto">
                     <h3 className="text-3xl font-bold text-center mb-12">Questions fréquentes</h3>
                     <div className="space-y-4">
-                        <FAQItem question="Puis-je changer de forfait à tout moment ?" answer="Oui, vous pouvez passer à un forfait supérieur ou inférieur à tout moment. Les changements prennent effet à la prochaine période de facturation." />
-                        <FAQItem question="Que se passe-t-il si je dépasse mon quota d'avis ?" answer="Nous ne bloquons pas l'accès. Si vous dépassez votre quota deux mois de suite, nous vous contacterons pour vous proposer un passage au plan supérieur." />
-                        <FAQItem question="Y a-t-il un engagement de durée ?" answer="Non, nos offres mensuelles sont sans engagement. En choisissant le paiement annuel, vous vous engagez pour 12 mois mais bénéficiez de 20% de réduction." />
-                        <FAQItem question="Comment fonctionne la connexion aux plateformes ?" answer="C'est très simple. Connectez vos comptes Google Business et Facebook en 2 clics lors de l'inscription. Nous importons automatiquement vos avis." />
+                        <FAQItem question="Le numéro WhatsApp est-il inclus ?" answer="Oui, nous vous guidons pour connecter votre propre numéro WhatsApp Business ou utiliser notre numéro partagé pour démarrer instantanément." />
+                        <FAQItem question="Comment fonctionne le Kit QR ?" answer="Dés votre inscription, nous personnalisons un kit (Chevalet de comptoir + Stickers) que nous vous expédions via Amana (Livraison 24-48h partout au Maroc)." />
+                        <FAQItem question="Puis-je annuler à tout moment ?" answer="Absolument. Nos offres mensuelles sont sans engagement. Vous pouvez arrêter quand vous voulez depuis votre espace client." />
+                        <FAQItem question="Qu'est-ce que l'Auto-Réponse ?" answer="Avec le Pack Pro, l'IA répond automatiquement aux avis positifs standards. Pour les avis négatifs ou complexes, elle prépare un brouillon que vous devez valider." />
                     </div>
                 </section>
 
@@ -220,8 +228,6 @@ export default function PricingPage() {
                     <div className="flex gap-8 text-sm font-semibold text-zinc-500">
                         <Link href="/#features" className="hover:text-zinc-900 transition-colors">Fonctionnalités</Link>
                         <Link href="/pricing" className="hover:text-zinc-900 transition-colors">Tarifs</Link>
-                        <a href="#" className="hover:text-zinc-900 transition-colors">Blog</a>
-                        <a href="#" className="hover:text-zinc-900 transition-colors">Carrières</a>
                         <a href="#" className="hover:text-zinc-900 transition-colors">Contact</a>
                     </div>
 

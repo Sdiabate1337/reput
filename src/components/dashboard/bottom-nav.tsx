@@ -1,6 +1,6 @@
 "use client"
 
-import { Home, QrCode, ClipboardList, Settings, Menu, PlusCircle, Send, X, Loader2 } from "lucide-react"
+import { BarChart2, QrCode, ClipboardList, Settings, Menu, PlusCircle, Send, X, Loader2, MessageSquare } from "lucide-react"
 import { useState } from "react"
 import { QrKitModal } from "@/components/dashboard/qr-kit-modal"
 import { SendCampaignModal } from "@/components/dashboard/send-campaign-modal"
@@ -64,8 +64,14 @@ export function BottomNav() {
         <>
             {/* Nav Bar */}
             <div className="fixed bottom-0 left-0 right-0 h-20 pb-4 bg-white/90 backdrop-blur-lg border-t border-zinc-200/50 md:hidden z-50 px-8 flex items-center justify-between shadow-[0_-4px_20px_rgba(0,0,0,0.03)] transition-all">
-                <Link href="/dashboard" className="flex flex-col items-center gap-1.5 text-zinc-900">
-                    <Home size={26} strokeWidth={2.5} />
+                {/* Stats (Home) */}
+                <Link href="/dashboard" className="flex flex-col items-center gap-1.5 text-zinc-400 hover:text-zinc-900 transition-colors">
+                    <BarChart2 size={24} strokeWidth={2.5} />
+                </Link>
+
+                {/* Inbox */}
+                <Link href="/reviews" className="flex flex-col items-center gap-1.5 text-zinc-400 hover:text-zinc-900 transition-colors">
+                    <MessageSquare size={24} strokeWidth={2.5} />
                 </Link>
 
                 {/* Central Action Button */}
@@ -77,7 +83,7 @@ export function BottomNav() {
                 </button>
 
                 <Link href="/settings" className="flex flex-col items-center gap-1.5 text-zinc-400 hover:text-zinc-900 transition-colors">
-                    <Settings size={26} strokeWidth={2} />
+                    <Settings size={24} strokeWidth={2} />
                 </Link>
             </div>
 

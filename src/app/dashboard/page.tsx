@@ -1,16 +1,22 @@
 "use client"
 
-import { useState, useEffect, Suspense } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { useAuth } from "@/lib/auth-context"
-import { getDashboardStats, getConversationsForEstablishment, getOrCreateConversation } from "@/actions/conversations"
 import { getEstablishmentByUserId } from "@/actions/establishments"
+import { getDashboardStats, getConversationsForEstablishment } from "@/actions/conversations"
+import { getAnalyticsData, type AnalyticsData } from "@/actions/analytics"
 import { StatsGrid } from "@/components/dashboard/stats-grid"
 import { RecentActivity } from "@/components/dashboard/recent-activity"
 import { QuickActions } from "@/components/dashboard/quick-actions"
-import { BottomNav } from "@/components/dashboard/bottom-nav"
+// BottomNav removed (global)
 import type { Conversation, Sentiment, ConversationStatus } from "@/types/database"
 import { Loader2 } from "lucide-react"
 import { useSearchParams, useRouter } from "next/navigation"
+import { DateRangePicker } from "@/components/dashboard/date-range-picker"
+import { SentimentEvolutionChart } from "@/components/dashboard/charts/sentiment-evolution"
+import { AnalyticsKPI } from "@/components/dashboard/charts/analytics-kpi"
+
+import { SetupGuide } from "@/components/dashboard/setup-guide"
 
 export default function DashboardPage() {
     return (
@@ -27,13 +33,14 @@ function DashboardContent() {
 
     const [isLoading, setIsLoading] = useState(true)
 
-    // Data
-    const [establishment, setEstablishment] = useState<{ id: string, name: string } | null>(null)
+    // Data - Use proper type
+    const [establishment, setEstablishment] = useState<any | null>(null) // Relaxed type for MVP to avoid importing huge interface if lazy, but ideally 'Establishment'
     const [stats, setStats] = useState<{
         total: number
         sentimentCounts: { POSITIVE: number; NEUTRAL: number; NEGATIVE: number; CRITICAL: number }
         statusCounts: { OPEN: number; NEEDS_ATTENTION: number; CLOSED: number; CONVERTED: number }
     } | null>(null)
+    const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null)
     const [conversations, setConversations] = useState<Conversation[]>([])
 
     const router = useRouter()
@@ -53,34 +60,36 @@ function DashboardContent() {
             try {
                 // 1. Get Establishment
                 const estResult = await getEstablishmentByUserId()
-                if (!estResult.success || !estResult.data) {
-                    setIsLoading(false)
-                    return
-                }
-                setEstablishment({ id: estResult.data.id, name: estResult.data.name })
+                if (estResult.success && estResult.data) {
+                    setEstablishment(estResult.data)
 
-                // 2. Get Stats
-                const statsResult = await getDashboardStats(estResult.data.id)
-                if (statsResult.success && statsResult.data) {
-                    setStats(statsResult.data)
-                }
+                    // 2. Load Stats
+                    const statsResult = await getDashboardStats(estResult.data.id)
+                    if (statsResult.success && statsResult.data) {
+                        setStats(statsResult.data)
+                    }
 
-                // 3. Get Recent Conversations
-                const convResult = await getConversationsForEstablishment({
-                    establishmentId: estResult.data.id,
-                    limit: 50
-                })
-                if (convResult.success && convResult.data) {
-                    setConversations(convResult.data.conversations)
-                }
+                    // 3. Load Analytics (Advanced)
+                    const analyticsResult = await getAnalyticsData(30)
+                    if (analyticsResult.success && analyticsResult.data) {
+                        setAnalyticsData(analyticsResult.data)
+                    }
 
+                    // 4. Load Conversations (Keep for Feed/Data)
+                    const convResult = await getConversationsForEstablishment({
+                        establishmentId: estResult.data.id,
+                        limit: 20
+                    })
+                    if (convResult.success && convResult.data) {
+                        setConversations(convResult.data.conversations)
+                    }
+                }
             } catch (error) {
-                console.error("Dashboard load error:", error)
+                console.error("Failed to load dashboard data", error)
             } finally {
                 setIsLoading(false)
             }
         }
-
         loadDashboardData()
     }, [user])
 
@@ -97,7 +106,6 @@ function DashboardContent() {
             <div className="p-8 text-center">
                 <h1 className="text-2xl font-bold mb-4">Bienvenue !</h1>
                 <p>Veuillez configurer votre établissement pour commencer.</p>
-                {/* Redirect logic handled in onboarding but good to have fallback */}
             </div>
         )
     }
@@ -105,35 +113,41 @@ function DashboardContent() {
     return (
         <div className="min-h-screen bg-[#FDFCF8] pb-20 md:pb-8 md:px-8">
             <div className="max-w-7xl mx-auto">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-6 px-6 pt-6 md:px-0 md:pt-8 md:mb-8">
+                {/* Header & Date Filter */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 px-6 pt-6 md:px-0 md:pt-8 gap-4">
                     <div>
-                        <h1 className="text-2xl md:text-3xl font-bold text-zinc-900">Dashboard</h1>
+                        <h1 className="text-2xl md:text-3xl font-bold text-zinc-900">Performance</h1>
                         <p className="text-zinc-500 text-sm md:text-base">
-                            Bonjour, voici ce qui se passe chez <strong className="text-zinc-900">{establishment.name}</strong>
+                            Analyse de votre réputation chez <strong className="text-zinc-900">{establishment.name}</strong>
                         </p>
                     </div>
+                    <DateRangePicker />
                 </div>
 
-                {/* Stats */}
-                {stats && <StatsGrid stats={stats} />}
+                {/* Setup Guidance for New Users */}
+                <SetupGuide establishment={establishment} />
 
-                {/* Main Content: Activity + Quick Actions */}
-                <div className="grid lg:grid-cols-3 gap-8">
-                    {/* Left: Feed (2/3) */}
-                    <div className="lg:col-span-2">
-                        <RecentActivity conversations={conversations} initialConversationId={initialConversationId} />
-                    </div>
+                {/* KPI Cards */}
+                {analyticsData && (
+                    <AnalyticsKPI metrics={{
+                        responseRate: analyticsData.responseRate,
+                        averageSentiment: analyticsData.averageSentiment,
+                        totalVolume: analyticsData.totalVolume,
+                        avgResponseTime: analyticsData.avgResponseTime
+                    }} />
+                )}
 
-                    {/* Right: Actions (1/3) */}
-                    <div className="hidden lg:block">
+                {/* Main Charts Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-8">
+                    {analyticsData && <SentimentEvolutionChart data={analyticsData.dailyStats} />}
+
+                    {/* Quick Actions (Sidebar on Desktop) */}
+                    <div className="hidden lg:block lg:col-span-1">
                         <QuickActions />
                     </div>
                 </div>
             </div>
-            <BottomNav />
+            {/* Bottom Nav is now global in AppShell */}
         </div>
     )
 }
-
-

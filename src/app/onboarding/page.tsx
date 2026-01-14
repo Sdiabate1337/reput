@@ -158,15 +158,15 @@ export default function OnboardingPage() {
                             <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
                                 <MapPin className="text-[#E85C33]" size={32} />
                             </div>
-                            <h1 className="text-2xl font-bold">Lien Google Maps</h1>
-                            <p className="text-zinc-500">Collez le lien de votre fiche Google</p>
+                            <h1 className="text-2xl font-bold">Lien de vos Avis</h1>
+                            <p className="text-zinc-500">Google, TripAdvisor, Booking... Là où vous voulez plus d&apos;étoiles.</p>
                         </div>
 
                         <input
                             type="url"
                             value={googleLink}
                             onChange={(e) => setGoogleLink(e.target.value)}
-                            placeholder="https://maps.google.com/..."
+                            placeholder="https://maps.google.com/... ou tripadvisor.com/..."
                             className="w-full h-14 px-4 rounded-xl border border-zinc-200 focus:border-[#E85C33] focus:ring-2 focus:ring-orange-100 outline-none transition-all"
                             required
                         />

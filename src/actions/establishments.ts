@@ -70,7 +70,7 @@ export async function createEstablishment(
 }
 
 // ===========================================
-// US-1.2: Validate Google Maps Link
+// US-1.2: Validate Review Link (Google, TripAdvisor, Booking)
 // ===========================================
 
 export async function validateGoogleMapsLink(link: string): Promise<ActionResult<{
@@ -78,13 +78,18 @@ export async function validateGoogleMapsLink(link: string): Promise<ActionResult
     normalizedLink: string | null
 }>> {
     try {
-        // Accepted patterns
+        // Accepted patterns (Google, TripAdvisor, Booking)
         const patterns = [
+            // Google
             /^https?:\/\/(www\.)?google\.[a-z]+\/maps/i,
             /^https?:\/\/maps\.google\.[a-z]+/i,
             /^https?:\/\/goo\.gl\/maps\//i,
             /^https?:\/\/g\.page\//i,
             /^https?:\/\/maps\.app\.goo\.gl\//i,
+            // TripAdvisor
+            /^https?:\/\/(www\.)?tripadvisor\./i,
+            // Booking
+            /^https?:\/\/(www\.)?booking\.com/i,
         ]
 
         const isValid = patterns.some(pattern => pattern.test(link.trim()))

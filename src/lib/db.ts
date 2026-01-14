@@ -22,10 +22,8 @@ export function getPool(): Pool {
             connectionString,
             max: 20, // Maximum number of clients in the pool
             idleTimeoutMillis: 30000,
-            connectionTimeoutMillis: 2000,
-            ssl: process.env.NODE_ENV === 'production'
-                ? { rejectUnauthorized: false }
-                : false,
+            connectionTimeoutMillis: 20000, // Increased to 20s
+            ssl: { rejectUnauthorized: false }, // Always use SSL for Cloud DBs (Supabase)
         })
 
         // Log connection errors
