@@ -4,6 +4,7 @@ import { queryOne, execute, transaction } from '@/lib/db'
 import { getEstablishmentByUserId } from '@/actions/establishments'
 import { sendWhatsAppTemplate, formatPhoneForWhatsApp, sendWhatsAppMessage } from '@/lib/twilio'
 import type { ActionResult, Establishment } from '@/types/database'
+import { checkQuota } from '@/lib/access-control'
 
 // ===========================================
 // Send Manual Review Request (Manual Relance)
@@ -22,12 +23,8 @@ export async function sendReviewRequest(params: {
 
         const establishment = estResult.data
 
-        // Check quota (MVP Rule: Allow 10 free messages for everyone for testing)
-        // Startup plan = 0 quota (Manual Relance not allowed) - OVERRIDDEN FOR MVP
-        const allowance = establishment.outbound_quota_limit > 0 ? establishment.outbound_quota_limit : 10
-
-        if (establishment.outbound_quota_used >= allowance) {
-            return { success: false, error: 'Quota de messages atteint pour ce mois.' }
+        if (!checkQuota(establishment)) {
+            return { success: false, error: 'Quota de messages atteint pour ce mois. Passez en Pro.' }
         }
 
         // 2. Format Phone

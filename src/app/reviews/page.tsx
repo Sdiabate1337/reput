@@ -6,9 +6,12 @@ import { getEstablishmentByUserId } from "@/actions/establishments"
 import { getConversationsForEstablishment } from "@/actions/conversations"
 import { RecentActivity } from "@/components/dashboard/recent-activity"
 // BottomNav global
-import type { Conversation } from "@/types/database"
-import { Loader2, MessageSquare } from "lucide-react"
+import type { Conversation, Establishment } from "@/types/database"
+import { Loader2, MessageSquare, Download } from "lucide-react"
 import { useSearchParams, useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { UpgradeModal } from "@/components/dashboard/upgrade-modal"
+import { canAccessFeature } from "@/lib/access-control"
 
 export default function ReviewsPage() {
     return (
@@ -25,8 +28,18 @@ function ReviewsContent() {
     const router = useRouter()
 
     const [isLoading, setIsLoading] = useState(true)
-    const [establishment, setEstablishment] = useState<{ id: string, name: string } | null>(null)
+    const [establishment, setEstablishment] = useState<Establishment | null>(null)
     const [conversations, setConversations] = useState<Conversation[]>([])
+    const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false)
+
+    const handleExport = () => {
+        if (!establishment) return
+        if (canAccessFeature(establishment, 'EXPORT_CSV')) {
+            alert("Export CSV started...") // Mock export
+        } else {
+            setIsUpgradeModalOpen(true)
+        }
+    }
 
     // Auto-refresh for live feed
     useEffect(() => {
@@ -89,10 +102,23 @@ function ReviewsContent() {
                             Gestion des avis pour <strong className="text-zinc-900">{establishment.name}</strong>
                         </p>
                     </div>
-                    {/* Count Badge */}
-                    <div className="bg-orange-100 text-[#E85C33] px-3 py-1 rounded-full text-sm font-bold">
-                        {conversations.length}
+                    {/* Actions */}
+                    <div className="flex items-center gap-3">
+                        <div className="bg-orange-100 text-[#E85C33] px-3 py-1 rounded-full text-sm font-bold">
+                            {conversations.length}
+                        </div>
+                        <Button variant="outline" size="sm" className="hidden md:flex gap-2" onClick={handleExport}>
+                            <Download size={16} />
+                            <span>Export CSV</span>
+                        </Button>
                     </div>
+                </div>
+
+                <div className="md:hidden px-6 mb-4">
+                    <Button variant="outline" size="sm" className="w-full gap-2" onClick={handleExport}>
+                        <Download size={16} />
+                        <span>Export CSV</span>
+                    </Button>
                 </div>
 
                 {/* Feed */}
@@ -101,6 +127,11 @@ function ReviewsContent() {
                 </div>
             </div>
             {/* Bottom Nav is global */}
+            <UpgradeModal
+                isOpen={isUpgradeModalOpen}
+                onClose={() => setIsUpgradeModalOpen(false)}
+                feature="Export CSV"
+            />
         </div>
     )
 }

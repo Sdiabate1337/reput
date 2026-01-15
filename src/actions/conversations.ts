@@ -11,6 +11,8 @@ import type {
     ConversationSource
 } from '@/types/database'
 import { sendWhatsAppMessage } from '@/lib/twilio'
+import { getEstablishmentById } from '@/actions/establishments'
+import { checkQuota } from '@/lib/access-control'
 
 // ... existing code ...
 
@@ -319,7 +321,18 @@ export async function sendManualReply(
             [conversationId]
         )
 
-        // 3. Send WhatsApp
+        // 3. Check Quota
+        const estResult = await getEstablishmentById(conversation.establishment_id)
+        if (!estResult.success || !estResult.data) {
+            return { success: false, error: 'Établissement introuvable' }
+        }
+        const establishment = estResult.data
+
+        if (!checkQuota(establishment)) {
+            return { success: false, error: 'Quota de messages atteint. Passez en Pro.' }
+        }
+
+        // 4. Send WhatsApp
         const result = await sendWhatsAppMessage({
             to: conversation.client_phone,
             body: messageContent
@@ -328,6 +341,12 @@ export async function sendManualReply(
         if (!result.success) {
             return { success: false, error: result.error || 'Erreur d\'envoi Twilio' }
         }
+
+        // 5. Increment Quota
+        await execute(
+            `UPDATE establishments SET outbound_quota_used = outbound_quota_used + 1, updated_at = NOW() WHERE id = $1`,
+            [establishment.id]
+        )
 
         // 4. Save to history
         await addMessageToConversation(conversationId, {

@@ -25,6 +25,9 @@ export default function SettingsPage() {
         setWhatsappStatus
     ] = useState<WhatsAppStatus>('PENDING')
     const [twilioNumber, setTwilioNumber] = useState("")
+    const [plan, setPlan] = useState<'startup' | 'pro' | 'enterprise'>('startup')
+    const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null)
+    const [trialEndsAt, setTrialEndsAt] = useState<string | null>(null)
 
     const [establishmentId, setEstablishmentId] = useState<string | null>(null)
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
@@ -46,6 +49,9 @@ export default function SettingsPage() {
                 setGoogleMapsLink(data.google_maps_link || "")
                 setWhatsappStatus(data.whatsapp_onboarding_status || 'PENDING')
                 setTwilioNumber(data.twilio_number || "")
+                setPlan(data.plan || 'startup')
+                setSubscriptionStatus(data.subscription_status)
+                setTrialEndsAt(data.trial_ends_at)
             }
         } catch (error) {
             console.error("Error loading settings", error)
@@ -193,6 +199,7 @@ export default function SettingsPage() {
                                 </div>
                             </div>
 
+
                             <div className="space-y-2">
                                 <label className="text-sm font-bold text-zinc-700">Lien des Avis</label>
                                 <div className="flex gap-3">
@@ -205,6 +212,40 @@ export default function SettingsPage() {
                                         placeholder="https://g.page/..."
                                         className="h-12 bg-zinc-50 border-zinc-200 text-base"
                                     />
+                                </div>
+                            </div>
+
+                            {/* Subscription Section */}
+                            <div className="pt-6 border-t border-zinc-100">
+                                <h3 className="text-sm font-bold text-zinc-900 mb-4">Abonnement</h3>
+                                <div className="bg-zinc-50 rounded-xl p-4 border border-zinc-100 flex items-center justify-between">
+                                    <div>
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <span className="font-bold text-zinc-900">
+                                                {plan === 'pro' ? 'Plan Pro' : plan === 'enterprise' ? 'Enterprise' : 'Plan Startup'}
+                                            </span>
+                                            {subscriptionStatus === 'TRIAL' && (
+                                                <span className="bg-orange-100 text-orange-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                                                    Essai Gratuit
+                                                </span>
+                                            )}
+                                        </div>
+                                        <p className="text-xs text-zinc-500">
+                                            {subscriptionStatus === 'TRIAL' && trialEndsAt ? (
+                                                <>Fin de l'essai le {new Date(trialEndsAt).toLocaleDateString()}</>
+                                            ) : (
+                                                <>Gérez votre facturation et votre plan.</>
+                                            )}
+                                        </p>
+                                    </div>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        onClick={() => window.location.href = '/pricing'}
+                                        className="h-9 text-xs"
+                                    >
+                                        Changer de plan
+                                    </Button>
                                 </div>
                             </div>
 

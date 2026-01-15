@@ -16,6 +16,8 @@ import {
 } from '@/actions/conversations'
 import { analyzeAndRespond } from '@/actions/ai'
 import { parseQRRef } from '@/lib/utils'
+import { canAccessFeature, checkQuota } from '@/lib/access-control'
+import { execute } from '@/lib/db'
 
 // Force dynamic to ensure headers are read correctly
 export const dynamic = 'force-dynamic'
@@ -86,7 +88,10 @@ export async function POST(request: NextRequest) {
         })
 
         // 7. AI Pipeline
-        if (conversation.ai_enabled) {
+        // Check Feature Access
+        const hasAutoReplyAccess = canAccessFeature(establishment, 'AUTO_REPLY')
+
+        if (conversation.ai_enabled && hasAutoReplyAccess) {
             // Get history (current message is already added so we could query it, 
             // but for efficiency we can just construct payload)
             const history = (conversation.messages as any[] || [])
@@ -129,11 +134,22 @@ export async function POST(request: NextRequest) {
                     console.log(`[Critical Alert] Result:`, alertResult)
                 }
 
-                // Send Reply via Twilio
-                await sendWhatsAppMessage({
-                    to: conversation.client_phone,
-                    body: replyText
-                })
+                // Send Reply via Twilio (If Quota Allows)
+                if (checkQuota(establishment)) {
+                    await sendWhatsAppMessage({
+                        to: conversation.client_phone,
+                        body: replyText
+                    })
+
+                    // Increment Quota
+                    await execute(
+                        `UPDATE establishments SET outbound_quota_used = outbound_quota_used + 1, updated_at = NOW() WHERE id = $1`,
+                        [establishment.id]
+                    )
+                } else {
+                    console.warn(`[Twilio Webhook] Quota exceeded for establishment ${establishment.id}`)
+                    // Optional: Send a different message or notify admin?
+                }
 
                 // Save Assistant Message
                 await addMessageToConversation(conversation.id, {

@@ -1,15 +1,51 @@
 "use client"
 
-import Link from "next/link"
-import { motion, AnimatePresence } from "framer-motion"
-import { Check, CheckCircle2, ChevronDown, Menu, X, Minus, HelpCircle, ArrowRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { useAuth } from "@/lib/auth-context"
+import { selectPlanForCurrentUser } from "@/actions/subscription"
+import { Loader2 } from "lucide-react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Check, X, Star, Zap, Shield, MessageSquare, BarChart3, HelpCircle, ArrowRight, Menu, CheckCircle2, Minus, ChevronDown } from "lucide-react"
+import { AnimatePresence, motion } from "framer-motion"
 import { cn } from "@/lib/utils"
+
+function NavLink({ href, active, children }: { href: string, active?: boolean, children: React.ReactNode }) {
+    return (
+        <a href={href} className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${active ? 'bg-zinc-900 text-white shadow-md' : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50'}`}>
+            {children}
+        </a>
+    )
+}
 
 export default function PricingPage() {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [isAnnual, setIsAnnual] = useState(true)
+    const { user } = useAuth()
+    const router = useRouter()
+    const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
+
+    const handleSelectPlan = async (plan: 'startup' | 'pro') => {
+        if (!user) return
+        setLoadingPlan(plan)
+        try {
+            const result = await selectPlanForCurrentUser(plan, isAnnual ? 'YEARLY' : 'MONTHLY')
+            if (result.success) {
+                if (result.data?.paymentUrl) {
+                    window.location.href = result.data.paymentUrl
+                } else {
+                    router.push('/dashboard')
+                }
+            } else {
+                alert("Erreur: " + result.error)
+            }
+        } catch (e) {
+            console.error(e)
+        } finally {
+            setLoadingPlan(null)
+        }
+    }
 
     return (
         <div className="min-h-screen bg-[#FDFCF8] text-zinc-900 font-sans selection:bg-orange-500/20">
@@ -100,7 +136,9 @@ export default function PricingPage() {
                         <PricingCard
                             title="Pack Startup"
                             price={isAnnual ? "290" : "390"}
+                            planId="startup"
                             description="L'essentiel pour automatiser votre collecte d'avis."
+                            user={user}
                             features={[
                                 "QR Code WhatsApp (Inbound illimité)",
                                 "Dashboard & Stats Live",
@@ -108,14 +146,18 @@ export default function PricingPage() {
                                 "1 Kit QR Physique offert",
                                 "Sources: Google"
                             ]}
+                            onSelect={() => handleSelectPlan('startup')}
+                            isLoading={loadingPlan === 'startup'}
                         />
 
                         {/* PRO */}
                         <PricingCard
                             title="Pack Pro"
                             price={isAnnual ? "790" : "990"}
+                            planId="pro"
                             description="Pour piloter votre réputation en pilote automatique."
                             popular
+                            user={user}
                             features={[
                                 "Tout du Pack Startup",
                                 "IA: Auto-Réponse (Autonome)",
@@ -124,6 +166,8 @@ export default function PricingPage() {
                                 isAnnual ? "10 Kits QR Physiques offerts" : "3 Kits QR Physiques offerts",
                                 "Support Prioritaire"
                             ]}
+                            onSelect={() => handleSelectPlan('pro')}
+                            isLoading={loadingPlan === 'pro'}
                         />
 
                         {/* ENTERPRISE */}
@@ -240,53 +284,6 @@ export default function PricingPage() {
     )
 }
 
-function NavLink({ href, children, active }: { href: string; children: React.ReactNode, active?: boolean }) {
-    return (
-        <Link href={href} className={cn("px-4 py-2 text-sm font-medium rounded-full transition-all", active ? "bg-white text-zinc-900 shadow-sm font-bold" : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50")}>
-            {children}
-        </Link>
-    )
-}
-
-function PricingCard({ title, price, description, features, popular }: any) {
-    return (
-        <div className={cn("p-8 rounded-[2.5rem] bg-white border flex flex-col h-full relative group transition-all duration-300 hover:-translate-y-2", popular ? "border-[#E85C33] shadow-xl shadow-orange-500/10 scale-105 z-10" : "border-zinc-100 shadow-sm hover:shadow-lg")}>
-            {popular && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#E85C33] text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">
-                    LE PLUS POPULAIRE
-                </div>
-            )}
-            <div className="mb-6">
-                <h3 className="text-2xl font-bold mb-2">{title}</h3>
-                <p className="text-zinc-500 text-sm leading-relaxed min-h-[40px]">{description}</p>
-            </div>
-            <div className="mb-8">
-                <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-extrabold">{popular ? price : price}</span>
-                    <span className="text-xl font-bold text-zinc-400">Dhs</span>
-                    <span className="text-zinc-400 text-sm font-medium ml-1">/mois</span>
-                </div>
-                <div className="text-xs text-green-600 font-bold mt-2">Facturé annuellement</div>
-            </div>
-
-            <Link href="/login?intent=signup" className="mb-8 block">
-                <Button className={cn("w-full rounded-2xl h-12 font-bold", popular ? "bg-[#E85C33] hover:bg-[#D54D26]" : "bg-zinc-100 text-zinc-900 hover:bg-zinc-200")}>
-                    Commencer
-                </Button>
-            </Link>
-
-            <div className="space-y-4 flex-1">
-                {features.map((feature: string, i: number) => (
-                    <div key={i} className="flex items-start gap-3 text-sm font-medium text-zinc-600 group-hover:text-zinc-900 transition-colors">
-                        <CheckCircle2 size={18} className={cn("mt-0.5 flex-shrink-0", popular ? "text-[#E85C33]" : "text-zinc-400")} />
-                        <span>{feature}</span>
-                    </div>
-                ))}
-            </div>
-        </div>
-    )
-}
-
 function TableRow({ feature, starter, pro, business }: any) {
     return (
         <tr className="border-b border-zinc-50 hover:bg-zinc-50/50 transition-colors">
@@ -334,6 +331,49 @@ function FAQItem({ question, answer }: any) {
                     </motion.div>
                 )}
             </AnimatePresence>
+        </div>
+    )
+}
+
+function PricingCard({ title, price, planId, description, user, features, onSelect, isLoading, popular }: any) {
+    return (
+        <div className={cn("p-8 rounded-[2.5rem] bg-white border flex flex-col h-full relative group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1", popular ? "border-[#E85C33] shadow-lg shadow-orange-500/10" : "border-zinc-200 shadow-sm")}>
+            {popular && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#E85C33] text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-lg shadow-orange-500/20">
+                    Le plus populaire
+                </div>
+            )}
+
+            <div className="mb-6">
+                <h3 className="text-2xl font-bold text-zinc-900 mb-2">{title}</h3>
+                <p className="text-zinc-500 text-sm leading-relaxed min-h-[40px]">{description}</p>
+            </div>
+
+            <div className="mb-8">
+                <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-bold text-zinc-900">{price}</span>
+                    <span className="text-lg font-bold text-zinc-400">Dhs</span>
+                    <span className="text-zinc-400 font-medium">/mois</span>
+                </div>
+                <div className="text-xs text-zinc-400 font-medium mt-2">Facturé annuellement (HT)</div>
+            </div>
+
+            <Button
+                onClick={onSelect}
+                disabled={isLoading}
+                className={cn("mb-8 w-full rounded-2xl h-12 font-bold transition-all", popular ? "bg-[#E85C33] hover:bg-[#D54D26] text-white shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40" : "bg-zinc-100 hover:bg-zinc-200 text-zinc-900")}
+            >
+                {isLoading ? <Loader2 className="animate-spin" /> : (user ? "Choisir ce plan" : "Commencer l'essai")}
+            </Button>
+
+            <div className="space-y-4 flex-1">
+                {features.map((feature: string, i: number) => (
+                    <div key={i} className="flex items-start gap-3 text-sm font-medium text-zinc-600">
+                        <CheckCircle2 size={18} className={cn("mt-0.5 flex-shrink-0", popular ? "text-[#E85C33]" : "text-zinc-400")} />
+                        <span>{feature}</span>
+                    </div>
+                ))}
+            </div>
         </div>
     )
 }

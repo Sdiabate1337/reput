@@ -11,6 +11,12 @@ export interface Establishment {
     admin_phone: string | null
     plan: 'startup' | 'pro' | 'enterprise'
     whatsapp_onboarding_status: 'PENDING' | 'REQUESTED' | 'CODE_SENT' | 'VERIFYING' | 'ACTIVE' | 'FAILED'
+    // Subscription
+    subscription_status: 'TRIAL' | 'ACTIVE' | 'PAST_DUE' | 'CANCELED'
+    trial_ends_at: string | null // ISO Date
+    billing_cycle: 'MONTHLY' | 'YEARLY'
+    stripe_customer_id: string | null
+
     outbound_quota_used: number
     outbound_quota_limit: number
     created_at: string

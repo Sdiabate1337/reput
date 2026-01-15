@@ -21,19 +21,45 @@ import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 import { useNotifications } from "@/components/notification-context"
 import { NotificationDropdown } from "@/components/notification-dropdown"
 import { BottomNav } from "@/components/dashboard/bottom-nav"
+import { getEstablishmentByUserId } from "@/actions/establishments"
+import { getTrialDaysLeft } from "@/lib/access-control"
+import { Establishment } from "@/types/database"
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
     const { user } = useAuth()
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+    const [establishment, setEstablishment] = useState<Establishment | null>(null)
     const pathname = usePathname()
+
+    // Load Establishment Data
+    useEffect(() => {
+        if (user) {
+            getEstablishmentByUserId().then(res => {
+                if (res.success && res.data) {
+                    setEstablishment(res.data)
+                }
+            })
+        }
+    }, [user])
 
     // Auto-close mobile menu on route change
     useEffect(() => {
         setIsMobileMenuOpen(false)
     }, [pathname])
 
-    // Landing Page - Full Screen, Native Scroll (Fixes Framer Motion useScroll & Layout Constraints)
-    if (pathname === "/" || pathname === "/pricing") {
+    // Define routes where the main shell (Sidebar/Header) should be hidden
+    // We hide it for: Landing Page, Login, Onboarding, and Admin Login
+    const isPublicPage =
+        pathname === "/" ||
+        pathname === "/pricing" ||
+        pathname === "/login" ||
+        pathname === "/signup" ||
+        pathname === "/admin/login" ||
+        pathname.startsWith("/onboarding")
+
+    // Landing Page & Pricing have specific full-screen layout requirements
+    // Now including Admin Login so it takes full screen without Shell padding
+    if (pathname === "/" || pathname === "/pricing" || pathname === "/admin/login") {
         return (
             <div className="font-sans antialiased text-zinc-900 dark:text-zinc-50">
                 {children}
@@ -45,9 +71,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <div className="relative z-10 flex h-screen w-full font-sans antialiased text-zinc-900 bg-[#FDFCF8]">
 
             {/* DESKTOP SIDEBAR */}
-            {pathname !== "/login" && pathname !== "/onboarding" && pathname !== "/" && (
+            {!isPublicPage && (
                 <aside className="w-[280px] bg-[#E85C33] bg-noise flex-col hidden md:flex z-50 shadow-xl border-r border-[#d44922]">
-                    <SidebarContent pathname={pathname} />
+                    <SidebarContent pathname={pathname} establishment={establishment} />
                 </aside>
             )}
 
@@ -74,7 +100,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                                     <X size={20} />
                                 </button>
                             </div>
-                            <SidebarContent pathname={pathname} />
+                            <SidebarContent pathname={pathname} establishment={establishment} />
                         </motion.aside>
                     </>
                 )}
@@ -83,7 +109,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             {/* MAIN CONTENT AREA */}
             <main className="flex-1 flex flex-col min-w-0 bg-transparent relative">
                 {/* HEADER */}
-                {pathname !== "/login" && pathname !== "/onboarding" && pathname !== "/" && (
+                {!isPublicPage && (
                     <header className="h-[72px] bg-[#FDFCF8] sticky top-0 z-30 flex items-center justify-between px-8 transition-all">
 
                         {/* Mobile Toggle */}
@@ -133,7 +159,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 </div>
 
                 {/* Mobile Bottom Nav (Global) */}
-                {pathname !== "/login" && pathname !== "/onboarding" && pathname !== "/" && (
+                {!isPublicPage && (
                     <BottomNav />
                 )}
             </main>
@@ -141,9 +167,16 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     )
 }
 
-function SidebarContent({ pathname }: { pathname: string }) {
+function SidebarContent({ pathname, establishment }: { pathname: string, establishment: Establishment | null }) {
     const { signOut } = useAuth()
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
+
+    const trialDays = establishment ? getTrialDaysLeft(establishment) : 0
+    const quotaUsed = establishment?.outbound_quota_used || 0
+    const quotaLimit = establishment?.outbound_quota_limit || 2000
+    const percentUsed = Math.min((quotaUsed / quotaLimit) * 100, 100)
+
+    const planName = establishment?.plan === 'pro' ? 'Pro Plan' : establishment?.plan === 'enterprise' ? 'Enterprise' : 'Startup Plan'
 
     return (
         <>
@@ -182,16 +215,21 @@ function SidebarContent({ pathname }: { pathname: string }) {
                                 <CreditCard size={14} />
                             </div>
                             <div>
-                                <p className="text-[13px] font-semibold text-white">Pro Plan</p>
-                                <p className="text-[10px] text-white/70">12 days left</p>
+                                <p className="text-[13px] font-semibold text-white">{planName}</p>
+                                {establishment?.subscription_status === 'TRIAL' && (
+                                    <p className="text-[10px] text-white/70">{trialDays} days left</p>
+                                )}
                             </div>
                         </div>
                     </div>
 
                     <div className="w-full bg-black/20 h-1.5 rounded-full overflow-hidden">
-                        <div className="bg-white h-full w-[65%] rounded-full shadow-[0_0_10px_rgba(255,255,255,0.5)]" />
+                        <div
+                            className="bg-white h-full rounded-full shadow-[0_0_10px_rgba(255,255,255,0.5)] transition-all duration-500"
+                            style={{ width: `${percentUsed}%` }}
+                        />
                     </div>
-                    <p className="text-[10px] text-white/60 mt-2 font-medium">1,240 / 2,000 credits used</p>
+                    <p className="text-[10px] text-white/60 mt-2 font-medium">{quotaUsed} / {quotaLimit} credits used</p>
                 </div>
             </div>
 

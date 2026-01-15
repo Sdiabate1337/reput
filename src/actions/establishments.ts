@@ -49,8 +49,8 @@ export async function createEstablishment(
 
         // Create new
         const result = await queryOne<{ id: string }>(
-            `INSERT INTO establishments (user_id, name, google_maps_link, admin_phone, plan, outbound_quota_limit)
-       VALUES ($1, $2, $3, $4, 'startup', 0)
+            `INSERT INTO establishments (user_id, name, google_maps_link, admin_phone, plan, subscription_status, trial_ends_at, outbound_quota_limit)
+       VALUES ($1, $2, $3, $4, 'pro', 'TRIAL', NOW() + INTERVAL '14 days', 500)
        RETURNING id`,
             [userId, data.name, data.googleMapsLink || null, data.adminPhone || null]
         )
