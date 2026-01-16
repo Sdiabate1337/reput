@@ -13,16 +13,32 @@ export function parseQRRef(messageBody: string): {
     establishmentRef: string | null
     customRef: string | null
 } {
-    // Expected format: "Avis abc12345 Table3" or just "Avis abc12345"
-    const match = messageBody.match(/^Avis\s+([a-f0-9]+)\s*(.*)$/i)
+    // Flexible matching for:
+    // 1. "Avis abc12345" (Legacy)
+    // 2. "Bonjour... (Ref: abc12345)" (New Human Format)
+    // 3. "Ref: abc12345" (Fallback)
+
+    // Regex looks for "Avis" OR "Ref:" followed optionally by space, then the ID (hex)
+    // It captures the ID in group 1
+    const match = messageBody.match(/(?:Avis|Ref:?)\s*([a-f0-9]+)/i)
 
     if (!match) {
         return { establishmentRef: null, customRef: null }
     }
 
+    // Check if there's text AFTER the ID for customRef (e.g. Table Number)
+    // We need to re-parse specifically for that if needed, 
+    // but for now let's grab the ID and everything after it.
+
+    const establishmentRef = match[1]
+
+    // Extract everything after the ID as potential custom ref
+    // This is a bit loose but works for "Avis ID Table3"
+    const remaining = messageBody.split(establishmentRef)[1]?.trim() || null
+
     return {
-        establishmentRef: match[1],
-        customRef: match[2]?.trim() || null,
+        establishmentRef,
+        customRef: remaining,
     }
 }
 

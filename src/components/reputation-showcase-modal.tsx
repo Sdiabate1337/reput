@@ -165,7 +165,7 @@ export function ReputationShowcaseModal({ isOpen, onClose, reviews, companyName 
                                     <p className="text-zinc-400 text-xs font-medium uppercase tracking-wide">Verified Reviews by</p>
                                     <div className="flex items-center gap-2 mt-2">
                                         <div className="h-6 w-6 bg-[#E85C33] rounded-lg flex items-center justify-center text-white text-[10px] font-bold">R</div>
-                                        <span className="text-white font-bold tracking-tight">Reput.ai</span>
+                                        <span className="text-white font-bold tracking-tight">ReviewMe</span>
                                     </div>
                                 </div>
                                 <div className="text-right">

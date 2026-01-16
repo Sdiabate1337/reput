@@ -139,8 +139,41 @@ export function formatPhoneForWhatsApp(phone: string): string {
 }
 
 /**
- * Extract phone number from Twilio WhatsApp format
+ * Send a generic Media message (Image/Video)
+ */
+export async function sendWhatsAppMedia(params: {
+    to: string
+    body?: string
+    mediaUrls: string[]
+}): Promise<{ success: boolean; messageSid?: string; error?: string }> {
+    try {
+        const client = getTwilioClient()
+        const message = await client.messages.create({
+            from: twilioNumber.startsWith('whatsapp:') ? twilioNumber : `whatsapp:${twilioNumber}`,
+            to: `whatsapp:${params.to}`,
+            body: params.body,
+            mediaUrl: params.mediaUrls
+        })
+        return { success: true, messageSid: message.sid }
+    } catch (error) {
+        console.error('Twilio Media Error:', error)
+        return { success: false, error: (error as Error).message }
+    }
+}
+
+/**
+ * Send an Interactive Button Message (Session-only, no template needed)
+ * Note: Twilio support for raw buttons in session is specific. 
+ * Often requires using Content API or standard lists. 
+ * For MVP, we use standard text-based list or we attempt the 'List Message' logic if supported.
+ * 
+ * However, the most reliable "Visual" way without template approval is often:
+ * IMAGE + "1. Option A\n2. Option B" text menu.
+ * 
+ * But let's try to add the structure for Buttons if available via Twilio's strictly defined Content/Payloads.
+ * For now, we'll settle on Media + Clear Text Call to Actions which is 100% safe.
  */
 export function extractPhoneFromWhatsApp(twilioPhone: string): string {
     return twilioPhone.replace(/^whatsapp:/i, '')
 }
+

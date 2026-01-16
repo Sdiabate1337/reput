@@ -74,14 +74,14 @@ export default function LoginPage() {
                     <div className="flex items-center gap-2">
                         <Link href="/" className="flex items-center gap-2 group">
                             <div className="h-9 w-9 bg-zinc-900 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-zinc-900/10 group-hover:scale-105 transition-transform">R</div>
-                            <span className="font-bold text-lg tracking-tight text-zinc-900">Reput.ai</span>
+                            <span className="font-bold text-lg tracking-tight text-zinc-900">ReviewMe</span>
                         </Link>
                     </div>
 
                     <div className="flex-1 flex flex-col justify-center py-12">
                         <h1 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight">
                             {mode === 'login' ? 'Bienvenue sur ' : 'Rejoignez '}
-                            <span className="text-[#E85C33]">Reput.ai</span>
+                            <span className="text-[#E85C33]">ReviewMe</span>
                         </h1>
                         <p className="text-zinc-500 text-lg mb-8">
                             {mode === 'login'

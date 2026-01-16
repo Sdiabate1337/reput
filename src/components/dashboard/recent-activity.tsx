@@ -27,6 +27,7 @@ export function RecentActivity({ conversations, initialConversationId }: RecentA
     // Filter logic
     const filteredConversations = conversations.filter(c => {
         if (filter === 'ALL') return true
+        if (filter === 'POSITIVE') return c.sentiment === 'POSITIVE' || c.sentiment === 'NEUTRAL' // "Bien" is technically Neutral but client wants it as Positive
         return c.sentiment === filter
     })
 
@@ -70,8 +71,10 @@ export function RecentActivity({ conversations, initialConversationId }: RecentA
                         // Prefer client message, fallback to last message (e.g. system/assistant only)
                         const displayMessage = lastClientMessage || lastMessage
 
-                        const isPositive = conv.sentiment === 'POSITIVE'
+                        // Logic for grouping: Positive + Neutral = Green (Positive)
+                        const isPositive = conv.sentiment === 'POSITIVE' || conv.sentiment === 'NEUTRAL'
                         const isCritical = conv.sentiment === 'CRITICAL'
+                        const isNegative = conv.sentiment === 'NEGATIVE'
 
                         return (
                             <motion.div
@@ -86,7 +89,10 @@ export function RecentActivity({ conversations, initialConversationId }: RecentA
                                 <div className="relative shrink-0 pt-1">
                                     <div className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold shadow-sm transition-transform active:scale-95
                                     ${isPositive ? 'bg-gradient-to-br from-green-50 to-green-100 text-green-700' :
-                                            isCritical ? 'bg-gradient-to-br from-red-50 to-red-100 text-red-700' : 'bg-gradient-to-br from-blue-50 to-blue-100 text-blue-700'}`}
+                                            isCritical ? 'bg-gradient-to-br from-red-50 to-red-100 text-red-700' :
+                                                isNegative ? 'bg-gradient-to-br from-orange-50 to-orange-100 text-orange-700' : // Negative -> Orange/Red
+                                                    'bg-zinc-50 text-zinc-500' // Fallback
+                                        }`}
                                     >
                                         {conv.client_name ? conv.client_name[0].toUpperCase() : '?'}
                                     </div>
@@ -106,8 +112,21 @@ export function RecentActivity({ conversations, initialConversationId }: RecentA
                                         </span>
                                     </div>
 
-                                    <p className={`text-[14px] truncate ${displayMessage?.role === 'client' ? 'text-zinc-700 font-medium' : 'text-zinc-400 italic'}`}>
-                                        {displayMessage ? (
+                                    <p className={`text-[14px] truncate ${conv.status === 'CONVERTED' ? 'text-green-600 font-medium' : conv.status === 'NEEDS_ATTENTION' ? 'text-orange-600 font-medium' : displayMessage?.role === 'client' ? 'text-zinc-700 font-medium' : 'text-zinc-400 italic'}`}>
+                                        {/* Override display for Converted/NeedsAttention to show status instead of "ok" */}
+                                        {conv.status === 'CONVERTED' ? (
+                                            <span className="flex items-center gap-1">
+                                                <span>⭐ Avis positif ! Lien envoyé.</span>
+                                            </span>
+                                        ) : conv.status === 'NEEDS_ATTENTION' && conv.sentiment === 'NEUTRAL' ? (
+                                            <span className="flex items-center gap-1">
+                                                <span>🤔 Avis mitigé. Feedback demandé.</span>
+                                            </span>
+                                        ) : conv.status === 'NEEDS_ATTENTION' && conv.sentiment === 'NEGATIVE' ? (
+                                            <span className="flex items-center gap-1">
+                                                <span>⚠️ Avis négatif. Déçu.</span>
+                                            </span>
+                                        ) : displayMessage ? (
                                             <>
                                                 {/* Mobile: 15 chars max */}
                                                 <span className="md:hidden">

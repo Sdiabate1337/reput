@@ -32,7 +32,11 @@ export function SentimentEvolutionChart({ data }: SentimentEvolutionProps) {
                 <div className="h-[300px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
                         <AreaChart
-                            data={data}
+                            data={data.map(d => ({
+                                ...d,
+                                // MERGE: Positive = Positive + Neutral (Bien)
+                                positive: d.positive + (d.neutral || 0)
+                            }))}
                             margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
                         >
                             <defs>
@@ -41,8 +45,8 @@ export function SentimentEvolutionChart({ data }: SentimentEvolutionProps) {
                                     <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
                                 </linearGradient>
                                 <linearGradient id="colorNeg" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.2} />
-                                    <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                                    <stop offset="5%" stopColor="#f97316" stopOpacity={0.2} />
+                                    <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
                                 </linearGradient>
                             </defs>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f4f4f5" />
@@ -68,25 +72,25 @@ export function SentimentEvolutionChart({ data }: SentimentEvolutionProps) {
                             <Area
                                 type="monotone"
                                 dataKey="positive"
-                                stroke="#22c55e"
+                                stroke="#22c55e" // Green
                                 strokeWidth={2}
                                 fillOpacity={1}
                                 fill="url(#colorPos)"
-                                name="Positifs"
+                                name="Positifs (Top + Bien)"
                             />
                             <Area
                                 type="monotone"
                                 dataKey="negative"
-                                stroke="#ef4444"
+                                stroke="#f97316" // Orange
                                 strokeWidth={2}
                                 fillOpacity={1}
                                 fill="url(#colorNeg)"
-                                name="Négatifs"
+                                name="Négatifs (Déçu)"
                             />
                             <Area
                                 type="monotone"
                                 dataKey="critical"
-                                stroke="#dc2626"
+                                stroke="#dc2626" // Red
                                 strokeWidth={2}
                                 strokeDasharray="4 4"
                                 fillOpacity={0}

@@ -3,7 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
-import { ArrowRight, Star, Shield, Zap, BarChart3, MessageSquare, Menu, X, Check, Play, ChevronRight, Quote, Download, Inbox, Clock, ChevronDown, Share2, Bot, Sparkles, CheckCircle2, MousePointer2, User, TrendingUp, Search, Coffee, Wifi, ThumbsUp, Mail, MessageCircle, Phone, QrCode, Trophy } from "lucide-react"
+import { ArrowRight, Star, Shield, Zap, BarChart3, MessageSquare, Menu, X, Check, Play, ChevronRight, Quote, Download, Inbox, Clock, ChevronDown, Share2, Bot, Sparkles, CheckCircle2, MousePointer2, User, TrendingUp, Search, Coffee, Wifi, ThumbsUp, Mail, MessageCircle, Phone, QrCode, Trophy, AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState, useRef, useEffect } from "react"
 import { cn } from "@/lib/utils"
@@ -22,22 +22,22 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 z-50">
             <div className="h-10 w-10 bg-zinc-900 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-zinc-900/10">R</div>
-            <span className="font-bold text-xl tracking-tight text-zinc-900">Reput.ai</span>
+            <span className="font-bold text-xl tracking-tight text-zinc-900">ReviewMe</span>
           </Link>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1 bg-white/50 backdrop-blur-md px-2 py-1.5 rounded-full border border-zinc-200/50 shadow-sm">
             <NavLink href="/#features">Fonctionnalités</NavLink>
             <NavLink href="/pricing">Tarifs</NavLink>
-            <NavLink href="/#testimonials">Témoignages</NavLink>
+            <NavLink href="/#faq">FAQ</NavLink>
             <NavLink href="#about">À propos</NavLink>
           </div>
 
           <div className="hidden md:flex items-center gap-4">
             <Link href="/login" className="font-medium text-sm text-zinc-600 hover:text-zinc-900 transition-colors">Se connecter</Link>
-            <Link href="/login?intent=demo">
+            <Link href="/login">
               <Button className="rounded-full bg-[#E85C33] hover:bg-[#D54D26] text-white px-6 h-11 shadow-lg shadow-orange-500/20 font-semibold text-sm transition-all hover:scale-105 active:scale-95">
-                Réserver une démo
+                Essai gratuit 14 jours
               </Button>
             </Link>
           </div>
@@ -47,26 +47,27 @@ export default function LandingPage() {
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
-      </nav>
+      </nav >
 
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 z-40 bg-white pt-24 px-6 md:hidden"
-          >
-            <div className="flex flex-col gap-6 text-2xl font-bold">
-              <Link href="/#features" onClick={() => setIsMenuOpen(false)}>Fonctionnalités</Link>
-              <Link href="/pricing" onClick={() => setIsMenuOpen(false)}>Tarifs</Link>
-              <Link href="/login" onClick={() => setIsMenuOpen(false)}>Se connecter</Link>
-              <Link href="/login?intent=demo" onClick={() => setIsMenuOpen(false)} className="text-[#E85C33]">Réserver une démo</Link>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        {
+          isMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="fixed inset-0 z-40 bg-white pt-24 px-6 md:hidden"
+            >
+              <div className="flex flex-col gap-6 text-2xl font-bold">
+                <Link href="/#features" onClick={() => setIsMenuOpen(false)}>Fonctionnalités</Link>
+                <Link href="/pricing" onClick={() => setIsMenuOpen(false)}>Tarifs</Link>
+                <Link href="/login" onClick={() => setIsMenuOpen(false)}>Se connecter</Link>
+              </div>
+            </motion.div>
+          )
+        }
+      </AnimatePresence >
 
       <main className="pt-32 pb-20 overflow-hidden">
 
@@ -133,16 +134,10 @@ export default function LandingPage() {
                   transition={{ duration: 0.6, delay: 0.3 }}
                   className="flex flex-col sm:flex-row items-start sm:items-center gap-4"
                 >
-                  <Link href="/login?intent=demo">
+                  <Link href="/login">
                     <Button size="lg" className="rounded-full bg-[#E85C33] hover:bg-[#D54D26] text-white h-14 px-8 text-base shadow-xl shadow-orange-500/20 font-bold transition-transform hover:-translate-y-1 w-full sm:w-auto">
-                      Voir une démo
+                      Essai gratuit 14 jours
                     </Button>
-                  </Link>
-                  <Link href="/login" className="group flex items-center gap-3 pl-2 pr-6 py-2 rounded-full bg-white border border-zinc-200/60 text-zinc-600 font-semibold hover:bg-zinc-50 hover:border-zinc-300 transition-all shadow-sm hover:shadow-md w-full sm:w-auto h-14">
-                    <div className="w-10 h-10 bg-orange-50 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <ArrowRight size={16} className="text-[#E85C33]" />
-                    </div>
-                    <span>Essai gratuit 14 jours</span>
                   </Link>
                 </motion.div>
 
@@ -332,8 +327,8 @@ export default function LandingPage() {
                 <div className="ml-6 flex-1 max-w-lg">
                   <div className="bg-zinc-50/50 border border-zinc-200/50 rounded-lg px-4 py-1.5 flex items-center gap-3 text-[11px] text-zinc-400 font-medium shadow-inner">
                     <Shield size={12} className="text-zinc-400" />
-                    <span className="text-zinc-500 md:hidden">reput.ai</span>
-                    <span className="text-zinc-500 hidden md:inline tracking-tight">app.reput.ai/tableau-de-bord</span>
+                    <span className="text-zinc-500 md:hidden">reviewme.ma</span>
+                    <span className="text-zinc-500 hidden md:inline tracking-tight">app.reviewme.ma/tableau-de-bord</span>
                   </div>
                 </div>
               </div>
@@ -363,167 +358,137 @@ export default function LandingPage() {
                 </div>
 
                 {/* Main Grid Layout */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                {/* Main Grid Layout - 4 Columns like Real Dashboard */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
 
-                  {/* Card 1: Trust Score */}
-                  <div className="p-6 rounded-[1.5rem] bg-white/60 backdrop-blur-md border border-white/60 shadow-sm flex flex-col justify-between min-h-[180px] hover:shadow-lg hover:bg-white/80 transition-all duration-300 group">
-                    <div>
-                      <div className="flex items-center gap-2 mb-4">
-                        <div className="p-1.5 bg-amber-50 rounded-lg border border-amber-100/50 group-hover:scale-110 transition-transform">
-                          <Star size={14} className="fill-amber-400 text-amber-400" />
-                        </div>
-                        <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Score de Confiance</span>
+                  {/* Card 1: Conversations (Real: Blue) */}
+                  <div className="p-6 rounded-[1.5rem] bg-white/60 backdrop-blur-md border border-white/60 shadow-sm flex flex-col justify-between min-h-[160px] hover:shadow-lg hover:bg-white/80 transition-all duration-300 group">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
+                        <MessageSquare size={24} />
                       </div>
-                      <div className="text-4xl md:text-5xl leading-none font-bold text-zinc-900 tracking-tighter mb-2">3.5</div>
-                      <div className="text-xs text-zinc-500 font-medium flex items-center gap-2">
-                        sur 5.0
-                        <span className="bg-emerald-50 border border-emerald-100/50 text-emerald-600 px-2 py-0.5 rounded-full text-[10px] font-bold">+0.2 cette semaine</span>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between text-[10px] font-bold text-zinc-400 mb-1.5 uppercase tracking-wide">
-                        <span>Taux de Réponse</span>
-                        <span>60%</span>
-                      </div>
-                      <div className="h-1.5 w-full bg-zinc-100 rounded-full overflow-hidden border border-zinc-100">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          whileInView={{ width: "60%" }}
-                          transition={{ duration: 1, delay: 0.5 }}
-                          className="h-full bg-zinc-900 rounded-full"
-                        />
+                      <div>
+                        <p className="text-sm text-zinc-500 font-medium">Conversations</p>
+                        <p className="text-2xl font-bold text-zinc-900">1,248</p>
+                        <p className="text-xs text-zinc-400 mt-1">43 en cours</p>
                       </div>
                     </div>
                   </div>
 
-                  {/* Card 2: Pending Reviews (Orange focal point) */}
-                  <div className="p-6 rounded-[1.5rem] bg-gradient-to-br from-[#E85C33] to-[#ef8e72] text-white shadow-xl shadow-orange-500/20 flex flex-col justify-between min-h-[180px] relative overflow-hidden group border border-orange-400/20">
-                    <div className="absolute top-0 right-0 p-6 opacity-10 scale-125 transform group-hover:scale-110 transition-transform duration-1000 ease-out">
-                      <MessageSquare size={100} fill="currentColor" />
-                    </div>
-                    {/* Noise & Texture */}
-                    <div className="absolute inset-0 bg-noise opacity-20 mix-blend-overlay" />
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.2),transparent_60%)]" />
-
-                    <div>
-                      <div className="flex justify-between items-start mb-4 relative z-10">
-                        <div className="p-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl shadow-inner">
-                          <Inbox size={18} className="text-white" />
+                  {/* Card 2: Satisfaction (Real: Green/Donut) */}
+                  <div className="p-6 rounded-[1.5rem] bg-white/60 backdrop-blur-md border border-white/60 shadow-sm flex flex-col justify-between min-h-[160px] hover:shadow-lg hover:bg-white/80 transition-all duration-300 group">
+                    <div className="flex items-center gap-4">
+                      <div className="relative w-12 h-12 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <svg viewBox="0 0 36 36" className="w-full h-full rotate-[-90deg]">
+                          <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f4f4f5" strokeWidth="3" />
+                          <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#22c55e" strokeWidth="3" strokeDasharray="94, 100" />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <TrendingUp size={16} className="text-green-600" />
                         </div>
-                        <span className="bg-white/10 backdrop-blur-md border border-white/20 px-2.5 py-1 rounded-full text-[10px] font-bold shadow-sm animate-pulse">Action Requise</span>
                       </div>
-                      <div className="relative z-10">
-                        <div className="text-4xl md:text-5xl leading-none font-bold tracking-tighter mb-1 drop-shadow-sm">43</div>
-                        <div className="font-medium text-orange-50/90 text-sm">Avis en attente</div>
+                      <div>
+                        <p className="text-sm text-zinc-500 font-medium">Satisfaction</p>
+                        <p className="text-2xl font-bold text-zinc-900">94%</p>
+                        <p className="text-xs text-zinc-400 mt-1">105 positifs</p>
                       </div>
                     </div>
-                    <Button className="w-full bg-white text-[#E85C33] hover:bg-orange-50 font-bold rounded-xl h-10 relative z-10 mt-4 shadow-lg shadow-black/5 border border-white/20 text-xs transition-colors">
-                      Aller à la boîte de réception <ArrowRight size={14} className="ml-2 group-hover:translate-x-1 transition-transform" />
-                    </Button>
                   </div>
 
-                  {/* Card 3: Sources */}
-                  <div className="p-6 rounded-[1.5rem] bg-white/60 backdrop-blur-md border border-white/60 shadow-sm flex flex-col min-h-[180px] hover:shadow-lg hover:bg-white/80 transition-all duration-300 group">
-                    <div className="flex items-center gap-2 mb-6">
-                      <div className="p-1.5 bg-blue-50 rounded-lg border border-blue-100/50 group-hover:scale-110 transition-transform">
-                        <div className="w-3 h-3 rounded-full border-[2px] border-blue-500/60" />
+                  {/* Card 3: Critiques (Real: Red) */}
+                  <div className="p-6 rounded-[1.5rem] bg-white/60 backdrop-blur-md border border-white/60 shadow-sm flex flex-col justify-between min-h-[160px] hover:shadow-lg hover:bg-white/80 transition-all duration-300 group">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600 group-hover:scale-110 transition-transform">
+                        <AlertTriangle size={24} />
                       </div>
-                      <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Sources</span>
-                    </div>
-                    <div className="space-y-4 flex-1 flex flex-col justify-center">
-                      {[
-                        { name: 'Google', count: 101, color: 'bg-blue-500' },
-                        { name: 'Interne', count: 5, color: 'bg-zinc-400' },
-                        { name: 'Booking', count: 1, color: 'bg-blue-800' }
-                      ].map((source, i) => (
-                        <div key={i} className="flex flex-col gap-1.5">
-                          <div className="flex justify-between text-xs font-bold text-zinc-700">
-                            <span className="flex items-center gap-1.5">
-                              <div className={`w-1.5 h-1.5 rounded-full ${source.color}`} /> {source.name}
-                            </span>
-                            <span>{source.count}</span>
-                          </div>
-                          <div className="h-1.5 w-full bg-zinc-100 rounded-full overflow-hidden border border-zinc-100">
-                            <motion.div
-                              initial={{ width: 0 }}
-                              whileInView={{ width: i === 0 ? '90%' : i === 1 ? '10%' : '5%' }}
-                              transition={{ duration: 1, delay: 0.2 * i }}
-                              className={`h-full ${source.color} rounded-full`}
-                            />
-                          </div>
-                        </div>
-                      ))}
+                      <div>
+                        <p className="text-sm text-zinc-500 font-medium">Avis Critiques</p>
+                        <p className="text-2xl font-bold text-zinc-900">3</p>
+                        <p className="text-xs text-zinc-400 mt-1">Nécessitent attention</p>
+                      </div>
                     </div>
                   </div>
+
+                  {/* Card 4: Converted (Real: Emerald) */}
+                  <div className="p-6 rounded-[1.5rem] bg-white/60 backdrop-blur-md border border-white/60 shadow-sm flex flex-col justify-between min-h-[160px] hover:shadow-lg hover:bg-white/80 transition-all duration-300 group">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform">
+                        <CheckCircle2 size={24} />
+                      </div>
+                      <div>
+                        <p className="text-sm text-zinc-500 font-medium">Clients Récupérés</p>
+                        <p className="text-2xl font-bold text-zinc-900">12</p>
+                        <p className="text-xs text-zinc-400 mt-1">Sauvés par l'IA</p>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
 
-                {/* Row 2: Charts */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {/* Trend Chart */}
-                  <div className="md:col-span-2 p-6 rounded-[1.5rem] bg-white/60 backdrop-blur-md border border-white/60 shadow-sm min-h-[260px] hover:shadow-lg hover:bg-white/80 transition-all duration-300">
-                    <div className="flex justify-between items-start mb-6">
+                {/* Row 2: Charts Area - Matching Real Dashboard Style */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[300px]">
+                  {/* Evolution Chart (Area like Real Dashboard) */}
+                  <div className="lg:col-span-2 p-6 rounded-[1.5rem] bg-white/60 backdrop-blur-md border border-white/60 shadow-sm flex flex-col hover:shadow-lg hover:bg-white/80 transition-all duration-300">
+                    <div className="flex justify-between items-center mb-6">
                       <div>
-                        <h4 className="text-base font-bold text-zinc-900 tracking-tight">Tendance de Réputation</h4>
-                        <p className="text-xs text-zinc-500 font-medium">Évolution sur les 14 derniers jours</p>
+                        <h3 className="text-sm font-bold text-zinc-900">Évolution de la Réputation</h3>
+                        <p className="text-xs text-zinc-500">Suivi quotidien des avis</p>
                       </div>
-                      <div className="hidden md:flex bg-zinc-100/50 p-1 rounded-xl border border-zinc-200/50">
-                        <div className="px-3 py-1 bg-white rounded-lg text-[10px] font-bold shadow-sm text-zinc-900 border border-zinc-200/50">Note</div>
-                        <div className="px-3 py-1 rounded-lg text-[10px] font-bold text-zinc-500 hover:text-zinc-700 cursor-pointer transition-colors">Volume</div>
+                      <div className="flex gap-2">
+                        <div className="flex items-center gap-1.5 text-[10px] font-medium text-zinc-500">
+                          <div className="w-2 h-2 rounded-full bg-green-500" /> Positifs
+                        </div>
+                        <div className="flex items-center gap-1.5 text-[10px] font-medium text-zinc-500">
+                          <div className="w-2 h-2 rounded-full bg-orange-500" /> Négatifs
+                        </div>
                       </div>
                     </div>
-                    <div className="h-40 relative w-full group">
-                      <svg className="w-full h-full overflow-visible" viewBox="0 0 100 50" preserveAspectRatio="none">
-                        <defs>
-                          <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#E85C33" stopOpacity="0.1" />
-                            <stop offset="100%" stopColor="#E85C33" stopOpacity="0" />
-                          </linearGradient>
-                          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                            <feGaussianBlur stdDeviation="2" result="blur" />
-                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                          </filter>
-                        </defs>
-                        <path d="M0 35 C 20 35, 30 25, 50 25 S 80 32, 100 32" fill="none" stroke="#E85C33" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-sm" />
-                        <path d="M0 35 C 20 35, 30 25, 50 25 S 80 32, 100 32 V 50 H 0 Z" fill="url(#chartGradient)" />
 
-                        {/* Points */}
-                        <circle cx="50" cy="25" r="3" fill="white" stroke="#E85C33" strokeWidth="2" className="group-hover:scale-150 transition-transform origin-center cursor-pointer shadow-md" />
-                      </svg>
-                      {/* Axis Labels */}
-                      <div className="absolute inset-0 flex flex-col justify-between text-[8px] text-zinc-300 font-bold pointer-events-none py-1">
-                        <span>5.0</span>
-                        <span>4.0</span>
-                        <span>2.0</span>
-                        <div className="flex justify-between text-zinc-400 font-medium mt-auto pt-2 px-1">
-                          <span>Dec 13</span>
-                          <span>Dec 15</span>
-                          <span>Dec 16</span>
-                          <span>Dec 17</span>
-                        </div>
+                    <div className="flex-1 w-full relative">
+                      {/* Mock Area Chart Visual */}
+                      <div className="absolute inset-0 flex items-end justify-between px-2 pb-2 gap-2">
+                        {[40, 65, 50, 80, 75, 90, 85].map((h, i) => (
+                          <div key={i} className="w-full h-full flex items-end gap-1 group/bar relative">
+                            <div style={{ height: `${h}%` }} className="w-full bg-green-500/10 border-t-2 border-green-500 rounded-t-sm transition-all duration-500 group-hover/bar:bg-green-500/20" />
+                            <div style={{ height: `${100 - h - 10}%` }} className="absolute bottom-0 w-full bg-orange-500/5 border-t-2 border-orange-500/50 rounded-t-sm transition-all duration-500" />
+                          </div>
+                        ))}
+                      </div>
+                      {/* Grid Lines */}
+                      <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
+                        <div className="w-full h-px bg-zinc-100" />
+                        <div className="w-full h-px bg-zinc-100" />
+                        <div className="w-full h-px bg-zinc-100" />
+                        <div className="w-full h-px bg-zinc-100" />
                       </div>
                     </div>
                   </div>
 
-                  {/* Recent Activity */}
-                  <div className="p-6 rounded-[1.5rem] bg-white/60 backdrop-blur-md border border-white/60 shadow-sm min-h-[260px] hover:shadow-lg hover:bg-white/80 transition-all duration-300 flex flex-col">
-                    <div className="flex justify-between items-center mb-6">
-                      <h4 className="text-base font-bold text-zinc-900 tracking-tight">Activité Récente</h4>
-                      <div className="w-8 h-8 rounded-full bg-zinc-50 border border-zinc-100 flex items-center justify-center text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 transition-all cursor-pointer"><ArrowRight size={14} className="-rotate-45" /></div>
+                  {/* Recent Activity List - Matching Real Dashboard */}
+                  <div className="p-6 rounded-[1.5rem] bg-white/60 backdrop-blur-md border border-white/60 shadow-sm flex flex-col hover:shadow-lg hover:bg-white/80 transition-all duration-300">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-sm font-bold text-zinc-900">Avis Récents</h3>
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                     </div>
-                    <div className="space-y-4 flex-1">
-                      {[1, 2, 3].map((item, i) => (
-                        <div key={i} className="flex gap-4 group cursor-pointer hover:bg-white/50 p-2 -mx-2 rounded-xl transition-colors">
-                          <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ring-4 ring-offset-0 ring-opacity-20 ${i === 0 ? 'bg-red-500 ring-red-500' : i === 1 ? 'bg-amber-500 ring-amber-500' : 'bg-red-500 ring-red-500'}`} />
-                          <div>
-                            <p className="text-xs font-bold text-zinc-800 line-clamp-2 leading-relaxed group-hover:text-zinc-900 transition-colors">"{i === 0 ? "Grosse déception au Le Grand Hôtel, le service était..." : i === 1 ? "Correct sans plus. Le petit déjeuner manquait de..." : "Honteux ! Il y avait des punaises dans le lit..."}"</p>
-                            <div className="flex items-center gap-1.5 mt-2">
-                              <span className="text-[10px] text-zinc-400 font-medium group-hover:text-zinc-500">{i === 0 ? "Jean Pierre" : i === 1 ? "Alex" : "Julie"}</span>
-                              <div className="w-0.5 h-0.5 rounded-full bg-zinc-300" />
-                              <span className="text-[10px] text-zinc-400 font-bold uppercase flex items-center gap-1">
-                                <div className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" /> Google
-                              </span>
+
+                    <div className="space-y-3 overflow-hidden">
+                      {[
+                        { name: "Sofia Ben.", status: "Positif", time: "2 min", color: "green", icon: Star },
+                        { name: "Karim W.", status: "Critique", time: "15 min", color: "red", icon: AlertTriangle },
+                        { name: "Mehdi L.", status: "Négatif", time: "1h", color: "orange", icon: TrendingUp },
+                        { name: "Yassine K.", status: "Positif", time: "3h", color: "green", icon: Star },
+                      ].map((item, i) => (
+                        <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-white/50 transition-colors cursor-pointer">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-8 h-8 rounded-full bg-${item.color}-50 flex items-center justify-center text-${item.color}-600`}>
+                              <item.icon size={14} />
+                            </div>
+                            <div>
+                              <p className="text-xs font-bold text-zinc-900">{item.name}</p>
+                              <p className="text-[10px] text-zinc-500">{item.status}</p>
                             </div>
                           </div>
+                          <span className="text-[10px] text-zinc-400 font-medium">{item.time}</span>
                         </div>
                       ))}
                     </div>
@@ -598,10 +563,12 @@ export default function LandingPage() {
           </div>
 
           <div className="text-center mt-12">
-            <div className="inline-flex items-center gap-2 bg-white border border-zinc-200 rounded-full pl-1 pr-4 py-1 shadow-sm">
-              <span className="bg-[#E85C33] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">NOUVEAU</span>
-              <span className="text-sm font-medium text-zinc-600">Voir la visite produit</span>
-            </div>
+            <Link href="/login">
+              <div className="inline-flex items-center gap-2 bg-white border border-zinc-200 rounded-full pl-1 pr-4 py-1 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+                <span className="bg-[#E85C33] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">NOUVEAU</span>
+                <span className="text-sm font-medium text-zinc-600">Démarrer l'essai gratuit</span>
+              </div>
+            </Link>
           </div>
         </section >
 
@@ -644,7 +611,7 @@ export default function LandingPage() {
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E85C33] opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#E85C33] shadow-sm"></span>
                     </span>
-                    <span className="text-[#E85C33]">Avec Reput.ai</span>
+                    <span className="text-[#E85C33]">Avec ReviewMe</span>
                   </div>
                 </div>
 
@@ -728,7 +695,7 @@ export default function LandingPage() {
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-24">
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-zinc-900 mb-6 tracking-tight">
-                Ce que Reput.ai change <span className="text-[#E85C33]">concrètement</span>
+                Ce que ReviewMe change <br /> <span className="text-[#E85C33]">concrètement</span>
               </h2>
               <p className="text-xl text-zinc-500 max-w-2xl mx-auto leading-relaxed font-medium">
                 Nous automatisons la collecte, la réponse et le pilotage de vos avis pour transformer chaque retour en levier de croissance.
@@ -1240,32 +1207,14 @@ export default function LandingPage() {
         </section>
 
 
-        {/* TESTIMONIALS */}
-        <section id="testimonials" className="mb-40 px-6">
-          <div className="max-w-7xl mx-auto text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-zinc-900 mb-6">Transformez vos clients heureux en <br /> nouveaux clients.</h2>
-          </div>
-
-          <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-8">
-            <TestimonialCard
-              quote="Je passais 2h par jour sur les avis. Maintenant 10 minutes. Le ROI est immédiat."
-              author="Marc Dubois"
-              role="Propriétaire, Le Petit Bistro"
-              image="https://i.pravatar.cc/150?u=1"
-            />
-            <TestimonialCard
-              quote="Reput.ai a détecté un avis 1 étoile sur une chambre froide 5 minutes après sa publication. On a réglé ça avant le départ du client."
-              author="Sarah Jenkins"
-              role="DG, Hôtel Horizon"
-              image="https://i.pravatar.cc/150?u=2"
-              highlight
-            />
-            <TestimonialCard
-              quote="La fonction 'Brouillon' est magique. Ça sonne exactement comme moi, sans les fautes."
-              author="David Chen"
-              role="Manager, Blue Bay Resort"
-              image="https://i.pravatar.cc/150?u=3"
-            />
+        {/* FAQ */}
+        <section id="faq" className="mb-40 px-6 max-w-3xl mx-auto">
+          <h3 className="text-3xl font-bold text-center mb-12">Questions fréquentes</h3>
+          <div className="space-y-4">
+            <FAQItem question="Le numéro WhatsApp est-il inclus ?" answer="Oui, nous vous guidons pour connecter votre propre numéro WhatsApp Business ou utiliser notre numéro partagé pour démarrer instantanément." />
+            <FAQItem question="Comment fonctionne le Kit QR ?" answer="Dés votre inscription, nous personnalisons un kit (Chevalet de comptoir + Stickers) que nous vous expédions via Amana (Livraison 24-48h partout au Maroc)." />
+            <FAQItem question="Puis-je annuler à tout moment ?" answer="Absolument. Nos offres mensuelles sont sans engagement. Vous pouvez arrêter quand vous voulez depuis votre espace client." />
+            <FAQItem question="Qu'est-ce que l'Auto-Réponse Google ?" answer="Le Pack Pro permet à l'IA de répondre automatiquement aux avis publiés sur votre fiche Google Maps (Intégration Bientôt Dispatchée). Sur WhatsApp, l'IA assiste déjà nativement tous les échanges." />
           </div>
         </section>
 
@@ -1276,16 +1225,11 @@ export default function LandingPage() {
 
             <div className="relative z-10 max-w-3xl mx-auto space-y-10">
               <h2 className="text-5xl md:text-7xl font-bold tracking-tight">Prêt à prendre le contrôle ?</h2>
-              <p className="text-xl text-zinc-400 max-w-xl mx-auto">Rejoignez +2,000 entreprises qui grandissent avec Reput.ai. Pas de carte requise.</p>
+              <p className="text-xl text-zinc-400 max-w-xl mx-auto">Rejoignez +2,000 entreprises qui grandissent avec ReviewMe. Pas de carte requise.</p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link href="/login?intent=demo" className="w-full sm:w-auto">
+                <Link href="/login" className="w-full sm:w-auto">
                   <Button className="w-full sm:w-auto rounded-full bg-[#E85C33] hover:bg-[#D54D26] text-white px-10 h-16 text-lg font-bold shadow-2xl shadow-orange-500/20">
-                    Réserver une démo
-                  </Button>
-                </Link>
-                <Link href="#demo" className="w-full sm:w-auto">
-                  <Button variant="outline" className="w-full sm:w-auto rounded-full border-zinc-700 text-white hover:bg-zinc-800 hover:text-white px-10 h-16 text-lg font-bold bg-transparent">
-                    Parler à un vendeur
+                    Démarrer l'essai de 14 jours
                   </Button>
                 </Link>
               </div>
@@ -1299,7 +1243,7 @@ export default function LandingPage() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-8">
             <div className="flex items-center gap-2">
               <div className="h-8 w-8 bg-zinc-900 rounded-lg flex items-center justify-center text-white font-bold text-sm">R</div>
-              <span className="font-bold text-zinc-900">Reput.ai</span>
+              <span className="font-bold text-zinc-900">ReviewMe</span>
             </div>
 
             <div className="flex gap-8 text-sm font-semibold text-zinc-500">
@@ -1311,7 +1255,7 @@ export default function LandingPage() {
             </div>
 
             <div className="text-zinc-400 text-sm font-medium">
-              © 2025 Reput.ai Inc.
+              © 2026 ReviewMe Inc.
             </div>
           </div>
         </footer >
@@ -1358,23 +1302,31 @@ function FloatingCard({ className, delay, author, text, stars, accent }: any) {
   )
 }
 
-function TestimonialCard({ quote, author, role, image, highlight }: any) {
+
+function FAQItem({ question, answer }: any) {
+  const [isOpen, setIsOpen] = useState(false)
   return (
-    <div className={cn(
-      "p-10 rounded-[2.5rem] flex flex-col justify-between h-full transition-transform hover:-translate-y-1 duration-300 pointer-events-none md:pointer-events-auto",
-      highlight ? "bg-zinc-900 text-white shadow-2xl" : "bg-white text-zinc-900 border border-zinc-100 shadow-sm"
-    )}>
-      <Quote className={cn("mb-6 opacity-20", highlight ? "text-white" : "text-zinc-900")} size={40} />
-      <p className={cn("text-xl font-medium leading-relaxed mb-8", highlight ? "text-zinc-200" : "text-zinc-600")}>
-        "{quote}"
-      </p>
-      <div className="flex items-center gap-4">
-        <Image src={image} alt={author} width={48} height={48} className="w-12 h-12 rounded-full object-cover ring-2 ring-white/10" />
-        <div>
-          <div className="font-bold">{author}</div>
-          <div className={cn("text-sm", highlight ? "text-zinc-400" : "text-zinc-500")}>{role}</div>
+    <div className="border border-zinc-100 rounded-2xl p-6 bg-white cursor-pointer hover:border-zinc-200 transition-colors" onClick={() => setIsOpen(!isOpen)}>
+      <div className="flex justify-between items-center gap-4">
+        <h4 className="font-bold text-lg text-zinc-900">{question}</h4>
+        <div className={cn("p-2 bg-zinc-50 rounded-full transition-transform duration-300", isOpen && "rotate-180")}>
+          <ChevronDown size={20} className="text-zinc-500" />
         </div>
       </div>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden"
+          >
+            <p className="pt-4 text-zinc-500 leading-relaxed">
+              {answer}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

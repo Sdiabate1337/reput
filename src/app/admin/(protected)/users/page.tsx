@@ -44,7 +44,8 @@ export default async function AdminUsersPage() {
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="w-[100px]">ID</TableHead>
-                                <TableHead>Nom</TableHead>
+                                <TableHead>Nom (Admin)</TableHead>
+                                <TableHead>Email</TableHead>
                                 <TableHead>Plan</TableHead>
                                 <TableHead>Status</TableHead>
                                 <TableHead>Trial Fin</TableHead>
@@ -63,6 +64,9 @@ export default async function AdminUsersPage() {
                                             <span>{est.name}</span>
                                             {est.admin_phone && <span className="text-xs text-zinc-400">{est.admin_phone}</span>}
                                         </div>
+                                    </TableCell>
+                                    <TableCell className="text-sm text-zinc-600">
+                                        {est.user_email}
                                     </TableCell>
                                     <TableCell>
                                         <Badge variant={est.plan === 'pro' || est.plan === 'enterprise' ? 'default' : 'secondary'} className={est.plan === 'pro' ? 'bg-[#E85C33]' : ''}>

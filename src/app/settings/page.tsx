@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Settings, Save, Loader2, MessageSquare, Link as LinkIcon, Copy, CheckCircle2, History, AlertTriangle, RefreshCw } from "lucide-react"
+import { Settings, Save, Loader2, MessageSquare, Link as LinkIcon, Copy, CheckCircle2, History, AlertTriangle, RefreshCw, Sparkles, Star, MessageCircleQuestion, ShieldAlert } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/lib/auth-context"
 import { getEstablishmentByUserId, updateEstablishment } from "@/actions/establishments"
 import { WhatsAppConnectionDialog } from "@/components/dashboard/whatsapp-connection-dialog"
 import { Input } from "@/components/ui/input"
+import { WhatsAppPreview } from "@/components/settings/whatsapp-preview"
+import { MessageEditor } from "@/components/settings/message-editor"
 
 type WhatsAppStatus = 'PENDING' | 'REQUESTED' | 'CODE_SENT' | 'VERIFYING' | 'ACTIVE' | 'FAILED'
 
@@ -15,11 +17,16 @@ export default function SettingsPage() {
     const { user } = useAuth()
     const [isLoading, setIsLoading] = useState(true)
     const [isSaving, setIsSaving] = useState(false)
+    const [activePreview, setActivePreview] = useState<'WELCOME' | 'POSITIVE' | 'NEUTRAL' | 'NEGATIVE'>('WELCOME')
 
     // Data
     const [name, setName] = useState("")
     const [adminPhone, setAdminPhone] = useState("")
     const [googleMapsLink, setGoogleMapsLink] = useState("")
+    const [customMessageNeutral, setCustomMessageNeutral] = useState("")
+    const [customMessageNegative, setCustomMessageNegative] = useState("")
+    const [customMessageWelcome, setCustomMessageWelcome] = useState("")
+    const [customMessagePositive, setCustomMessagePositive] = useState("")
     const [
         whatsappStatus,
         setWhatsappStatus
@@ -47,6 +54,10 @@ export default function SettingsPage() {
                 setName(data.name)
                 setAdminPhone(data.admin_phone || "")
                 setGoogleMapsLink(data.google_maps_link || "")
+                setCustomMessageNeutral(data.custom_message_neutral || "")
+                setCustomMessageNegative(data.custom_message_negative || "")
+                setCustomMessageWelcome(data.custom_message_welcome || "")
+                setCustomMessagePositive(data.custom_message_positive || "")
                 setWhatsappStatus(data.whatsapp_onboarding_status || 'PENDING')
                 setTwilioNumber(data.twilio_number || "")
                 setPlan(data.plan || 'startup')
@@ -71,7 +82,11 @@ export default function SettingsPage() {
             const result = await updateEstablishment(establishmentId, {
                 name,
                 admin_phone: adminPhone,
-                google_maps_link: googleMapsLink
+                google_maps_link: googleMapsLink,
+                custom_message_neutral: customMessageNeutral,
+                custom_message_negative: customMessageNegative,
+                custom_message_welcome: customMessageWelcome,
+                custom_message_positive: customMessagePositive
             })
 
             if (result.success) {
@@ -215,37 +230,78 @@ export default function SettingsPage() {
                                 </div>
                             </div>
 
-                            {/* Subscription Section */}
-                            <div className="pt-6 border-t border-zinc-100">
-                                <h3 className="text-sm font-bold text-zinc-900 mb-4">Abonnement</h3>
-                                <div className="bg-zinc-50 rounded-xl p-4 border border-zinc-100 flex items-center justify-between">
-                                    <div>
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <span className="font-bold text-zinc-900">
-                                                {plan === 'pro' ? 'Plan Pro' : plan === 'enterprise' ? 'Enterprise' : 'Plan Startup'}
-                                            </span>
-                                            {subscriptionStatus === 'TRIAL' && (
-                                                <span className="bg-orange-100 text-orange-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
-                                                    Essai Gratuit
-                                                </span>
-                                            )}
-                                        </div>
-                                        <p className="text-xs text-zinc-500">
-                                            {subscriptionStatus === 'TRIAL' && trialEndsAt ? (
-                                                <>Fin de l'essai le {new Date(trialEndsAt).toLocaleDateString()}</>
-                                            ) : (
-                                                <>Gérez votre facturation et votre plan.</>
-                                            )}
-                                        </p>
+                            <div className="mt-8 pt-8 border-t border-zinc-100">
+                                <h2 className="text-lg md:text-xl font-bold text-zinc-900 mb-6 flex items-center gap-2">
+                                    <MessageSquare size={20} className="text-[#E85C33]" />
+                                    Personnalisation des Messages
+                                </h2>
+
+                                <div className="flex flex-col xl:flex-row gap-8 items-start">
+                                    {/* Left: Editors */}
+                                    <div className="flex-1 space-y-6 w-full">
+
+                                        <MessageEditor
+                                            label="Message de Bienvenue"
+                                            subLabel="Envoyé après un scan QR Code"
+                                            value={customMessageWelcome}
+                                            onChange={setCustomMessageWelcome}
+                                            icon={<Sparkles className="text-purple-500" size={20} />}
+                                            onFocus={() => setActivePreview('WELCOME')}
+                                            color="default"
+                                        />
+
+                                        <MessageEditor
+                                            label="Avis Positif (5/5)"
+                                            subLabel="Demande d'avis Google"
+                                            value={customMessagePositive}
+                                            onChange={setCustomMessagePositive}
+                                            variables={['{{name}}', '{{link}}']}
+                                            icon={<Star className="text-yellow-500 fill-yellow-500" size={20} />}
+                                            onFocus={() => setActivePreview('POSITIVE')}
+                                            color="green"
+                                        />
+
+                                        <MessageEditor
+                                            label="Avis Mitigé (3-4/5)"
+                                            subLabel="Demande de feedback (Privé)"
+                                            value={customMessageNeutral}
+                                            onChange={setCustomMessageNeutral}
+                                            icon={<MessageCircleQuestion className="text-orange-500" size={20} />}
+                                            onFocus={() => setActivePreview('NEUTRAL')}
+                                            color="orange"
+                                        />
+
+                                        <MessageEditor
+                                            label="Avis Négatif (1-2/5)"
+                                            subLabel="Message d'apaisement (Privé)"
+                                            value={customMessageNegative}
+                                            onChange={setCustomMessageNegative}
+                                            icon={<ShieldAlert className="text-red-500" size={20} />}
+                                            onFocus={() => setActivePreview('NEGATIVE')}
+                                            color="red"
+                                        />
+
                                     </div>
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        onClick={() => window.location.href = '/pricing'}
-                                        className="h-9 text-xs"
-                                    >
-                                        Changer de plan
-                                    </Button>
+
+                                    {/* Right: Preview (Sticky) */}
+                                    <div className="hidden xl:block w-[350px] sticky top-8 shrink-0">
+                                        <div className="bg-white rounded-3xl p-6 border border-zinc-200 shadow-sm">
+                                            <h3 className="text-sm font-bold text-zinc-500 mb-4 text-center uppercase tracking-wider">Aperçu en direct</h3>
+                                            <WhatsAppPreview
+                                                message={
+                                                    activePreview === 'WELCOME' ? customMessageWelcome :
+                                                        activePreview === 'POSITIVE' ? customMessagePositive :
+                                                            activePreview === 'NEUTRAL' ? customMessageNeutral :
+                                                                customMessageNegative
+                                                }
+                                                type={activePreview}
+                                                establishmentName={name || "Mon Établissement"}
+                                            />
+                                            <p className="text-center text-xs text-zinc-400 mt-4">
+                                                Ceci est une simulation. L'affichage réel peut varier selon l'appareil du client.
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -266,6 +322,40 @@ export default function SettingsPage() {
                                 </Button>
                             </div>
                         </form>
+                    </div>
+                </div>
+
+                {/* Subscription Section */}
+                <div className="pt-6 border-t border-zinc-100 mt-8">
+                    <h3 className="text-sm font-bold text-zinc-900 mb-4">Abonnement</h3>
+                    <div className="bg-zinc-50 rounded-xl p-4 flex items-center justify-between">
+                        <div>
+                            <div className="flex items-center gap-2 mb-1">
+                                <span className="font-bold text-zinc-900">
+                                    {plan === 'pro' ? 'Plan Pro' : plan === 'enterprise' ? 'Enterprise' : 'Plan Startup'}
+                                </span>
+                                {subscriptionStatus === 'TRIAL' && (
+                                    <span className="bg-orange-100 text-orange-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                                        Essai Gratuit
+                                    </span>
+                                )}
+                            </div>
+                            <p className="text-xs text-zinc-500">
+                                {subscriptionStatus === 'TRIAL' && trialEndsAt ? (
+                                    <>Fin de l'essai le {new Date(trialEndsAt).toLocaleDateString()}</>
+                                ) : (
+                                    <>Gérez votre facturation et votre plan.</>
+                                )}
+                            </p>
+                        </div>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => window.location.href = '/pricing'}
+                            className="h-9 text-xs"
+                        >
+                            Changer de plan
+                        </Button>
                     </div>
                 </div>
             </div>

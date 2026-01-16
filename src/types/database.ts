@@ -9,6 +9,10 @@ export interface Establishment {
     google_maps_link: string | null
     twilio_number: string | null
     admin_phone: string | null
+    custom_message_neutral?: string
+    custom_message_negative?: string
+    custom_message_welcome?: string
+    custom_message_positive?: string
     plan: 'startup' | 'pro' | 'enterprise'
     whatsapp_onboarding_status: 'PENDING' | 'REQUESTED' | 'CODE_SENT' | 'VERIFYING' | 'ACTIVE' | 'FAILED'
     // Subscription

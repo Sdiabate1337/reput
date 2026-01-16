@@ -12,10 +12,13 @@ interface StatsGridProps {
 }
 
 export function StatsGrid({ stats }: StatsGridProps) {
-    // Calculate satisfaction rate (Positive / Total with sentiment)
-    const totalRated = stats.sentimentCounts.POSITIVE + stats.sentimentCounts.NEGATIVE + stats.sentimentCounts.CRITICAL
+    // Calculate satisfaction rate (Positive + Neutral / Total with sentiment)
+    // NOTE: Client considers "Bien" (Neutral) as Positive for satisfaction.
+    const totalRated = stats.sentimentCounts.POSITIVE + stats.sentimentCounts.NEUTRAL + stats.sentimentCounts.NEGATIVE + stats.sentimentCounts.CRITICAL
+    const positiveCount = stats.sentimentCounts.POSITIVE + stats.sentimentCounts.NEUTRAL
+
     const satisfactionRate = totalRated > 0
-        ? Math.round((stats.sentimentCounts.POSITIVE / totalRated) * 100)
+        ? Math.round((positiveCount / totalRated) * 100)
         : 0
 
     const cards = [
@@ -31,7 +34,7 @@ export function StatsGrid({ stats }: StatsGridProps) {
             value: `${satisfactionRate}%`,
             icon: TrendingUp,
             color: satisfactionRate >= 80 ? "green" : satisfactionRate >= 50 ? "yellow" : "red",
-            subtext: `${stats.sentimentCounts.POSITIVE} positifs`
+            subtext: `${positiveCount} positifs (incl. Bien)`
         },
         {
             label: "Avis Critiques",

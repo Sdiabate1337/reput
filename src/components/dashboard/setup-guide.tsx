@@ -76,7 +76,7 @@ export function SetupGuide({ establishment }: SetupGuideProps) {
                         <h3 className="text-xl font-bold">Configuration requise</h3>
                     </div>
                     <p className="text-zinc-400 mb-6 max-w-md">
-                        Pour que Reput.ai fonctionne à 100%, complétez ces étapes indispensables.
+                        Pour que ReviewMe fonctionne à 100%, complétez ces étapes indispensables.
                     </p>
 
                     {/* Progress Bar */}

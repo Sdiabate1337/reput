@@ -248,7 +248,12 @@ export async function getEstablishmentByTwilioNumber(
 
 export async function updateEstablishment(
     id: string,
-    updates: Partial<Pick<Establishment, 'name' | 'google_maps_link' | 'admin_phone'>>
+    updates: Partial<Pick<Establishment, 'name' | 'google_maps_link' | 'admin_phone'>> & {
+        custom_message_neutral?: string
+        custom_message_negative?: string
+        custom_message_welcome?: string
+        custom_message_positive?: string
+    }
 ): Promise<ActionResult> {
     try {
         const userId = await getAuthenticatedUserId()
@@ -278,6 +283,22 @@ export async function updateEstablishment(
         if (updates.admin_phone !== undefined) {
             setClauses.push(`admin_phone = $${paramIndex++}`)
             values.push(updates.admin_phone)
+        }
+        if (updates.custom_message_neutral !== undefined) {
+            setClauses.push(`custom_message_neutral = $${paramIndex++}`)
+            values.push(updates.custom_message_neutral)
+        }
+        if (updates.custom_message_negative !== undefined) {
+            setClauses.push(`custom_message_negative = $${paramIndex++}`)
+            values.push(updates.custom_message_negative)
+        }
+        if (updates.custom_message_welcome !== undefined) {
+            setClauses.push(`custom_message_welcome = $${paramIndex++}`)
+            values.push(updates.custom_message_welcome)
+        }
+        if (updates.custom_message_positive !== undefined) {
+            setClauses.push(`custom_message_positive = $${paramIndex++}`)
+            values.push(updates.custom_message_positive)
         }
 
         if (setClauses.length === 0) {

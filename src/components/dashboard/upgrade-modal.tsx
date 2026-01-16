@@ -22,7 +22,7 @@ export function UpgradeModal({ isOpen, onClose, feature }: UpgradeModalProps) {
                         </div>
                         <DialogTitle className="text-2xl font-bold mb-2">Passez au niveau supérieur</DialogTitle>
                         <DialogDescription className="text-white/80 text-center">
-                            {feature ? `La fonctionnalité "${feature}" est réservée aux membres Pro.` : "Débloquez tout le potentiel de Reput.ai"}
+                            {feature ? `La fonctionnalité "${feature}" est réservée aux membres Pro.` : "Débloquez tout le potentiel de ReviewMe"}
                         </DialogDescription>
                     </div>
                 </div>

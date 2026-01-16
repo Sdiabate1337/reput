@@ -45,14 +45,7 @@ function DashboardContent() {
 
     const router = useRouter()
 
-    // Auto-refresh for live feed (US-4.2)
-    useEffect(() => {
-        const interval = setInterval(() => {
-            router.refresh()
-        }, 15000) // Poll every 15s
-        return () => clearInterval(interval)
-    }, [router])
-
+    // Auto-refresh for live feed
     useEffect(() => {
         async function loadDashboardData() {
             if (!user) return
@@ -61,7 +54,12 @@ function DashboardContent() {
                 // 1. Get Establishment
                 const estResult = await getEstablishmentByUserId()
                 if (estResult.success && estResult.data) {
-                    setEstablishment(estResult.data)
+                    setEstablishment(prev => {
+                        // Only update state if ID changed to avoid unnecessary renders, 
+                        // but for stats we need fresh data.
+                        // Actually, establishment details rarely change.
+                        return prev || estResult.data
+                    })
 
                     // 2. Load Stats
                     const statsResult = await getDashboardStats(estResult.data.id)
@@ -69,16 +67,16 @@ function DashboardContent() {
                         setStats(statsResult.data)
                     }
 
-                    // 3. Load Analytics (Advanced)
+                    // 3. Load Analytics
                     const analyticsResult = await getAnalyticsData(30)
                     if (analyticsResult.success && analyticsResult.data) {
                         setAnalyticsData(analyticsResult.data)
                     }
 
-                    // 4. Load Conversations (Keep for Feed/Data)
+                    // 4. Load Conversations (Live Feed)
                     const convResult = await getConversationsForEstablishment({
                         establishmentId: estResult.data.id,
-                        limit: 20
+                        limit: 50 // Fetch more for the list
                     })
                     if (convResult.success && convResult.data) {
                         setConversations(convResult.data.conversations)
@@ -90,7 +88,16 @@ function DashboardContent() {
                 setIsLoading(false)
             }
         }
+
+        // Initial Load
         loadDashboardData()
+
+        // Polling Interval (5 seconds)
+        const interval = setInterval(() => {
+            loadDashboardData()
+        }, 5000)
+
+        return () => clearInterval(interval)
     }, [user])
 
     if (isLoading) {
@@ -139,12 +146,28 @@ function DashboardContent() {
 
                 {/* Main Charts Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-8">
-                    {analyticsData && <SentimentEvolutionChart data={analyticsData.dailyStats} />}
+                    {/* Charts take 3 columns */}
+                    <div className="lg:col-span-3">
+                        {analyticsData && <SentimentEvolutionChart data={analyticsData.dailyStats} />}
+                    </div>
 
                     {/* Quick Actions (Sidebar on Desktop) */}
                     <div className="hidden lg:block lg:col-span-1">
                         <QuickActions />
                     </div>
+                </div>
+
+                {/* Conversations / Reviews Feed */}
+                <div className="mb-8 px-4 md:px-0">
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-xl font-bold text-zinc-900">Avis Récents</h2>
+                        {/* Optional refresh button indicator */}
+                        <div className="flex items-center gap-2 text-xs text-zinc-400">
+                            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                            En direct
+                        </div>
+                    </div>
+                    <RecentActivity conversations={conversations} initialConversationId={initialConversationId} />
                 </div>
             </div>
             {/* Bottom Nav is now global in AppShell */}

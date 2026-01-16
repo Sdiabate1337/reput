@@ -33,12 +33,15 @@ async function verifyAdmin() {
     return true
 }
 
-export async function getAllEstablishments(): Promise<ActionResult<Establishment[]>> {
+export async function getAllEstablishments(): Promise<ActionResult<(Establishment & { user_email: string })[]>> {
     try {
         await verifyAdmin()
 
-        const establishments = await query<Establishment>(
-            'SELECT * FROM establishments ORDER BY created_at DESC'
+        const establishments = await query<Establishment & { user_email: string }>(
+            `SELECT e.*, u.email as user_email 
+             FROM establishments e 
+             JOIN users u ON e.user_id = u.id 
+             ORDER BY e.created_at DESC`
         )
 
         return { success: true, data: establishments }

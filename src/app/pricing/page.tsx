@@ -55,7 +55,7 @@ export default function PricingPage() {
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2 z-50">
                         <div className="h-10 w-10 bg-zinc-900 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-zinc-900/10">R</div>
-                        <span className="font-bold text-xl tracking-tight text-zinc-900">Reput.ai</span>
+                        <span className="font-bold text-xl tracking-tight text-zinc-900">ReviewMe</span>
                     </Link>
 
                     {/* Desktop Nav */}
@@ -142,7 +142,7 @@ export default function PricingPage() {
                             features={[
                                 "QR Code WhatsApp (Inbound illimité)",
                                 "Dashboard & Stats Live",
-                                "IA: Suggestions de réponses",
+
                                 "1 Kit QR Physique offert",
                                 "Sources: Google"
                             ]}
@@ -230,8 +230,8 @@ export default function PricingPage() {
 
                                 {/* IA & REPONSES */}
                                 <tr className="bg-zinc-50/50"><td colSpan={4} className="py-3 px-6 font-bold text-zinc-500 text-xs uppercase tracking-widest mt-4">Intelligence Artificielle</td></tr>
-                                <TableRow feature="Suggestions de Réponses" starter={true} pro={true} business={true} />
-                                <TableRow feature="Auto-Réponse (Mode Pilote Auto)" starter={false} pro={true} business={true} />
+
+                                <TableRow feature="Auto-Réponse Avis Google" starter={false} pro={true} business={true} />
                                 <TableRow feature="Analyse de Sentiment" starter={true} pro={true} business={true} />
                                 <TableRow feature="Détection Langue" starter={true} pro={true} business={true} />
 
@@ -255,7 +255,7 @@ export default function PricingPage() {
                         <FAQItem question="Le numéro WhatsApp est-il inclus ?" answer="Oui, nous vous guidons pour connecter votre propre numéro WhatsApp Business ou utiliser notre numéro partagé pour démarrer instantanément." />
                         <FAQItem question="Comment fonctionne le Kit QR ?" answer="Dés votre inscription, nous personnalisons un kit (Chevalet de comptoir + Stickers) que nous vous expédions via Amana (Livraison 24-48h partout au Maroc)." />
                         <FAQItem question="Puis-je annuler à tout moment ?" answer="Absolument. Nos offres mensuelles sont sans engagement. Vous pouvez arrêter quand vous voulez depuis votre espace client." />
-                        <FAQItem question="Qu'est-ce que l'Auto-Réponse ?" answer="Avec le Pack Pro, l'IA répond automatiquement aux avis positifs standards. Pour les avis négatifs ou complexes, elle prépare un brouillon que vous devez valider." />
+                        <FAQItem question="Qu'est-ce que l'Auto-Réponse Google ?" answer="Le Pack Pro permet à l'IA de répondre automatiquement aux avis publiés sur votre fiche Google Maps (Intégration Bientôt Dispatchée). Sur WhatsApp, l'IA assiste déjà nativement tous les échanges." />
                     </div>
                 </section>
 
@@ -266,7 +266,7 @@ export default function PricingPage() {
                 <div className="flex flex-col md:flex-row justify-between items-center gap-8">
                     <div className="flex items-center gap-2">
                         <div className="h-8 w-8 bg-zinc-900 rounded-lg flex items-center justify-center text-white font-bold text-sm">R</div>
-                        <span className="font-bold text-zinc-900">Reput.ai</span>
+                        <span className="font-bold text-zinc-900">ReviewMe</span>
                     </div>
 
                     <div className="flex gap-8 text-sm font-semibold text-zinc-500">
@@ -276,7 +276,7 @@ export default function PricingPage() {
                     </div>
 
                     <div className="text-zinc-400 text-sm font-medium">
-                        © 2025 Reput.ai Inc.
+                        © 2026 ReviewMe Inc.
                     </div>
                 </div>
             </footer>

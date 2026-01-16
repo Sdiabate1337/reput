@@ -41,7 +41,7 @@ export async function generateQRCode(
             .replace('whatsapp:', '')
             .replace('+', '')
 
-        const prefilledText = encodeURIComponent(`Avis ${establishment.id.slice(0, 8)}`)
+        const prefilledText = encodeURIComponent(`Bonjour ! Je souhaite donner mon avis ⭐️ (Ref: ${establishment.id.slice(0, 8)})`)
         const waLink = `https://wa.me/${phoneNumber}?text=${prefilledText}`
 
         // Generate QR Code as Data URL
@@ -105,7 +105,7 @@ export async function generateQRCodeByEstablishmentId(
             .replace('whatsapp:', '')
             .replace('+', '')
 
-        const prefilledText = encodeURIComponent(`Avis ${establishment.id.slice(0, 8)}`)
+        const prefilledText = encodeURIComponent(`Bonjour ! Je souhaite donner mon avis ⭐️ (Ref: ${establishment.id.slice(0, 8)})`)
         const waLink = `https://wa.me/${phoneNumber}?text=${prefilledText}`
 
         const qrDataUrl = await QRCode.toDataURL(waLink, {
@@ -166,7 +166,8 @@ export async function generateQRCodeWithRef(
             .replace('+', '')
 
         // Include custom ref in the prefilled message
-        const prefilledText = encodeURIComponent(`Avis ${establishment.id.slice(0, 8)} ${ref}`)
+        // Include custom ref in the prefilled message
+        const prefilledText = encodeURIComponent(`Bonjour ! Je souhaite donner mon avis ⭐️ (Ref: ${establishment.id.slice(0, 8)} ${ref})`)
         const waLink = `https://wa.me/${phoneNumber}?text=${prefilledText}`
 
         const qrDataUrl = await QRCode.toDataURL(waLink, {
