@@ -17,7 +17,7 @@ export default function SettingsPage() {
     const { user } = useAuth()
     const [isLoading, setIsLoading] = useState(true)
     const [isSaving, setIsSaving] = useState(false)
-    const [activePreview, setActivePreview] = useState<'WELCOME' | 'POSITIVE' | 'NEUTRAL' | 'NEGATIVE'>('WELCOME')
+    const [activePreview, setActivePreview] = useState<'WELCOME' | 'POSITIVE' | 'NEUTRAL' | 'NEGATIVE' | 'REQUEST'>('REQUEST')
 
     // Data
     const [name, setName] = useState("")
@@ -28,6 +28,7 @@ export default function SettingsPage() {
     const [customMessageNegative, setCustomMessageNegative] = useState("")
     const [customMessageWelcome, setCustomMessageWelcome] = useState("")
     const [customMessagePositive, setCustomMessagePositive] = useState("")
+    const [customMessageRequest, setCustomMessageRequest] = useState("")
     const [
         whatsappStatus,
         setWhatsappStatus
@@ -60,6 +61,7 @@ export default function SettingsPage() {
                 setCustomMessageNegative(data.custom_message_negative || "")
                 setCustomMessageWelcome(data.custom_message_welcome || "")
                 setCustomMessagePositive(data.custom_message_positive || "")
+                setCustomMessageRequest(data.custom_message_request || "")
                 setWhatsappStatus(data.whatsapp_onboarding_status || 'PENDING')
                 setTwilioNumber(data.twilio_number || "")
                 setPlan(data.plan || 'startup')
@@ -89,7 +91,8 @@ export default function SettingsPage() {
                 custom_message_neutral: customMessageNeutral,
                 custom_message_negative: customMessageNegative,
                 custom_message_welcome: customMessageWelcome,
-                custom_message_positive: customMessagePositive
+                custom_message_positive: customMessagePositive,
+                custom_message_request: customMessageRequest
             })
 
             if (result.success) {
@@ -270,6 +273,17 @@ export default function SettingsPage() {
                                         />
 
                                         <MessageEditor
+                                            label="Message de Relance"
+                                            subLabel="Envoyé manuellement pour demander un avis"
+                                            value={customMessageRequest}
+                                            onChange={setCustomMessageRequest}
+                                            icon={<MessageSquare className="text-blue-500" size={20} />}
+                                            onFocus={() => setActivePreview('REQUEST')}
+                                            variables={['{{name}}']}
+                                            color="default"
+                                        />
+
+                                        <MessageEditor
                                             label="Avis Positif (5/5)"
                                             subLabel="Demande d'avis Google"
                                             value={customMessagePositive}
@@ -311,7 +325,8 @@ export default function SettingsPage() {
                                                     activePreview === 'WELCOME' ? customMessageWelcome :
                                                         activePreview === 'POSITIVE' ? customMessagePositive :
                                                             activePreview === 'NEUTRAL' ? customMessageNeutral :
-                                                                customMessageNegative
+                                                                activePreview === 'NEGATIVE' ? customMessageNegative :
+                                                                    customMessageRequest // REQUEST
                                                 }
                                                 type={activePreview}
                                                 establishmentName={name || "Mon Établissement"}

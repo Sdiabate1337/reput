@@ -5,6 +5,7 @@ import { getEstablishmentByUserId } from '@/actions/establishments'
 import { sendWhatsAppTemplate, formatPhoneForWhatsApp, sendWhatsAppMessage } from '@/lib/twilio'
 import type { ActionResult, Establishment } from '@/types/database'
 import { checkQuota } from '@/lib/access-control'
+import { getOrCreateConversation } from '@/actions/conversations'
 
 // ===========================================
 // Send Manual Review Request (Manual Relance)
@@ -30,24 +31,28 @@ export async function sendReviewRequest(params: {
         // 2. Format Phone
         const formattedPhone = formatPhoneForWhatsApp(params.clientPhone)
 
+        // 2.5 Ensure Conversation Exists with the Correct Name
+        // This ensures that when the client replies, we know who they are (used for Admin Alerts)
+        await getOrCreateConversation({
+            establishmentId: establishment.id,
+            clientPhone: formattedPhone,
+            clientName: params.clientName, // Store the manual name!
+            source: 'MANUAL_SEND'
+        })
+
         // 3. Send Message via Twilio
-        // NOTE: For MVP Sandbox, we can use free-form messages if the user has joined the sandbox.
-        // In Prod, we MUST use a Template.
-        // We will simulate a Template send here using sendWhatsAppMessage for Sandbox convenience,
-        // unless we have a specific template SID.
-
         // TEMPLATE STRATEGY FOR MVP:
-        // Use a simple text message that looks like a template.
-        // "Bonjour [Name], merci de votre visite chez [Establishment]. Un avis ? [Link]"
-        // But since we can't initiate free-form without user prior approval in Prod...
-        // We'll stick to the "Correct" way: Templates.
-        // HOWEVER: Twilio Sandbox allows free-form to sandbox participants.
+        // Use the Interactive Template (Buttons) created via API.
+        // SID: HX2e9d29527925e8e58e64ae24981ce8c6
+        // Variables: 1: ClientName, 2: EstablishmentName
 
-        const messageBody = `Bonjour ${params.clientName}, merci de votre visite chez ${establishment.name}. Tout s'est bien passé ?`
-
-        const twilioResult = await sendWhatsAppMessage({
+        const twilioResult = await sendWhatsAppTemplate({
             to: formattedPhone,
-            body: messageBody
+            templateSid: 'HX2e9d29527925e8e58e64ae24981ce8c6',
+            contentVariables: {
+                '1': params.clientName,
+                '2': establishment.name
+            }
         })
 
         if (!twilioResult.success) {

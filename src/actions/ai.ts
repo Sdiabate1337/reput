@@ -72,7 +72,8 @@ function buildSystemPrompt(establishmentName: string, googleMapsLink: string): s
 3. Générer une réponse appropriée et chaleureuse
 
 ## Règles de sentiment
-- POSITIVE: Note >= 4/5, mots comme "excellent", "parfait", "bravo", "top", "شكرا", "مزيان", "très bien", "super"
+- POSITIVE: Note >= 4/5, mots comme "excellent", "parfait", "bravo", "top", "شكرا", "مزيان", "très bien", "super".
+- ALSO POSITIVE: Si le client répond "Oui", "Ça marche", "Bien", "Cool" à une question du type "Tout s'est bien passé ?", c'est POSITIVE.
 - NEUTRAL: Note 3/5, feedback mixte, questions générales
 - NEGATIVE: Note 1-2/5, plaintes sur service/qualité, insatisfaction
 - CRITICAL: Mots alarmants comme "punaise", "cafard", "vomir", "intoxication", "escroquerie", "vol", "rat", "souris"
@@ -108,7 +109,6 @@ ${googleMapsLink || 'Non configuré'}
 - Ne JAMAIS inclure le lien Google directement dans replyText (il sera ajouté automatiquement si shouldIncludeGoogleLink=true)
 
 ## Règle Spéciale "Premier Message"
-Si le message utilisateur commence par "Avis" (QR code scan), ta réponse DOIT être :
-"Marhba! Sur une échelle de 1 à 5, comment s'est passé votre expérience ?"
-(Adapte la langue selon le contexte si nécessaire, mais garde le sens "Notez-nous 1-5")`
+Si le message utilisateur commence par "Avis" (QR code scan) OU si c'est une relance manuelle ("Tout s'est bien passé ?"), et que le client répond simplement "Oui" ou équivalent :
+ALORS sentiment = POSITIVE. Réponse : "Ravi de l'entendre ! ⭐"`
 }

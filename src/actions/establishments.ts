@@ -253,56 +253,22 @@ export async function updateEstablishment(
         custom_message_negative?: string
         custom_message_welcome?: string
         custom_message_positive?: string
+        custom_message_request?: string
     }
 ): Promise<ActionResult> {
     try {
         const userId = await getAuthenticatedUserId()
+        // ... (Verification)
+        // ...
 
-        // Verify ownership
-        const establishment = await queryOne<Establishment>(
-            'SELECT id FROM establishments WHERE id = $1 AND user_id = $2',
-            [id, userId]
-        )
-
-        if (!establishment) {
-            return { success: false, error: 'Non autorisé' }
-        }
-
-        const setClauses: string[] = []
-        const values: unknown[] = []
-        let paramIndex = 1
-
-        if (updates.name !== undefined) {
-            setClauses.push(`name = $${paramIndex++}`)
-            values.push(updates.name)
-        }
-        if (updates.google_maps_link !== undefined) {
-            setClauses.push(`google_maps_link = $${paramIndex++}`)
-            values.push(updates.google_maps_link)
-        }
-        if (updates.google_place_id !== undefined) {
-            setClauses.push(`google_place_id = $${paramIndex++}`)
-            values.push(updates.google_place_id)
-        }
-        if (updates.admin_phone !== undefined) {
-            setClauses.push(`admin_phone = $${paramIndex++}`)
-            values.push(updates.admin_phone)
-        }
-        if (updates.custom_message_neutral !== undefined) {
-            setClauses.push(`custom_message_neutral = $${paramIndex++}`)
-            values.push(updates.custom_message_neutral)
-        }
-        if (updates.custom_message_negative !== undefined) {
-            setClauses.push(`custom_message_negative = $${paramIndex++}`)
-            values.push(updates.custom_message_negative)
-        }
-        if (updates.custom_message_welcome !== undefined) {
-            setClauses.push(`custom_message_welcome = $${paramIndex++}`)
-            values.push(updates.custom_message_welcome)
-        }
+        // ... inside setClauses logic ...
         if (updates.custom_message_positive !== undefined) {
             setClauses.push(`custom_message_positive = $${paramIndex++}`)
             values.push(updates.custom_message_positive)
+        }
+        if (updates.custom_message_request !== undefined) {
+            setClauses.push(`custom_message_request = $${paramIndex++}`)
+            values.push(updates.custom_message_request)
         }
 
         if (setClauses.length === 0) {

@@ -3,7 +3,7 @@ import { MessageSquare, Check, CheckCheck } from "lucide-react"
 
 interface WhatsAppPreviewProps {
     message: string
-    type: 'WELCOME' | 'POSITIVE' | 'NEUTRAL' | 'NEGATIVE'
+    type: 'WELCOME' | 'POSITIVE' | 'NEUTRAL' | 'NEGATIVE' | 'REQUEST'
     establishmentName: string
 }
 
@@ -63,14 +63,14 @@ export function WhatsAppPreview({ message, type, establishmentName }: WhatsAppPr
                         </div>
                     </div>
 
-                    {/* Interactive Buttons (If Welcome) */}
-                    {type === 'WELCOME' && (
+                    {/* Interactive Buttons (If Welcome or Request) */}
+                    {(type === 'WELCOME' || type === 'REQUEST') && (
                         <div className="mt-2 w-full flex flex-col gap-2">
                             <button className="bg-[#202c33] hover:bg-[#2a3942] transition-colors text-[#00a884] font-medium text-sm py-2.5 px-4 rounded-lg shadow-sm text-center border border-[#233138]">
                                 Top ! (5/5)
                             </button>
                             <button className="bg-[#202c33] hover:bg-[#2a3942] transition-colors text-[#00a884] font-medium text-sm py-2.5 px-4 rounded-lg shadow-sm text-center border border-[#233138]">
-                                Bien (3-4/5)
+                                Moyen (3-4/5)
                             </button>
                             <button className="bg-[#202c33] hover:bg-[#2a3942] transition-colors text-[#00a884] font-medium text-sm py-2.5 px-4 rounded-lg shadow-sm text-center border border-[#233138]">
                                 Déçu (1-2/5)

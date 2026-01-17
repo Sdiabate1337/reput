@@ -1,15 +1,15 @@
 
-import { NextResponse } from 'next/server'
 import { execute } from '@/lib/db'
+import { NextResponse } from 'next/server'
 
 export async function GET() {
     try {
         await execute(`
             ALTER TABLE establishments 
-            ADD COLUMN IF NOT EXISTS google_place_id VARCHAR(255);
+            ADD COLUMN IF NOT EXISTS custom_message_request TEXT;
         `)
 
-        return NextResponse.json({ success: true, message: "Added google_place_id column" })
+        return NextResponse.json({ success: true, message: 'Column custom_message_request added' })
     } catch (error: any) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 })
     }

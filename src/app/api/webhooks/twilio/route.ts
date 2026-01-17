@@ -186,7 +186,7 @@ export async function POST(request: NextRequest) {
                 await addMessageToConversation(conversation.id, { role: 'assistant', content: '[CTA Sent] ' + finalPositive })
                 return new NextResponse('<Response></Response>', { headers: { 'Content-Type': 'text/xml' } })
 
-            } else if (cleanBody.includes('Bien') || cleanBody.includes('3-4') || cleanBody === '2') {
+            } else if (cleanBody.includes('Bien') || cleanBody.includes('Moyen') || cleanBody.includes('3-4') || cleanBody === '2') {
                 // RATING 3-4 matches -> Send Link + Feedback Question
 
                 // USE TRACKING LINK
@@ -230,6 +230,23 @@ export async function POST(request: NextRequest) {
                     to: from.replace('whatsapp:', ''),
                     body: responseText
                 }))
+
+                // ALERT ADMIN (US-5.2)
+                if (establishment.admin_phone) {
+                    console.log(`[Twilio Webhook] Sending Admin Alert to ${establishment.admin_phone} for conversation ${conversation.id}`)
+                    try {
+                        await import('@/lib/twilio').then(mod => mod.sendWhatsAppTemplate({
+                            to: establishment.admin_phone!.replace('whatsapp:', ''), // Support both with/without prefix
+                            templateSid: 'HX5d4167524642530159aee640f417b8f5',
+                            contentVariables: {
+                                '1': profileName || 'Client Inconnu',
+                                '2': conversation.id
+                            }
+                        }))
+                    } catch (err) {
+                        console.error("[Twilio Webhook] Failed to send Admin Alert:", err)
+                    }
+                }
 
                 await addMessageToConversation(conversation.id, { role: 'assistant', content: responseText })
                 return new NextResponse('<Response></Response>', { headers: { 'Content-Type': 'text/xml' } })

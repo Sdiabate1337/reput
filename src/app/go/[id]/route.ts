@@ -17,11 +17,17 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         [establishmentId]
     ).then(rows => rows[0])
 
-    // Generate Smart Review Link if Place ID is available
-    let destination = est?.google_maps_link || 'https://google.com'
-    if (est?.google_place_id) {
+    // Generate Smart Review Link
+    // Priority 1: If the user explicitly provided a "Review Link" (e.g. g.page/.../review), use it.
+    // This allows users to use "Magic Links" that might have better behavior (like pre-filled stars) than the standard Place ID link.
+    const rawLink = est?.google_maps_link || ''
+    let destination = rawLink || 'https://google.com'
+
+    if (rawLink.includes('/review')) {
+        console.log(`[Redirect] Using User Configured Review Link: ${destination}`)
+    } else if (est?.google_place_id) {
         destination = `https://search.google.com/local/writereview?placeid=${est.google_place_id}`
-        console.log(`[Redirect] Using Smart Review Link: ${destination}`)
+        console.log(`[Redirect] Using Smart Review Link from Place ID: ${destination}`)
     } else {
         console.log(`[Redirect] Fallback to Maps Link: '${destination}'`)
     }

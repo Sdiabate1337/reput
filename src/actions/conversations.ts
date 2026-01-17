@@ -37,8 +37,14 @@ export async function getOrCreateConversation(params: {
         )
 
         if (existing) {
-            // Update client name if provided and missing/different
-            if (params.clientName && existing.client_name !== params.clientName) {
+            // Update client name if provided.
+            // Priority Rule:
+            // 1. If currently missing (!existing.client_name), always update.
+            // 2. If source is MANUAL_SEND, always overwrite (Merchant input > WhatsApp Profile).
+            const isManualOverride = params.source === 'MANUAL_SEND'
+            const isMissingName = !existing.client_name
+
+            if (params.clientName && (isMissingName || isManualOverride)) {
                 await execute(
                     `UPDATE conversations SET client_name = $1 WHERE id = $2`,
                     [params.clientName, existing.id]
