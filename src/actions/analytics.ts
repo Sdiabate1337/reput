@@ -13,7 +13,6 @@ export interface DailyStats {
     positive: number
     negative: number
     neutral: number
-    neutral: number
     critical: number
     clicks: number
 }
@@ -81,7 +80,6 @@ export async function getAnalyticsData(days = 30): Promise<ActionResult<Analytic
                 total: 0,
                 positive: 0,
                 negative: 0,
-                neutral: 0,
                 neutral: 0,
                 critical: 0,
                 clicks: 0

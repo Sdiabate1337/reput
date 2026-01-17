@@ -43,15 +43,22 @@ export async function sendReviewRequest(params: {
         // 3. Send Message via Twilio
         // TEMPLATE STRATEGY FOR MVP:
         // Use the Interactive Template (Buttons) created via API.
-        // SID: HX2e9d29527925e8e58e64ae24981ce8c6
-        // Variables: 1: ClientName, 2: EstablishmentName
+        // SID: HXd666da6c94f77a81e3973fe1f07f814f
+        // Variables: 1: Full Message Body
+
+        const defaultMessage = `Bonjour {{name}}, merci de votre visite chez {{establishment}}. Tout s'est bien passé ?`
+        const rawMessage = establishment.custom_message_request || defaultMessage
+
+        // Replace variables
+        const finalMessage = rawMessage
+            .replace('{{name}}', params.clientName)
+            .replace('{{establishment}}', establishment.name)
 
         const twilioResult = await sendWhatsAppTemplate({
             to: formattedPhone,
-            templateSid: 'HX2e9d29527925e8e58e64ae24981ce8c6',
+            templateSid: 'HXd666da6c94f77a81e3973fe1f07f814f',
             contentVariables: {
-                '1': params.clientName,
-                '2': establishment.name
+                '1': finalMessage
             }
         })
 

@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { CardHeader, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { n8nService } from "@/lib/services/n8n"
+
 
 interface ReviewCardProps {
     review: Review;
@@ -32,41 +32,8 @@ interface ReviewCardProps {
 }
 
 export function ReviewCard({ review, onStatusChange }: ReviewCardProps) {
-    const [draft, setDraft] = useState(review.draftResponse || "")
-    const [isRegenerating, setIsRegenerating] = useState(false)
-    const [isPublishing, setIsPublishing] = useState(false)
+    // AI Logic removed due to n8n deprecation
 
-    const handleRegenerate = async () => {
-        setIsRegenerating(true)
-        try {
-            const res = await n8nService.regenerateDraft(review.id, review.content, draft)
-            if (res.success && res.data?.draft) {
-                setDraft(res.data.draft)
-            }
-        } catch (error) {
-            console.error("Failed to regenerate", error)
-        } finally {
-            setIsRegenerating(false)
-        }
-    }
-
-    const handlePublish = async () => {
-        console.log("Publish button clicked for review:", review.id)
-        setIsPublishing(true)
-        try {
-            const res = await n8nService.publishResponse(review.id, draft, review.source)
-            console.log("Publish response:", res)
-            if (res.success) {
-                onStatusChange(review.id, 'published')
-            } else {
-                console.error("Publish failed logic:", res.message)
-            }
-        } catch (error) {
-            console.error("Failed to publish", error)
-        } finally {
-            setIsPublishing(false)
-        }
-    }
 
     return (
         <motion.div

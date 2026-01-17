@@ -1,7 +1,7 @@
 
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { CheckCircle2, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -10,6 +10,18 @@ import { execute } from "@/lib/db" // Wait, cannot use db in client component.
 // We need a server component or a server action to verify/update.
 
 export default function PaymentSuccessPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center bg-[#FDFCF8]">
+                <Loader2 className="animate-spin text-[#E85C33]" size={32} />
+            </div>
+        }>
+            <PaymentSuccessContent />
+        </Suspense>
+    )
+}
+
+function PaymentSuccessContent() {
     const searchParams = useSearchParams()
     const router = useRouter()
     const [status, setStatus] = useState<'verifying' | 'success' | 'error'>('verifying')
