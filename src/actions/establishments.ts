@@ -261,7 +261,39 @@ export async function updateEstablishment(
         // ... (Verification)
         // ...
 
-        // ... inside setClauses logic ...
+        const setClauses: string[] = []
+        const values: any[] = []
+        let paramIndex = 1
+
+        if (updates.name) {
+            setClauses.push(`name = $${paramIndex++}`)
+            values.push(updates.name)
+        }
+        if (updates.google_maps_link) {
+            setClauses.push(`google_maps_link = $${paramIndex++}`)
+            values.push(updates.google_maps_link)
+        }
+        if (updates.google_place_id) {
+            setClauses.push(`google_place_id = $${paramIndex++}`)
+            values.push(updates.google_place_id)
+        }
+        if (updates.admin_phone) {
+            setClauses.push(`admin_phone = $${paramIndex++}`)
+            values.push(updates.admin_phone)
+        }
+        // Custom Messages
+        if (updates.custom_message_neutral !== undefined) {
+            setClauses.push(`custom_message_neutral = $${paramIndex++}`)
+            values.push(updates.custom_message_neutral)
+        }
+        if (updates.custom_message_negative !== undefined) {
+            setClauses.push(`custom_message_negative = $${paramIndex++}`)
+            values.push(updates.custom_message_negative)
+        }
+        if (updates.custom_message_welcome !== undefined) {
+            setClauses.push(`custom_message_welcome = $${paramIndex++}`)
+            values.push(updates.custom_message_welcome)
+        }
         if (updates.custom_message_positive !== undefined) {
             setClauses.push(`custom_message_positive = $${paramIndex++}`)
             values.push(updates.custom_message_positive)

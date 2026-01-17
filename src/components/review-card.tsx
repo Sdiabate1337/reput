@@ -25,7 +25,6 @@ import { Button } from "@/components/ui/button"
 import { CardHeader, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
-
 interface ReviewCardProps {
     review: Review;
     onStatusChange: (id: string, newStatus: ReviewStatus) => void;
@@ -33,7 +32,6 @@ interface ReviewCardProps {
 
 export function ReviewCard({ review, onStatusChange }: ReviewCardProps) {
     // AI Logic removed due to n8n deprecation
-
 
     return (
         <motion.div
@@ -130,70 +128,6 @@ export function ReviewCard({ review, onStatusChange }: ReviewCardProps) {
                         ))}
                     </div>
                 </CardContent>
-
-                {/* AI Draft Response Section (Only for pending reviews) */}
-                {review.status === 'pending' && (
-                    <div className="px-5 pb-5">
-                        <div className="p-4 rounded-2xl bg-[#FFF8F6] border border-orange-100/60 dark:bg-orange-900/10 dark:border-orange-500/10">
-                            <div className="flex items-center justify-between mb-3">
-                                <div className="flex items-center gap-2">
-                                    <div className="p-1.5 bg-orange-100 rounded-lg">
-                                        <Sparkles size={12} className="text-[#E85C33] fill-orange-500" />
-                                    </div>
-                                    <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100">Suggested Response</span>
-                                </div>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-7 w-7 text-orange-400 hover:text-[#E85C33] hover:bg-orange-50 rounded-full"
-                                    onClick={handleRegenerate}
-                                    disabled={isRegenerating}
-                                >
-                                    <RotateCw size={12} className={cn(isRegenerating && "animate-spin")} />
-                                </Button>
-                            </div>
-
-                            {isRegenerating ? (
-                                <div className="h-20 flex flex-col items-center justify-center gap-2">
-                                    <Loader2 size={16} className="text-[#E85C33] animate-spin" />
-                                    <span className="text-xs text-orange-400 font-medium">Generating magic response...</span>
-                                </div>
-                            ) : (
-                                <textarea
-                                    className="w-full bg-transparent text-[13px] leading-relaxed text-zinc-700 dark:text-zinc-300 resize-none focus:outline-none min-h-[80px] placeholder:text-zinc-400"
-                                    value={draft}
-                                    onChange={(e) => setDraft(e.target.value)}
-                                    placeholder="Drafting response..."
-                                />
-                            )}
-
-                            <div className="flex gap-2 mt-4 pt-3 border-t border-orange-100/50 dark:border-orange-500/10">
-                                <Button
-                                    size="sm"
-                                    className="flex-1 h-9 text-xs bg-[#E85C33] hover:bg-[#d94a20] text-white shadow-lg shadow-orange-500/20 rounded-xl font-bold transition-all active:scale-[0.98]"
-                                    onClick={handlePublish}
-                                    disabled={isPublishing || isRegenerating || !draft}
-                                >
-                                    {isPublishing ? (
-                                        <>Publishing...</>
-                                    ) : (
-                                        <><Send size={12} className="mr-2" /> Publish to Google</>
-                                    )}
-                                </Button>
-                                <Button
-                                    size="sm"
-                                    variant="outline"
-                                    className="h-9 w-9 p-0 rounded-xl border-orange-200 text-orange-600 hover:bg-orange-50 hover:text-orange-700 hover:border-orange-300"
-                                    onClick={() => {
-                                        navigator.clipboard.writeText(draft)
-                                    }}
-                                >
-                                    <Copy size={14} />
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                )}
 
                 {/* Published Response Section */}
                 {review.status === 'published' && (review.publishedResponse || review.draftResponse) && (

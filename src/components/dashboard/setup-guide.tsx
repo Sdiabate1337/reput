@@ -97,41 +97,41 @@ export function SetupGuide({ establishment }: SetupGuideProps) {
                         const props = step.href ? { href: step.href } : { onClick: step.action }
 
                         return (
-                            <// @ts-ignore
-                Wrapper
-                key={step.key}
-                {...props}
-                className={cn(
-                    "flex items-center justify-between p-3 rounded-xl border transition-all select-none",
-                    step.isDone
-                        ? "bg-white/5 border-white/5 text-zinc-400 cursor-default"
-                        : step.highlight
-                            ? "bg-orange-500/10 border-orange-500/50 text-white animate-pulse cursor-pointer"
-                            : "bg-white/10 border-white/20 hover:bg-white/15 text-white hover:scale-[1.02] cursor-pointer"
-                )}
+                            // @ts-ignore
+                            <Wrapper
+                                key={step.key}
+                                {...props}
+                                className={cn(
+                                    "flex items-center justify-between p-3 rounded-xl border transition-all select-none",
+                                    step.isDone
+                                        ? "bg-white/5 border-white/5 text-zinc-400 cursor-default"
+                                        : step.highlight
+                                            ? "bg-orange-500/10 border-orange-500/50 text-white animate-pulse cursor-pointer"
+                                            : "bg-white/10 border-white/20 hover:bg-white/15 text-white hover:scale-[1.02] cursor-pointer"
+                                )}
                             >
-                <div className="flex items-center gap-3">
-                    <div className={cn("w-5 h-5 rounded-full flex items-center justify-center border", step.isDone ? "bg-green-500/20 border-green-500 text-green-500" : "border-zinc-500 text-transparent")}>
-                        <step.icon size={12} />
-                    </div>
-                    <div className="text-sm">
-                        <div className={cn("font-medium", step.isDone && "line-through")}>{step.label}</div>
-                        {!step.isDone && <div className="text-[10px] text-zinc-400">{step.description}</div>}
-                    </div>
-                </div>
-                {!step.isDone && <ChevronRight size={16} className="text-zinc-500" />}
-            </Wrapper>
-            )
+                                <div className="flex items-center gap-3">
+                                    <div className={cn("w-5 h-5 rounded-full flex items-center justify-center border", step.isDone ? "bg-green-500/20 border-green-500 text-green-500" : "border-zinc-500 text-transparent")}>
+                                        <step.icon size={12} />
+                                    </div>
+                                    <div className="text-sm">
+                                        <div className={cn("font-medium", step.isDone && "line-through")}>{step.label}</div>
+                                        {!step.isDone && <div className="text-[10px] text-zinc-400">{step.description}</div>}
+                                    </div>
+                                </div>
+                                {!step.isDone && <ChevronRight size={16} className="text-zinc-500" />}
+                            </Wrapper>
+                        )
                     })}
-        </div>
+                </div>
             </div >
 
-        <WhatsAppConnectionDialog
-            open={isWhatsAppDialogOpen}
-            onOpenChange={setIsWhatsAppDialogOpen}
-            establishmentId={establishment.id}
-            currentStatus={waStatus}
-        />
+            <WhatsAppConnectionDialog
+                open={isWhatsAppDialogOpen}
+                onOpenChange={setIsWhatsAppDialogOpen}
+                establishmentId={establishment.id}
+                currentStatus={waStatus}
+            />
         </div >
     )
 }

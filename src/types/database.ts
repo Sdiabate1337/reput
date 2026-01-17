@@ -15,7 +15,7 @@ export interface Establishment {
     custom_message_welcome?: string
     custom_message_positive?: string
     custom_message_request?: string // NEW: For manual review request customization
-    custom_message_positive?: string
+
     plan: 'startup' | 'pro' | 'enterprise'
     whatsapp_onboarding_status: 'PENDING' | 'REQUESTED' | 'CODE_SENT' | 'VERIFYING' | 'ACTIVE' | 'FAILED'
     // Subscription

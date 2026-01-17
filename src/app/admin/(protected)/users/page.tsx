@@ -7,6 +7,8 @@ import { formatDistanceToNow } from "date-fns"
 import { fr } from "date-fns/locale"
 import { AlertCircle, CheckCircle2 } from "lucide-react"
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminUsersPage() {
 
     // Server-side fetch (Protected by check in action)

@@ -9,7 +9,7 @@ import { StatsGrid } from "@/components/dashboard/stats-grid"
 import { RecentActivity } from "@/components/dashboard/recent-activity"
 import { QuickActions } from "@/components/dashboard/quick-actions"
 // BottomNav removed (global)
-import type { Conversation, Sentiment, ConversationStatus } from "@/types/database"
+import type { Conversation, Sentiment, ConversationStatus, Establishment } from "@/types/database"
 import { Loader2 } from "lucide-react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { DateRangePicker } from "@/components/dashboard/date-range-picker"
@@ -57,7 +57,7 @@ function DashboardContent() {
                 // 1. Get Establishment
                 const estResult = await getEstablishmentByUserId()
                 if (estResult.success && estResult.data) {
-                    setEstablishment(prev => {
+                    setEstablishment((prev: Establishment | null) => {
                         // Only update state if ID changed to avoid unnecessary renders, 
                         // but for stats we need fresh data.
                         // Actually, establishment details rarely change.

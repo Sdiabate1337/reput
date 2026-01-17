@@ -23,6 +23,7 @@ export interface AnalyticsData {
     totalClicks: number
     averageSentiment: number // 0-100 score
     responseRate: number // Percentage
+    avgResponseTime: number | null
 }
 
 export async function getAnalyticsData(days = 30): Promise<ActionResult<AnalyticsData>> {
