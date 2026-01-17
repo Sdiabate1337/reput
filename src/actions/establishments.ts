@@ -248,7 +248,7 @@ export async function getEstablishmentByTwilioNumber(
 
 export async function updateEstablishment(
     id: string,
-    updates: Partial<Pick<Establishment, 'name' | 'google_maps_link' | 'admin_phone'>> & {
+    updates: Partial<Pick<Establishment, 'name' | 'google_maps_link' | 'google_place_id' | 'admin_phone'>> & {
         custom_message_neutral?: string
         custom_message_negative?: string
         custom_message_welcome?: string
@@ -279,6 +279,10 @@ export async function updateEstablishment(
         if (updates.google_maps_link !== undefined) {
             setClauses.push(`google_maps_link = $${paramIndex++}`)
             values.push(updates.google_maps_link)
+        }
+        if (updates.google_place_id !== undefined) {
+            setClauses.push(`google_place_id = $${paramIndex++}`)
+            values.push(updates.google_place_id)
         }
         if (updates.admin_phone !== undefined) {
             setClauses.push(`admin_phone = $${paramIndex++}`)

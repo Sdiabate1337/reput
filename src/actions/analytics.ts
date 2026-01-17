@@ -13,12 +13,15 @@ export interface DailyStats {
     positive: number
     negative: number
     neutral: number
+    neutral: number
     critical: number
+    clicks: number
 }
 
 export interface AnalyticsData {
     dailyStats: DailyStats[]
     totalVolume: number
+    totalClicks: number
     averageSentiment: number // 0-100 score
     responseRate: number // Percentage
 }
@@ -50,6 +53,21 @@ export async function getAnalyticsData(days = 30): Promise<ActionResult<Analytic
             ORDER BY 1 ASC
         `, [establishmentId])
 
+        // Fetch Redirect Clicks
+        const clicks = await query<{
+            day: Date
+            count: string
+        }>(`
+            SELECT 
+                DATE_TRUNC('day', created_at) as day,
+                COUNT(*) as count
+            FROM redirect_events
+            WHERE 
+                establishment_id = $1
+                AND created_at >= NOW() - INTERVAL '${days} days'
+            GROUP BY 1
+        `, [establishmentId])
+
         // Process data into DailyStats
         const dailyMap = new Map<string, DailyStats>()
 
@@ -64,11 +82,14 @@ export async function getAnalyticsData(days = 30): Promise<ActionResult<Analytic
                 positive: 0,
                 negative: 0,
                 neutral: 0,
-                critical: 0
+                neutral: 0,
+                critical: 0,
+                clicks: 0
             })
         }
 
         let totalVolume = 0
+        let totalClicks = 0
         let totalScore = 0
         let scoredCount = 0
 
@@ -102,6 +123,17 @@ export async function getAnalyticsData(days = 30): Promise<ActionResult<Analytic
             }
         })
 
+        // Merge Clicks into daily map
+        clicks.forEach(row => {
+            const dateStr = new Date(row.day).toISOString().split('T')[0]
+            const count = parseInt(row.count)
+            const dayStat = dailyMap.get(dateStr)
+            if (dayStat) {
+                dayStat.clicks += count
+                totalClicks += count
+            }
+        })
+
         const dailyStats = Array.from(dailyMap.values())
         const averageSentiment = scoredCount > 0 ? Math.round(totalScore / scoredCount) : 0
 
@@ -119,12 +151,12 @@ export async function getAnalyticsData(days = 30): Promise<ActionResult<Analytic
             data: {
                 dailyStats,
                 totalVolume,
+                totalClicks,
                 averageSentiment,
                 responseRate: totalVolume > 0 ? responseRate : 0,
-                avgResponseTime: totalVolume > 0 ? 2 : null // Mocking 2min only if there is activity
+                avgResponseTime: totalVolume > 0 ? 2 : null
             }
         }
-
     } catch (error) {
         console.error("Analytics fetch error:", error)
         return { success: false, error: "Erreur lors du chargement des stats" }

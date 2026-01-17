@@ -7,6 +7,7 @@ export interface Establishment {
     user_id: string
     name: string
     google_maps_link: string | null
+    google_place_id?: string | null // NEW: For optimized review link (5-star popup)
     twilio_number: string | null
     admin_phone: string | null
     custom_message_neutral?: string

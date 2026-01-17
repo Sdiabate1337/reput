@@ -23,6 +23,7 @@ export default function SettingsPage() {
     const [name, setName] = useState("")
     const [adminPhone, setAdminPhone] = useState("")
     const [googleMapsLink, setGoogleMapsLink] = useState("")
+    const [googlePlaceId, setGooglePlaceId] = useState("")
     const [customMessageNeutral, setCustomMessageNeutral] = useState("")
     const [customMessageNegative, setCustomMessageNegative] = useState("")
     const [customMessageWelcome, setCustomMessageWelcome] = useState("")
@@ -54,6 +55,7 @@ export default function SettingsPage() {
                 setName(data.name)
                 setAdminPhone(data.admin_phone || "")
                 setGoogleMapsLink(data.google_maps_link || "")
+                setGooglePlaceId(data.google_place_id || "")
                 setCustomMessageNeutral(data.custom_message_neutral || "")
                 setCustomMessageNegative(data.custom_message_negative || "")
                 setCustomMessageWelcome(data.custom_message_welcome || "")
@@ -83,6 +85,7 @@ export default function SettingsPage() {
                 name,
                 admin_phone: adminPhone,
                 google_maps_link: googleMapsLink,
+                google_place_id: googlePlaceId,
                 custom_message_neutral: customMessageNeutral,
                 custom_message_negative: customMessageNegative,
                 custom_message_welcome: customMessageWelcome,
@@ -228,6 +231,22 @@ export default function SettingsPage() {
                                         className="h-12 bg-zinc-50 border-zinc-200 text-base"
                                     />
                                 </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-zinc-700 flex items-center justify-between">
+                                    <span>Google Place ID (Optionnel)</span>
+                                    <a href="https://developers.google.com/maps/documentation/places/web-service/place-id" target="_blank" rel="noopener noreferrer" className="text-xs text-blue-500 font-normal hover:underline">
+                                        Comment le trouver ?
+                                    </a>
+                                </label>
+                                <Input
+                                    value={googlePlaceId}
+                                    onChange={(e) => setGooglePlaceId(e.target.value)}
+                                    placeholder="Ex: ChIJ..."
+                                    className="h-12 bg-zinc-50 border-zinc-200 text-base font-mono"
+                                />
+                                <p className="text-[10px] text-zinc-400 font-medium">Recommandé pour rediriger directement vers la fenêtre "5 étoiles".</p>
                             </div>
 
                             <div className="mt-8 pt-8 border-t border-zinc-100">

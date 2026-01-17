@@ -15,6 +15,8 @@ import { useSearchParams, useRouter } from "next/navigation"
 import { DateRangePicker } from "@/components/dashboard/date-range-picker"
 import { SentimentEvolutionChart } from "@/components/dashboard/charts/sentiment-evolution"
 import { AnalyticsKPI } from "@/components/dashboard/charts/analytics-kpi"
+import { ShowcaseModal } from "@/components/dashboard/showcase-modal"
+import { Share2 } from "lucide-react"
 
 import { SetupGuide } from "@/components/dashboard/setup-guide"
 
@@ -42,6 +44,7 @@ function DashboardContent() {
     } | null>(null)
     const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null)
     const [conversations, setConversations] = useState<Conversation[]>([])
+    const [isShowcaseModalOpen, setIsShowcaseModalOpen] = useState(false)
 
     const router = useRouter()
 

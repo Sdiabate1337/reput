@@ -587,10 +587,10 @@ export default function LandingPage() {
                 Le problème
               </div>
               <h2 className="text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.1]">
-                Votre réputation en ligne est votre <span className="font-serif italic text-orange-100">premier vendeur</span>, ne le laissez pas à l'abandon.
+                Transformez votre <span className="font-serif italic text-orange-100">trafic physique</span> en réputation numérique.
               </h2>
               <p className="text-orange-100 text-xl leading-relaxed opacity-90 max-w-lg font-medium">
-                Remerciez à temps ceux qui vous recommandent, gérez les mécontents à temps. Avant qu'il ne soit trop tard.
+                Votre réputation en ligne est votre premier vendeur. Ne la laissez pas à l'abandon.
               </p>
             </div>
 

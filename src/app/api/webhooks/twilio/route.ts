@@ -142,27 +142,41 @@ export async function POST(request: NextRequest) {
             // Check for Rating Button Clicks
             if (cleanBody.includes('Top !') || cleanBody.includes('5/5') || cleanBody === '1') {
                 // RATING 5 matches
-                const link = establishment.google_maps_link || 'https://google.com'
-                // Remove https:// because template has it hardcoded (or our new dynamic one expects just the domain/path)
-                // New Dynamic Positive Template expects {{2}} as the URL part. 
-                // Wait, in my script I defined "url": "https://{{2}}"
-                // So passed variable should contain everything AFTER https://
-                const cleanLink = link.replace(/^https?:\/\//, '')
+                // USE TRACKING LINK
+                // establishment.id is available from getEstablishmentByTwilioNumber call earlier? 
+                // Wait, early code: const establishment = await getEstablishmentByTwilioNumber(to)
 
-                const contentSid = 'HX01112ace1de5bf48fd75dd446de26071'
+                // Trackable Link (No https:// because template has it)
+                // DYNAMIC BASE URL: Use env var (ngrok in dev) or fallback to prod
+                const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://reviewme.ma'
+                // Ensure no double slash if env var has trailing slash
+                const safeBaseUrl = baseUrl.replace(/\/$/, '')
+                const trackingLink = `${safeBaseUrl}/go/${establishment.id}`
+
+                // NEW TEMPLATE (Created via Content API script)
+                // Hardcoded domain: https://reviewme.ma/go/{{2}}
+                // Variable 1: Body text (with dynamic fallback link)
+                // Variable 2: Establishment UUID
+                const contentSid = 'HX42d3b18e50c737475c7fab05a8c30969'
 
                 const defaultPositive = "Génial ! Toute l'équipe vous remercie. 🥰\n\nUn dernier petit clic pour nous donner de la force ? 💪"
                 const rawPositive = establishment.custom_message_positive || defaultPositive
-                // Replace name if exists (though rare for this step)
                 const safeName = profileName || 'cher client'
-                const finalPositive = rawPositive.replace('{{name}}', safeName)
+
+                // Variable 1 Body: Includes dynamic link (ngrok in dev, reviewme in prod) for reliable fallback
+                const finalPositive = rawPositive.replace('{{name}}', safeName) + `\n\n${trackingLink}`
+
+                // Variable 2 Button: Only ID (Template adds domain). 
+                // Note: Button will always point to PROD (reviewme.ma). 
+                // In dev, use the link in body.
+                const buttonVariable = establishment.id
 
                 await import('@/lib/twilio').then(mod => mod.sendWhatsAppTemplate({
                     to: from.replace('whatsapp:', ''),
                     templateSid: contentSid,
                     contentVariables: {
                         '1': finalPositive,
-                        '2': cleanLink
+                        '2': buttonVariable
                     }
                 }))
 
@@ -174,29 +188,22 @@ export async function POST(request: NextRequest) {
 
             } else if (cleanBody.includes('Bien') || cleanBody.includes('3-4') || cleanBody === '2') {
                 // RATING 3-4 matches -> Send Link + Feedback Question
-                const link = establishment.google_maps_link || 'https://google.com'
-                const cleanLink = link.replace(/^https?:\/\//, '')
 
-                // 1. Send CTA Template (same as Top, using Dynamic Positive)
+                // USE TRACKING LINK
+                const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://reviewme.ma'
+                const safeBaseUrl = baseUrl.replace(/\/$/, '')
+                const trackingLink = `${safeBaseUrl}/go/${establishment.id}`
+
                 const contentSid = 'HX01112ace1de5bf48fd75dd446de26071'
 
-                // For "Bien", we typically want the SAME positive CTA message ("Un petit clic"), 
-                // OR we could have a specific "Bien" message. 
-                // For now, let's reuse the Positive Custom Message or a default one for "Bien".
-                // Actually, "Bien" flow usually sends Link FIRST, then FEedback question.
-                // Let's use the Positive Custom Message for consistency if it fits, or the default Positive one.
                 const defaultPositive = "Merci ! Un petit clic pour nous donner de la force ? 💪"
                 const rawPositive = establishment.custom_message_positive || defaultPositive
                 const safeName = profileName || 'cher client'
-                const finalPositive = rawPositive.replace('{{name}}', safeName)
+                const finalPositive = rawPositive.replace('{{name}}', safeName) + `\n\n${trackingLink}`
 
-                await import('@/lib/twilio').then(mod => mod.sendWhatsAppTemplate({
+                await import('@/lib/twilio').then(mod => mod.sendWhatsAppMessage({
                     to: from.replace('whatsapp:', ''),
-                    templateSid: contentSid,
-                    contentVariables: {
-                        '1': finalPositive,
-                        '2': cleanLink
-                    }
+                    body: finalPositive
                 }))
 
                 // 2. Send Feedback Question (Text)

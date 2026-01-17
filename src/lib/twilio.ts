@@ -81,14 +81,18 @@ export async function sendWhatsAppTemplate(params: SendTemplateParams): Promise<
     try {
         const client = getTwilioClient()
 
-        const message = await client.messages.create({
+        const validBody = {
             from: twilioNumber.startsWith('whatsapp:') ? twilioNumber : `whatsapp:${twilioNumber}`,
             to: `whatsapp:${params.to}`,
             contentSid: params.templateSid,
             contentVariables: params.contentVariables
                 ? JSON.stringify(params.contentVariables)
                 : undefined,
-        })
+        }
+
+        console.log('[Twilio Debug] Template Payload:', JSON.stringify(validBody, null, 2))
+
+        const message = await client.messages.create(validBody)
 
         return {
             success: true,
