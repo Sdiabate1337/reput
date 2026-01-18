@@ -16,8 +16,8 @@ const playfair = Playfair_Display({
 })
 
 export const metadata: Metadata = {
-    title: "Reput.ai | AI Review Management & Automation Platform",
-    description: "Automate 80% of your customer reviews with AI. Monitor Google, TripAdvisor, and Booking.com in one dashboard. Boost your local ranking today.",
+    title: "ReviewMe | Automatisez vos avis clients & Boostez votre réputation",
+    description: "Transformez vos clients satisfaits en avis 5 étoiles. Collecte automatique via WhatsApp, filtrage des avis négatifs et pilotage de votre e-réputation par IA.",
 }
 
 export default function RootLayout({

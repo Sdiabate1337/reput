@@ -62,16 +62,16 @@ export default function PricingPage() {
                     <div className="hidden md:flex items-center gap-1 bg-white/50 backdrop-blur-md px-2 py-1.5 rounded-full border border-zinc-200/50 shadow-sm">
                         <NavLink href="/#features">Fonctionnalités</NavLink>
                         <NavLink href="/pricing" active>Tarifs</NavLink>
-                        <NavLink href="/#testimonials">Témoignages</NavLink>
-                        <Link href="/login" className="px-4 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 rounded-full transition-all">
-                            Se connecter
-                        </Link>
+                        <NavLink href="/#faq">FAQ</NavLink>
                     </div>
 
                     <div className="hidden md:flex items-center gap-4">
-                        <Link href="/login?intent=demo">
+                        <Link href="/login" className="font-medium text-sm text-zinc-600 hover:text-zinc-900 transition-colors">
+                            Se connecter
+                        </Link>
+                        <Link href="/login">
                             <Button className="rounded-full bg-[#E85C33] hover:bg-[#D54D26] text-white px-6 h-11 shadow-lg shadow-orange-500/20 font-semibold text-sm transition-all hover:scale-105 active:scale-95">
-                                Réserver une démo
+                                Essai gratuit 14 jours
                             </Button>
                         </Link>
                     </div>
@@ -95,8 +95,8 @@ export default function PricingPage() {
                         <div className="flex flex-col gap-6 text-2xl font-bold">
                             <Link href="/#features" onClick={() => setIsMenuOpen(false)}>Fonctionnalités</Link>
                             <Link href="/pricing" onClick={() => setIsMenuOpen(false)} className="text-[#E85C33]">Tarifs</Link>
+                            <Link href="/#faq" onClick={() => setIsMenuOpen(false)}>FAQ</Link>
                             <Link href="/login" onClick={() => setIsMenuOpen(false)}>Se connecter</Link>
-                            <Link href="/login?intent=demo" onClick={() => setIsMenuOpen(false)} className="text-[#E85C33]">Réserver une démo</Link>
                         </div>
                     </motion.div>
                 )}

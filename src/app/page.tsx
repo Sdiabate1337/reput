@@ -30,7 +30,6 @@ export default function LandingPage() {
             <NavLink href="/#features">Fonctionnalités</NavLink>
             <NavLink href="/pricing">Tarifs</NavLink>
             <NavLink href="/#faq">FAQ</NavLink>
-            <NavLink href="#about">À propos</NavLink>
           </div>
 
           <div className="hidden md:flex items-center gap-4">
