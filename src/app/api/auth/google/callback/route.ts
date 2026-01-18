@@ -114,8 +114,10 @@ export async function GET(request: NextRequest) {
         // 4. Create Session
         await createSession(userId)
 
-        // 5. Redirect based on status
-        const destination = isNewUser ? '/onboarding' : '/dashboard'
+        // 5. Check if user needs onboarding (no establishment)
+        const establishment = await queryOne('SELECT id FROM establishments WHERE user_id = $1', [userId])
+
+        const destination = establishment ? '/dashboard' : '/onboarding'
         return NextResponse.redirect(new URL(destination, request.url))
 
     } catch (error) {
