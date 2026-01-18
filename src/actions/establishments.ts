@@ -181,9 +181,8 @@ export async function getEstablishmentById(
     id: string
 ): Promise<ActionResult<Establishment>> {
     try {
-        // Authenticate request (user must be logged in to view any establishment? 
-        // Or restricted? For now, public/internal use is fine, but let's at least check session if needed)
-        // await getAuthenticatedUserId() 
+        // Authenticate request
+        await getAuthenticatedUserId()
 
         const establishment = await queryOne<Establishment>(
             'SELECT * FROM establishments WHERE id = $1',

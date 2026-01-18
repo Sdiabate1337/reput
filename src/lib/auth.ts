@@ -2,9 +2,12 @@ import { SignJWT, jwtVerify } from 'jose'
 import { cookies } from 'next/headers'
 import bcrypt from 'bcryptjs'
 
-const SECRET_KEY = new TextEncoder().encode(
-    process.env.JWT_SECRET || 'default-secret-key-change-it-in-prod'
-)
+const secret = process.env.JWT_SECRET
+if (!secret) {
+    throw new Error('JWT_SECRET environment variable is not defined')
+}
+
+const SECRET_KEY = new TextEncoder().encode(secret)
 
 const COOKIE_NAME = 'session'
 
