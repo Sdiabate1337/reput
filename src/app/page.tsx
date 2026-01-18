@@ -7,6 +7,7 @@ import { ArrowRight, Star, Shield, Zap, BarChart3, MessageSquare, Menu, X, Check
 import { Button } from "@/components/ui/button"
 import { useState, useRef, useEffect } from "react"
 import { cn } from "@/lib/utils"
+import { Logo } from "@/components/logo"
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -21,8 +22,7 @@ export default function LandingPage() {
       <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-6 transition-all duration-300">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 z-50">
-            <div className="h-10 w-10 bg-zinc-900 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-zinc-900/10">R</div>
-            <span className="font-bold text-xl tracking-tight text-zinc-900">ReviewMe</span>
+            <Logo />
           </Link>
 
           {/* Desktop Nav */}
@@ -108,53 +108,37 @@ export default function LandingPage() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold tracking-tighter text-zinc-900 leading-[1.05] mb-8"
+                  className="text-4xl md:text-6xl lg:text-[4rem] font-extrabold tracking-tight text-zinc-900 leading-[1.1] mb-6"
                 >
-                  Ne laissez plus le hasard dicter <br />
-                  <span className="whitespace-nowrap">
-                    votre <span className="font-serif italic text-transparent bg-clip-text bg-gradient-to-r from-[#E85C33] to-[#ef8e72] relative inline-block pr-2">
-                      Réputation.
-                      <svg className="absolute w-full h-4 -bottom-2 left-0 text-[#E85C33]/20" viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" /></svg>
-                    </span>
-                  </span>
+                  Transformez votre <span className="text-[#E85C33]">trafic physique</span> en <span className="whitespace-nowrap">réputation numérique.</span>
                 </motion.h1>
 
-
-
-                {/* Premium Points */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.25 }}
-                  className="flex flex-col gap-3 mb-10"
+                  transition={{ duration: 0.6, delay: 0.1 }}
+                  className="text-xl text-zinc-600 mb-8 leading-relaxed max-w-2xl"
                 >
-                  {[
-                    "Collecte automatique via WhatsApp (98% ouverture)",
-                    "Filtrage des avis négatifs avant publication",
-                    "Propulsez votre établissement #1 sur Google"
-                  ].map((point, i) => (
-                    <div key={i} className="flex items-center gap-3 group">
-                      <div className="h-6 w-6 shrink-0 rounded-full bg-orange-50 border border-orange-100 flex items-center justify-center text-[#E85C33] shadow-sm group-hover:scale-110 group-hover:bg-[#E85C33] group-hover:text-white transition-all duration-300">
-                        <Check size={12} strokeWidth={4} />
-                      </div>
-                      <span className="text-zinc-700 font-semibold tracking-tight group-hover:text-zinc-900 transition-colors">
-                        {point}
-                      </span>
-                    </div>
-                  ))}
+                  Chaque client satisfait peut devenir un avis 5<span className="inline-flex items-center mx-1 align-middle"><Logo iconOnly iconSize="w-5 h-5" /></span>. <br className="hidden md:block" />
+                  <strong className="text-zinc-900">ReviewMe</strong> automatise la collecte, le filtrage et la réponse aux avis via WhatsApp, sans effort.
                 </motion.div>
+
+
 
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.3 }}
-                  className="flex flex-col sm:flex-row items-start sm:items-center gap-4"
+                  className="flex flex-col sm:flex-row items-center gap-4"
                 >
                   <Link href="/login">
                     <Button size="lg" className="rounded-full bg-[#E85C33] hover:bg-[#D54D26] text-white h-14 px-8 text-base shadow-xl shadow-orange-500/20 font-bold transition-transform hover:-translate-y-1 w-full sm:w-auto">
-                      Essai gratuit 14 jours
+                      Démarrer l’essai gratuit (14 jours)
                     </Button>
                   </Link>
+                  <span className="text-sm font-medium text-zinc-500 flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-zinc-300" /> Aucune carte requise
+                  </span>
                 </motion.div>
 
               </motion.div>
@@ -209,7 +193,9 @@ export default function LandingPage() {
 
                     {/* Brand Logo / Core Processing */}
                     <div className="w-20 h-20 bg-white rounded-2xl shadow-xl flex items-center justify-center mb-3 relative z-10">
-                      <div className="w-12 h-12 bg-zinc-900 rounded-xl flex items-center justify-center text-white font-bold text-xl">R</div>
+                      <div className="scale-125">
+                        <Logo iconOnly />
+                      </div>
                       {/* Orbiting Ring */}
                       <motion.div
                         animate={{ rotate: 360 }}
@@ -217,7 +203,7 @@ export default function LandingPage() {
                         className="absolute inset-[-6px] border border-[#E85C33] rounded-3xl border-dashed opacity-30"
                       />
                     </div>
-                    <span className="text-[10px] uppercase font-bold text-zinc-500 tracking-widest bg-white/50 px-3 py-1 rounded-full backdrop-blur-sm shadow-sm border border-white/50">reviewme</span>
+                    <span className="text-[10px] uppercase font-bold text-zinc-500 tracking-widest bg-white/50 px-3 py-1 rounded-full backdrop-blur-sm shadow-sm border border-white/50">ReviewMe</span>
                   </div>
 
                   {/* Pipe Connector */}
@@ -607,124 +593,113 @@ export default function LandingPage() {
 
         {/* THE PROBLEM SECTION */}
         <section className="w-full bg-[#E85C33] py-24 md:py-32 mb-32 overflow-hidden relative group">
-          {/* Texture & Gradients */}
-          <div className="absolute inset-0 bg-noise opacity-30 mix-blend-soft-light pointer-events-none" />
-          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-orange-400/30 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 mix-blend-screen" />
-          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-red-500/30 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2 mix-blend-screen" />
+          {/* 1. Deep Base Gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#E85C33] via-[#D94E28] to-[#C03E1C]" />
 
-          <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center relative z-10">
-            {/* Left Content */}
-            <div className="text-white space-y-8">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-sm font-bold tracking-wide w-fit shadow-lg shadow-orange-900/10">
-                <div className="w-2 h-2 rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
-                Le problème
-              </div>
-              <h2 className="text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.1]">
-                Transformez votre <span className="font-serif italic text-orange-100">trafic physique</span> en réputation numérique.
+          {/* 2. Refined Noise Texture - "Clean Grain" */}
+          <div className="absolute inset-0 bg-noise opacity-40 mix-blend-overlay pointer-events-none brightness-125 contrast-150" />
+
+          {/* 3. Lighting/Vignette for Depth */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.15)_100%)] pointer-events-none" />
+
+          {/* 4. Ambient Colored Glows (Subtle) */}
+          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-orange-300/20 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 mix-blend-screen" />
+          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-red-600/20 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2 mix-blend-overlay" />
+
+          <div className="max-w-7xl mx-auto px-6 relative z-10">
+            {/* Header */}
+            <div className="text-center mb-20 max-w-3xl mx-auto">
+              <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+                Votre réputation en ligne est votre <span className="text-orange-100 italic font-serif">premier vendeur</span>.
               </h2>
-              <p className="text-orange-100 text-xl leading-relaxed opacity-90 max-w-lg font-medium">
-                Votre réputation en ligne est votre premier vendeur. Ne la laissez pas à l'abandon.
+              <p className="text-xl text-orange-100/90 font-medium">
+                Et aujourd’hui, elle est souvent laissée au hasard.
               </p>
             </div>
 
-            {/* Right Content - Chart Card - Enhanced */}
-            <div className="relative group perspective-1000">
-              {/* Refined Glow effect */}
-              <div className="absolute -inset-2 bg-gradient-to-r from-orange-300 to-amber-300 rounded-[2.5rem] blur-xl opacity-30 group-hover:opacity-50 transition duration-1000 group-hover:duration-200" />
-
-              <div className="bg-white/95 backdrop-blur-2xl rounded-[2.5rem] p-8 md:p-10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.2)] relative z-10 w-full aspect-[4/3] flex flex-col transform transition-transform duration-500 hover:rotate-x-2 border border-white/60 ring-1 ring-white/40">
-                {/* Legend */}
-                <div className="flex gap-6 mb-8 text-[11px] font-bold uppercase tracking-widest justify-end">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-zinc-200" />
-                    <span className="text-zinc-400">Avant</span>
+            <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-start">
+              {/* Left: The Problem (Status Quo) */}
+              <div className="bg-orange-600/30 backdrop-blur-sm border border-orange-500/30 rounded-[2.5rem] p-8 md:p-10 text-white/90">
+                <div className="space-y-8">
+                  <div className="flex gap-4 opacity-70">
+                    <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">
+                      <X size={18} className="text-red-200" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-lg mb-1">Les clients satisfaits</h4>
+                      <p className="text-orange-100/80 leading-relaxed">Ne laissent rien, ils partent juste contents.</p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="relative flex h-2.5 w-2.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E85C33] opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#E85C33] shadow-sm"></span>
-                    </span>
-                    <span className="text-[#E85C33]">Avec ReviewMe</span>
+
+                  <div className="flex gap-4">
+                    <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">
+                      <AlertTriangle size={18} className="text-red-200" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-lg mb-1">Les clients mécontents</h4>
+                      <p className="text-orange-100/80 leading-relaxed">S’expriment publiquement et font fuir les autres.</p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4 opacity-70">
+                    <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">
+                      <Clock size={18} className="text-red-200" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-lg mb-1">Les réponses</h4>
+                      <p className="text-orange-100/80 leading-relaxed">Arrivent trop tard, quand le mal est fait.</p>
+                    </div>
                   </div>
                 </div>
+              </div>
 
-                {/* Chart Area */}
-                <div className="relative flex-1 w-full flex items-center justify-center">
-                  {/* Grid Lines */}
-                  <div className="absolute inset-x-0 inset-y-4 flex flex-col justify-between pointer-events-none opacity-30">
-                    <div className="w-full h-px bg-zinc-200 border-t border-dashed border-zinc-300" />
-                    <div className="w-full h-px bg-zinc-200 border-t border-dashed border-zinc-300" />
-                    <div className="w-full h-px bg-zinc-200 border-t border-dashed border-zinc-300" />
-                    <div className="w-full h-px bg-zinc-200 border-t border-dashed border-zinc-300" />
+              {/* Right: The Solution (ReviewMe) */}
+              <div className="bg-white rounded-[2.5rem] p-8 md:p-10 shadow-2xl shadow-orange-900/20 relative group transform md:-translate-y-6">
+                <div className="absolute -top-6 right-8 bg-[#22c55e] text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg shadow-green-900/20">
+                  ✅ Solution
+                </div>
+
+                <h3 className="text-2xl font-bold text-zinc-900 mb-8 flex items-center gap-2">
+                  Avec <span className="text-[#E85C33]">ReviewMe</span>
+                </h3>
+
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 shrink-0">
+                      <Check size={18} strokeWidth={3} />
+                    </div>
+                    <span className="text-lg font-bold text-zinc-700">Chaque avis devient un levier de croissance</span>
                   </div>
 
-                  {/* Lines SVG */}
-                  <svg className="w-full h-full overflow-visible" viewBox="0 0 400 200" preserveAspectRatio="none">
-                    <defs>
-                      <linearGradient id="gradientGrowth" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#E85C33" stopOpacity="0.5" />
-                        <stop offset="100%" stopColor="#FB923C" stopOpacity="1" />
-                      </linearGradient>
-                      <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                        <feGaussianBlur stdDeviation="4" result="coloredBlur" />
-                        <feMerge>
-                          <feMergeNode in="coloredBlur" />
-                          <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                      </filter>
-                    </defs>
+                  <div className="w-full h-px bg-zinc-100 my-4" />
 
-                    {/* Old Way Line (Flat/Dipping) */}
-                    <motion.path
-                      initial={{ pathLength: 0, opacity: 0 }}
-                      whileInView={{ pathLength: 1, opacity: 1 }}
-                      transition={{ duration: 1.5, ease: "easeInOut" }}
-                      d="M0,120 C50,115 100,130 150,125 C200,120 250,140 400,135"
-                      fill="none"
-                      stroke="#e4e4e7"
-                      strokeWidth="4"
-                      strokeLinecap="round"
-                      strokeDasharray="8 8"
-                    />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-orange-50 rounded-2xl p-4 border border-orange-100">
+                      <p className="text-[#E85C33] font-bold text-2xl mb-1">+45%</p>
+                      <p className="text-zinc-600 text-sm leading-tight font-medium">Impact sur la perception</p>
+                    </div>
+                    <div className="bg-zinc-50 rounded-2xl p-4 border border-zinc-100">
+                      <p className="text-zinc-900 font-bold text-2xl mb-1">x3</p>
+                      <p className="text-zinc-600 text-sm leading-tight font-medium">Plus de confiance</p>
+                    </div>
+                  </div>
 
-                    {/* Growth Line (Exponential) */}
-                    <motion.path
-                      initial={{ pathLength: 0, opacity: 0 }}
-                      whileInView={{ pathLength: 1, opacity: 1 }}
-                      transition={{ duration: 1.5, delay: 0.3, ease: "easeInOut" }}
-                      d="M0,120 C80,115 120,100 180,90 C240,80 300,50 400,20"
-                      fill="none"
-                      stroke="url(#gradientGrowth)"
-                      strokeWidth="6"
-                      strokeLinecap="round"
-                      filter="url(#glow)"
-                      className="drop-shadow-lg"
-                    />
-
-                    {/* Floating Data Point */}
-                    <motion.g
-                      initial={{ opacity: 0, scale: 0 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 1.5, type: "spring" }}
-                    >
-                      <circle cx="300" cy="50" r="8" fill="white" stroke="#E85C33" strokeWidth="4" className="shadow-lg" />
-                      <foreignObject x="270" y="-10" width="120" height="50">
-                        <div className="bg-zinc-900 text-white text-[11px] font-bold px-3 py-1.5 rounded-full text-center shadow-xl transform -translate-x-4 -translate-y-8 flex items-center justify-center gap-1">
-                          <TrendingUp size={12} className="text-emerald-400" /> +45% Ventes
-                          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-zinc-900 rotate-45" />
-                        </div>
-                      </foreignObject>
-                    </motion.g>
-                  </svg>
+                  <div className="flex items-center gap-3 text-zinc-600 font-medium">
+                    <TrendingUp size={18} className="text-[#E85C33]" />
+                    Plus de clics, plus de visites, plus de CA.
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </section>
+
+
+
+        </section >
 
 
         {/* CONCRETE IMPACT SECTION */}
-        <section className="mb-40 px-6">
+        < section className="mb-40 px-6" >
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-24">
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-zinc-900 mb-6 tracking-tight">
@@ -1275,8 +1250,7 @@ export default function LandingPage() {
         < footer className="max-w-7xl mx-auto px-6 pt-10 pb-20 border-t border-zinc-200" >
           <div className="flex flex-col md:flex-row justify-between items-center gap-8">
             <div className="flex items-center gap-2">
-              <div className="h-8 w-8 bg-zinc-900 rounded-lg flex items-center justify-center text-white font-bold text-sm">R</div>
-              <span className="font-bold text-zinc-900">ReviewMe</span>
+              <Logo />
             </div>
 
             <div className="flex gap-8 text-sm font-semibold text-zinc-500">

@@ -7,7 +7,8 @@ import { selectPlanForCurrentUser } from "@/actions/subscription"
 import { Loader2 } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Check, X, Star, Zap, Shield, MessageSquare, BarChart3, HelpCircle, ArrowRight, Menu, CheckCircle2, Minus, ChevronDown } from "lucide-react"
+import { Check, X, Star, Zap, Shield, MessageSquare, BarChart3, HelpCircle, ArrowRight, Menu, CheckCircle2, Minus, ChevronDown, Plus } from "lucide-react"
+import { Logo } from "@/components/logo"
 import { AnimatePresence, motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 
@@ -54,8 +55,7 @@ export default function PricingPage() {
             <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-6 transition-all duration-300">
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2 z-50">
-                        <div className="h-10 w-10 bg-zinc-900 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-zinc-900/10">R</div>
-                        <span className="font-bold text-xl tracking-tight text-zinc-900">ReviewMe</span>
+                        <Logo />
                     </Link>
 
                     {/* Desktop Nav */}
@@ -265,8 +265,7 @@ export default function PricingPage() {
             <footer className="max-w-7xl mx-auto px-6 pt-10 pb-20 border-t border-zinc-200">
                 <div className="flex flex-col md:flex-row justify-between items-center gap-8">
                     <div className="flex items-center gap-2">
-                        <div className="h-8 w-8 bg-zinc-900 rounded-lg flex items-center justify-center text-white font-bold text-sm">R</div>
-                        <span className="font-bold text-zinc-900">ReviewMe</span>
+                        <Logo />
                     </div>
 
                     <div className="flex gap-8 text-sm font-semibold text-zinc-500">

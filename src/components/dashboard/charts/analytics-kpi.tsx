@@ -8,7 +8,7 @@ interface AnalyticsKPIProps {
         responseRate: number
         averageSentiment: number
         totalVolume: number
-        totalClicks?: number
+        negativeCount: number
         avgResponseTime?: number | null
     }
 }
@@ -52,13 +52,13 @@ export function AnalyticsKPI({ metrics }: AnalyticsKPIProps) {
             <Card className="bg-white border-zinc-100 shadow-sm hover:shadow-md transition-all">
                 <CardContent className="p-6 flex flex-col gap-2">
                     <div className="flex items-center gap-2 text-zinc-500 text-sm font-medium">
-                        <MessageCircle size={16} /> {/* Reusing icon or better one like MousePointerClick */}
-                        Clics vers Avis
+                        <AlertCircle size={16} className="text-red-500" />
+                        Avis Négatifs
                     </div>
                     <div className="text-2xl font-bold text-zinc-900">
-                        {hasData ? metrics.totalClicks || 0 : "-"}
+                        {hasData ? metrics.negativeCount : "-"}
                     </div>
-                    {hasData && <p className="text-xs text-green-600 font-medium">Clients redirigés</p>}
+                    {hasData && <p className="text-xs text-red-600 font-medium">Critiques & Négatifs</p>}
                 </CardContent>
             </Card>
 

@@ -6,6 +6,7 @@ import { Building2, MapPin, ArrowRight, Loader2, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { Logo } from "@/components/logo"
 import {
     createEstablishment,
     updateEstablishment,
@@ -108,104 +109,110 @@ export default function OnboardingPage() {
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="w-full max-w-lg bg-white rounded-3xl border border-zinc-100 shadow-xl p-8"
+                className="w-full max-w-lg"
             >
-                {/* Progress */}
-                <div className="flex items-center gap-2 mb-8">
-                    {[1, 2, 3].map((s) => (
-                        <div
-                            key={s}
-                            className={`flex-1 h-2 rounded-full transition-colors duration-300 ${s <= step ? "bg-[#E85C33]" : "bg-zinc-100"
-                                }`}
-                        />
-                    ))}
+                <div className="flex justify-center mb-8">
+                    <Logo />
                 </div>
 
-                {step === 1 && (
-                    <form onSubmit={handleNameSubmit} className="space-y-6">
-                        <div className="text-center mb-6">
-                            <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                <Building2 className="text-[#E85C33]" size={32} />
-                            </div>
-                            <h1 className="text-2xl font-bold">Nom de votre établissement</h1>
-                            <p className="text-zinc-500">Comment s&apos;appelle votre restaurant/hôtel ?</p>
-                        </div>
-
-                        <input
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="Ex: Le Petit Bistro"
-                            className="w-full h-14 px-4 rounded-xl border border-zinc-200 focus:border-[#E85C33] focus:ring-2 focus:ring-orange-100 outline-none transition-all text-lg"
-                            required
-                        />
-
-                        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-
-                        <Button
-                            type="submit"
-                            disabled={isLoading || !name}
-                            className="w-full h-14 rounded-xl bg-[#E85C33] hover:bg-[#d54d26] text-white font-bold text-base shadow-lg shadow-orange-500/10"
-                        >
-                            {isLoading ? <Loader2 className="animate-spin" /> : <>Continuer <ArrowRight size={18} className="ml-2" /></>}
-                        </Button>
-                    </form>
-                )}
-
-                {step === 2 && (
-                    <form onSubmit={handleLinkSubmit} className="space-y-6">
-                        <div className="text-center mb-6">
-                            <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                <MapPin className="text-[#E85C33]" size={32} />
-                            </div>
-                            <h1 className="text-2xl font-bold">Lien de vos Avis</h1>
-                            <p className="text-zinc-500">Google, TripAdvisor, Booking... Là où vous voulez plus d&apos;étoiles.</p>
-                        </div>
-
-                        <input
-                            type="url"
-                            value={googleLink}
-                            onChange={(e) => setGoogleLink(e.target.value)}
-                            placeholder="https://maps.google.com/... ou tripadvisor.com/..."
-                            className="w-full h-14 px-4 rounded-xl border border-zinc-200 focus:border-[#E85C33] focus:ring-2 focus:ring-orange-100 outline-none transition-all"
-                            required
-                        />
-
-                        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-
-                        <Button
-                            type="submit"
-                            disabled={isLoading}
-                            className="w-full h-14 rounded-xl bg-[#E85C33] hover:bg-[#d54d26] text-white font-bold text-base shadow-lg shadow-orange-500/10"
-                        >
-                            {isLoading ? <Loader2 className="animate-spin" /> : <>Continuer <ArrowRight size={18} className="ml-2" /></>}
-                        </Button>
-
-                        <div className="text-center">
-                            <button type="button" onClick={() => setStep(3)} className="text-sm text-zinc-400 hover:text-zinc-600">
-                                Passer pour l'instant
-                            </button>
-                        </div>
-                    </form>
-                )}
-
-                {step === 3 && (
-                    <div className="text-center space-y-6">
-                        <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                            <Check className="text-green-600" size={40} />
-                        </div>
-                        <h1 className="text-2xl font-bold">Configuration terminée !</h1>
-                        <p className="text-zinc-500">
-                            Votre établissement &quot;{name}&quot; est prêt à recevoir des avis.
-                        </p>
-                        <Link
-                            href="/dashboard"
-                            className="inline-flex items-center gap-2 px-8 py-4 bg-[#E85C33] text-white font-bold rounded-xl hover:bg-[#d54d26] transition-colors shadow-lg shadow-orange-500/20"
-                        >
-                            Accéder au Dashboard
-                        </Link>
+                <div className="bg-white rounded-3xl border border-zinc-100 shadow-xl p-8">
+                    {/* Progress */}
+                    <div className="flex items-center gap-2 mb-8">
+                        {[1, 2, 3].map((s) => (
+                            <div
+                                key={s}
+                                className={`flex-1 h-2 rounded-full transition-colors duration-300 ${s <= step ? "bg-[#E85C33]" : "bg-zinc-100"
+                                    }`}
+                            />
+                        ))}
                     </div>
-                )}
+
+                    {step === 1 && (
+                        <form onSubmit={handleNameSubmit} className="space-y-6">
+                            <div className="text-center mb-6">
+                                <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                    <Building2 className="text-[#E85C33]" size={32} />
+                                </div>
+                                <h1 className="text-2xl font-bold">Nom de votre établissement</h1>
+                                <p className="text-zinc-500">Comment s&apos;appelle votre restaurant/hôtel ?</p>
+                            </div>
+
+                            <input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder="Ex: Le Petit Bistro"
+                                className="w-full h-14 px-4 rounded-xl border border-zinc-200 focus:border-[#E85C33] focus:ring-2 focus:ring-orange-100 outline-none transition-all text-lg"
+                                required
+                            />
+
+                            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+
+                            <Button
+                                type="submit"
+                                disabled={isLoading || !name}
+                                className="w-full h-14 rounded-xl bg-[#E85C33] hover:bg-[#d54d26] text-white font-bold text-base shadow-lg shadow-orange-500/10"
+                            >
+                                {isLoading ? <Loader2 className="animate-spin" /> : <>Continuer <ArrowRight size={18} className="ml-2" /></>}
+                            </Button>
+                        </form>
+                    )}
+
+                    {step === 2 && (
+                        <form onSubmit={handleLinkSubmit} className="space-y-6">
+                            <div className="text-center mb-6">
+                                <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                    <MapPin className="text-[#E85C33]" size={32} />
+                                </div>
+                                <h1 className="text-2xl font-bold">Lien de vos Avis</h1>
+                                <p className="text-zinc-500">Google, TripAdvisor, Booking... Là où vous voulez plus d&apos;étoiles.</p>
+                            </div>
+
+                            <input
+                                type="url"
+                                value={googleLink}
+                                onChange={(e) => setGoogleLink(e.target.value)}
+                                placeholder="https://maps.google.com/... ou tripadvisor.com/..."
+                                className="w-full h-14 px-4 rounded-xl border border-zinc-200 focus:border-[#E85C33] focus:ring-2 focus:ring-orange-100 outline-none transition-all"
+                                required
+                            />
+
+                            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+
+                            <Button
+                                type="submit"
+                                disabled={isLoading}
+                                className="w-full h-14 rounded-xl bg-[#E85C33] hover:bg-[#d54d26] text-white font-bold text-base shadow-lg shadow-orange-500/10"
+                            >
+                                {isLoading ? <Loader2 className="animate-spin" /> : <>Continuer <ArrowRight size={18} className="ml-2" /></>}
+                            </Button>
+
+                            <div className="text-center">
+                                <button type="button" onClick={() => setStep(3)} className="text-sm text-zinc-400 hover:text-zinc-600">
+                                    Passer pour l'instant
+                                </button>
+                            </div>
+                        </form>
+                    )}
+
+                    {step === 3 && (
+                        <div className="text-center space-y-6">
+                            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                                <Check className="text-green-600" size={40} />
+                            </div>
+                            <h1 className="text-2xl font-bold">Configuration terminée !</h1>
+                            <p className="text-zinc-500">
+                                Votre établissement &quot;{name}&quot; est prêt à recevoir des avis.
+                            </p>
+                            <Link
+                                href="/dashboard"
+                                className="inline-flex items-center gap-2 px-8 py-4 bg-[#E85C33] text-white font-bold rounded-xl hover:bg-[#d54d26] transition-colors shadow-lg shadow-orange-500/20"
+                            >
+                                Accéder au Dashboard
+                            </Link>
+                        </div>
+                    )}
+                </div>
             </motion.div>
         </div>
     )

@@ -143,6 +143,7 @@ function DashboardContent() {
                         responseRate: analyticsData.responseRate,
                         averageSentiment: analyticsData.averageSentiment,
                         totalVolume: analyticsData.totalVolume,
+                        negativeCount: stats ? (stats.sentimentCounts.NEGATIVE + stats.sentimentCounts.CRITICAL) : 0,
                         avgResponseTime: analyticsData.avgResponseTime
                     }} />
                 )}

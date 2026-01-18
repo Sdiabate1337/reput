@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Shield, Lock, AlertCircle, Loader2, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
+import { Logo } from "@/components/logo"
 import { adminLogin, registerAdmin } from "@/actions/admin-auth"
 
 export default function AdminLoginPage() {
@@ -50,8 +51,8 @@ export default function AdminLoginPage() {
         <div className="min-h-screen bg-zinc-900 flex items-center justify-center p-6 text-zinc-50">
             <div className="w-full max-w-md bg-black/40 backdrop-blur-xl border border-white/10 p-8 rounded-2xl shadow-2xl">
                 <div className="flex flex-col items-center mb-8">
-                    <div className="w-12 h-12 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl flex items-center justify-center mb-4">
-                        <Shield size={24} />
+                    <div className="mb-6 scale-125">
+                        <Logo theme="dark" />
                     </div>
                     <h1 className="text-2xl font-bold tracking-tight">
                         {isRegistering ? 'Activer Compte Admin' : 'Admin Gateway'}

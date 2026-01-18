@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
+import { Logo } from "@/components/logo"
 import {
     LayoutDashboard,
     MessageSquare,
@@ -182,10 +183,7 @@ function SidebarContent({ pathname, establishment }: { pathname: string, establi
         <>
             <div className="h-[72px] flex items-center px-6">
                 <Link href="/dashboard" className="flex items-center gap-2 group">
-                    <div className="h-8 w-8 rounded-xl bg-white flex items-center justify-center text-[#E85C33] font-bold shadow-lg shadow-black/5 group-hover:scale-105 transition-transform">
-                        <span className="text-sm">R</span>
-                    </div>
-                    <span className="font-bold text-lg tracking-tight text-white">ReviewMe</span>
+                    <Logo theme="dark" />
                 </Link>
             </div>
 

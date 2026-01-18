@@ -8,6 +8,7 @@ import Link from "next/link"
 import { useAuth } from "@/lib/auth-context"
 import { signup } from "@/actions/auth"
 import { useRouter } from "next/navigation"
+import { Logo } from "@/components/logo"
 
 export default function LoginPage() {
     const router = useRouter()
@@ -72,9 +73,8 @@ export default function LoginPage() {
                     className="h-full flex flex-col justify-between"
                 >
                     <div className="flex items-center gap-2">
-                        <Link href="/" className="flex items-center gap-2 group">
-                            <div className="h-9 w-9 bg-zinc-900 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-zinc-900/10 group-hover:scale-105 transition-transform">R</div>
-                            <span className="font-bold text-lg tracking-tight text-zinc-900">ReviewMe</span>
+                        <Link href="/" className="group hover:opacity-80 transition-opacity">
+                            <Logo />
                         </Link>
                     </div>
 
