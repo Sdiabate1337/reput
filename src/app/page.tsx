@@ -101,7 +101,7 @@ export default function LandingPage() {
                   className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 border border-orange-100/50 text-[#E85C33] text-sm font-bold mb-8 shadow-sm"
                 >
                   <div className="w-2 h-2 rounded-full bg-[#E85C33] animate-pulse" />
-                  La référence pour les établissements premium
+                  Le secret des établissements 5 étoiles
                 </motion.div>
 
                 <motion.h1
@@ -119,14 +119,30 @@ export default function LandingPage() {
                   </span>
                 </motion.h1>
 
-                <motion.p
+
+
+                {/* Premium Points */}
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                  className="text-xl text-zinc-600 mb-8 leading-relaxed font-medium max-w-lg"
+                  transition={{ duration: 0.6, delay: 0.25 }}
+                  className="flex flex-col gap-3 mb-10"
                 >
-                  Automatisez la collecte et la réponse aux avis. Transformez chaque interaction client en une opportunité de chiffre d'affaires.
-                </motion.p>
+                  {[
+                    "Collecte automatique via WhatsApp (98% ouverture)",
+                    "Filtrage des avis négatifs avant publication",
+                    "Propulsez votre établissement #1 sur Google"
+                  ].map((point, i) => (
+                    <div key={i} className="flex items-center gap-3 group">
+                      <div className="h-6 w-6 shrink-0 rounded-full bg-orange-50 border border-orange-100 flex items-center justify-center text-[#E85C33] shadow-sm group-hover:scale-110 group-hover:bg-[#E85C33] group-hover:text-white transition-all duration-300">
+                        <Check size={12} strokeWidth={4} />
+                      </div>
+                      <span className="text-zinc-700 font-semibold tracking-tight group-hover:text-zinc-900 transition-colors">
+                        {point}
+                      </span>
+                    </div>
+                  ))}
+                </motion.div>
 
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -146,152 +162,169 @@ export default function LandingPage() {
               {/* Trusted by section removed */}
             </motion.div>
 
-            {/* Hero Visuals - Premium Floating Cards CLUSTER */}
+            {/* Hero Visuals - Cohesive Premium Composition */}
             <motion.div
               style={{ scale: heroScale, opacity: heroOpacity }}
-              className="relative h-[700px] hidden lg:block perspective-1000"
+              className="relative h-[600px] hidden lg:flex items-center justify-center perspective-1000"
             >
-              {/* Abstract Background Blobs */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#FBECE6] rounded-full blur-[100px] opacity-60 mix-blend-multiply animate-pulse" />
-              <div className="absolute top-[10%] right-[0%] w-[400px] h-[400px] bg-purple-100 rounded-full blur-[90px] opacity-40 mix-blend-multiply" />
-              <div className="absolute bottom-[10%] left-[0%] w-[300px] h-[300px] bg-orange-100 rounded-full blur-[80px] opacity-50 mix-blend-multiply" />
+              {/* Central Glow */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-tr from-[#E85C33]/20 to-purple-500/20 rounded-full blur-[100px] animate-pulse" />
 
+              <div className="relative w-full h-full flex flex-col items-center justify-center">
 
-              {/* 1. TOP RIGHT: REVENUE IMPACT (The "North Star" metric) */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8, x: 50, y: -20 }}
-                animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.5, type: "spring" }}
-                className="absolute top-[2%] right-[-2%] z-30"
-              >
-                <div className="bg-white/80 backdrop-blur-xl p-5 rounded-[2rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.12)] border border-white hover:z-40 transition-all hover:scale-110 duration-500 w-[240px]">
-                  <div className="flex items-center gap-2 mb-2 text-zinc-500">
-                    <TrendingUp size={16} className="text-emerald-500" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Impact Revenu</span>
+                {/* 1. INPUT STREAM (Raw Reviews) */}
+                <div className="absolute top-[5%] w-full flex justify-center gap-4 h-[120px] overflow-hidden mask-image-b">
+                  <motion.div
+                    animate={{ y: [-50, 150], opacity: [0, 1, 0], scale: [0.8, 1, 0.5] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "linear", delay: 0 }}
+                    className="absolute left-[35%] top-0 bg-white p-3 rounded-xl shadow-lg border border-red-100 flex items-center gap-2 z-10"
+                  >
+                    <div className="w-2 h-2 rounded-full bg-red-500" />
+                    <span className="text-xs font-bold text-zinc-600">Négatif</span>
+                  </motion.div>
+                  <motion.div
+                    animate={{ y: [-50, 150], opacity: [0, 1, 0], scale: [0.8, 1, 0.5] }}
+                    transition={{ duration: 3.5, repeat: Infinity, ease: "linear", delay: 1.5 }}
+                    className="absolute right-[35%] top-0 bg-white p-3 rounded-xl shadow-lg border border-emerald-100 flex items-center gap-2 z-10"
+                  >
+                    <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                    <span className="text-xs font-bold text-zinc-600">Positif</span>
+                  </motion.div>
+                  <motion.div
+                    animate={{ y: [-50, 150], opacity: [0, 1, 0], scale: [0.8, 1, 0.5] }}
+                    transition={{ duration: 5, repeat: Infinity, ease: "linear", delay: 0.8 }}
+                    className="absolute top-0 bg-white p-3 rounded-xl shadow-lg border border-orange-100 flex items-center gap-2 z-10"
+                  >
+                    <div className="w-2 h-2 rounded-full bg-orange-400" />
+                    <span className="text-xs font-bold text-zinc-600">Neutre</span>
+                  </motion.div>
+                </div>
+
+                {/* 2. THE FUNNEL (Processing) */}
+                <div className="relative z-20 mt-8">
+                  {/* Funnel Shape */}
+                  <div className="w-[320px] h-[180px] bg-gradient-to-b from-white/60 to-white/20 backdrop-blur-xl rounded-[3rem] border border-white/80 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] flex flex-col items-center justify-center relative overflow-hidden group hover:scale-105 transition-transform duration-500">
+                    {/* Inner Glow */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-[#E85C33]/10 to-transparent opacity-50" />
+
+                    {/* Brand Logo / Core Processing */}
+                    <div className="w-20 h-20 bg-white rounded-2xl shadow-xl flex items-center justify-center mb-3 relative z-10">
+                      <div className="w-12 h-12 bg-zinc-900 rounded-xl flex items-center justify-center text-white font-bold text-xl">R</div>
+                      {/* Orbiting Ring */}
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-[-6px] border border-[#E85C33] rounded-3xl border-dashed opacity-30"
+                      />
+                    </div>
+                    <span className="text-[10px] uppercase font-bold text-zinc-500 tracking-widest bg-white/50 px-3 py-1 rounded-full backdrop-blur-sm shadow-sm border border-white/50">reviewme</span>
                   </div>
-                  <div className="flex items-end gap-2 mb-2">
-                    <span className="text-4xl font-extrabold text-zinc-900">+18%</span>
-                    <span className="text-sm font-medium text-emerald-600 mb-1">vs M-1</span>
-                  </div>
-                  <div className="h-1.5 w-full bg-zinc-100 rounded-full overflow-hidden">
+
+                  {/* Pipe Connector */}
+                  <div className="w-6 h-16 bg-gradient-to-b from-white/30 to-white/10 mx-auto backdrop-blur-sm border-x border-white/30" />
+                </div>
+
+                {/* 2.5. PATH ANIMATIONS (Exiting Funnel) */}
+                <div className="absolute top-[50%] left-0 w-full h-full pointer-events-none z-0">
+                  {/* Particle to Private (Left) */}
+                  <motion.div
+                    initial={{ x: "50%", y: -40, opacity: 0 }}
+                    animate={{ x: "42%", y: 60, opacity: [0, 1, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0 }}
+                    className="absolute top-0 w-4 h-4 bg-orange-200 rounded-full blur-sm"
+                  />
+                  {/* Particle to Public (Right) */}
+                  <motion.div
+                    initial={{ x: "50%", y: -40, opacity: 0 }}
+                    animate={{ x: "58%", y: 60, opacity: [0, 1, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                    className="absolute top-0 w-4 h-4 bg-emerald-200 rounded-full blur-sm"
+                  />
+                </div>
+
+                {/* 3. OUTPUT STREAMS (Classified) & METRICS */}
+                <div className="flex gap-16 mt-0 relative z-10">
+                  {/* Stream A: Intercepted (Left) */}
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.5 }}
+                    className="flex flex-col gap-2 group cursor-default"
+                  >
+                    <div className="bg-white p-5 rounded-[2rem] shadow-xl border-l-4 border-orange-400 w-[180px] transform -rotate-6 group-hover:rotate-0 transition-transform duration-300 relative">
+                      <div className="absolute -top-3 -right-3 bg-orange-100 text-orange-600 rounded-full p-1.5 border border-white shadow-sm">
+                        <Shield size={16} />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1">Privé</span>
+                        <div className="text-sm font-extrabold text-zinc-800">Intercepté</div>
+                        <div className="text-[10px] text-zinc-500 mt-1">Feedback interne</div>
+                      </div>
+                    </div>
+                    {/* Metric Badge Left */}
                     <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: "100%" }}
-                      transition={{ duration: 1.5, delay: 1 }}
-                      className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500"
-                    />
-                  </div>
-                </div>
-              </motion.div>
-
-
-              {/* 2. TOP LEFT: TIME SAVED (Efficiency) */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8, x: -30, y: 20 }}
-                animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.7, type: "spring" }}
-                className="absolute top-[12%] left-[-10%] z-20"
-              >
-                <div className="bg-white/70 backdrop-blur-md p-4 rounded-[1.8rem] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.08)] border border-white/60 hover:bg-white hover:scale-105 transition-all duration-300">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-[#E85C33]">
-                      <Clock size={18} strokeWidth={2.5} />
-                    </div>
-                    <div>
-                      <div className="text-[10px] text-zinc-500 font-bold uppercase">Temps Gagné</div>
-                      <div className="text-xl font-bold text-zinc-900 leading-tight">12h <span className="text-sm font-medium text-zinc-400">/sem</span></div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-
-
-              {/* 3. CENTER: RANKING DOMINANCE (The Core Visual) */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8, y: 30 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ duration: 0.9, delay: 0.3, type: "spring" }}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-[340px]"
-              >
-                <div className="bg-white/90 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_50px_100px_-20px_rgba(232,92,51,0.2)] border border-white p-6 ring-1 ring-white/60 hover:scale-[1.02] transition-transform duration-500">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-[#E85C33] rounded-xl flex items-center justify-center text-white shadow-md shadow-orange-500/30">
-                        <Trophy size={20} fill="currentColor" />
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 1.5, type: "spring" }}
+                      className="absolute -left-24 top-12 bg-white/90 backdrop-blur py-2 px-3 rounded-xl shadow-lg border border-orange-100 flex items-center gap-2"
+                    >
+                      <div className="bg-orange-50 p-1.5 rounded-lg"><Shield size={12} className="text-orange-600" /></div>
+                      <div className="flex flex-col leading-none">
+                        <span className="text-[10px] font-extrabold text-zinc-800">100% Protection</span>
+                        <span className="text-[8px] font-medium text-orange-600/80">Clients mécontents gérés</span>
                       </div>
-                      <div>
-                        <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Classement</div>
-                        <div className="text-lg font-extrabold text-zinc-900">Top 3 Régional</div>
+                    </motion.div>
+                  </motion.div>
+
+                  {/* Stream B: Published (Right) */}
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.8 }}
+                    className="flex flex-col gap-2 group cursor-default"
+                  >
+                    <div className="bg-white p-5 rounded-[2rem] shadow-xl border-l-4 border-emerald-500 w-[180px] transform rotate-6 group-hover:rotate-0 transition-transform duration-300 relative">
+                      <div className="absolute -top-3 -right-3 bg-emerald-100 text-emerald-600 rounded-full p-1.5 border border-white shadow-sm">
+                        <Star size={16} fill="currentColor" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1">Public</span>
+                        <div className="text-sm font-extrabold text-zinc-800">Publié</div>
+                        <div className="text-[10px] text-zinc-500 mt-1">Google Maps</div>
                       </div>
                     </div>
-                    <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-1 rounded-lg">Target: #1</span>
-                  </div>
-
-                  <div className="space-y-3 relative">
-                    {/* Your Biz */}
-                    <div className="flex items-center justify-between p-3 bg-white rounded-2xl shadow-md border border-zinc-100 relative z-10 scale-105 transform -translate-x-1">
-                      <div className="flex items-center gap-3">
-                        <span className="font-bold text-zinc-900 text-sm">1. Vous</span>
+                    {/* Metric Badge Right */}
+                    <motion.div
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 1.8, type: "spring" }}
+                      className="absolute -right-24 top-6 bg-white/90 backdrop-blur py-2 px-3 rounded-xl shadow-lg border border-emerald-100 flex items-center gap-2"
+                    >
+                      <div className="bg-emerald-50 p-1.5 rounded-lg"><TrendingUp size={12} className="text-emerald-600" /></div>
+                      <div className="flex flex-col leading-none">
+                        <span className="text-[10px] font-extrabold text-zinc-800">+300% Avis Publics</span>
+                        <span className="text-[8px] font-medium text-emerald-600/80">Croissance Google</span>
                       </div>
-                      <div className="flex items-center gap-1.5">
-                        <Star size={12} className="text-amber-400" fill="currentColor" />
-                        <span className="font-bold text-zinc-900 text-sm">4.9</span>
-                      </div>
-                    </div>
-                    {/* Competitor */}
-                    <div className="flex items-center justify-between p-3 rounded-xl opacity-50 grayscale pl-4">
-                      <span className="font-medium text-zinc-500 text-sm">2. Concurrent</span>
-                      <span className="font-medium text-zinc-400 text-sm">4.5</span>
-                    </div>
-                  </div>
+                    </motion.div>
+                  </motion.div>
                 </div>
-              </motion.div>
 
-
-              {/* 4. BOTTOM RIGHT: AUTO-REPLY (Operational Excellence) */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8, x: 40, y: 40 }}
-                animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.8, type: "spring" }}
-                className="absolute bottom-[10%] right-[-5%] z-20"
-              >
-                <div className="bg-white/80 backdrop-blur-md p-4 rounded-[2rem] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] border border-white max-w-[260px] hover:scale-105 transition-transform duration-300">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-                      <Bot size={14} />
-                    </div>
-                    <span className="text-[10px] font-bold text-zinc-500 uppercase">Réponse Auto</span>
-                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded ml-auto">Active</span>
+                {/* Metric Badge: Efficiency */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 1.2, type: "spring" }}
+                  className="absolute bottom-[10%] bg-zinc-900 text-white px-5 py-2.5 rounded-full shadow-2xl flex items-center gap-3 z-30 hover:scale-105 transition-transform"
+                >
+                  <div className="flex items-center gap-1.5">
+                    <Sparkles size={14} className="text-[#E85C33]" />
+                    <span className="font-bold text-sm">100% Automatisé via WhatsApp</span>
                   </div>
-                  <p className="text-xs text-zinc-600 italic bg-zinc-50 p-2.5 rounded-xl border border-zinc-100/50 leading-relaxed">
-                    "Merci Paul ! Ravi que l'expérience vous ait plu..."
-                  </p>
-                </div>
-              </motion.div>
+                  <div className="w-px h-4 bg-white/20" />
+                  <span className="text-xs font-medium text-zinc-300">0 Effort</span>
+                </motion.div>
 
-
-              {/* 5. BOTTOM LEFT: CUSTOMER SATISFACTION (NPS) */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8, x: -40, y: 30 }}
-                animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.9, type: "spring" }}
-                className="absolute bottom-[5%] left-[0%] z-20"
-              >
-                <div className="bg-white/70 backdrop-blur-sm p-4 rounded-[1.8rem] shadow-lg border border-white/50 w-[180px] hover:bg-white hover:scale-105 transition-all">
-                  <div className="text-center">
-                    <div className="text-3xl font-extrabold text-zinc-900 mb-1">NPS 78</div>
-                    <div className="flex justify-center gap-1 mb-1">
-                      <Star size={10} className="text-amber-400" fill="currentColor" />
-                      <Star size={10} className="text-amber-400" fill="currentColor" />
-                      <Star size={10} className="text-amber-400" fill="currentColor" />
-                      <Star size={10} className="text-amber-400" fill="currentColor" />
-                      <Star size={10} className="text-amber-400" fill="currentColor" />
-                    </div>
-                    <div className="text-[10px] font-bold text-zinc-400 uppercase">Satisfaction Client</div>
-                  </div>
-                </div>
-              </motion.div>
-
+              </div>
             </motion.div>
           </div>
         </section>
@@ -1225,7 +1258,7 @@ export default function LandingPage() {
 
             <div className="relative z-10 max-w-3xl mx-auto space-y-10">
               <h2 className="text-5xl md:text-7xl font-bold tracking-tight">Prêt à prendre le contrôle ?</h2>
-              <p className="text-xl text-zinc-400 max-w-xl mx-auto">Rejoignez +2,000 entreprises qui grandissent avec ReviewMe. Pas de carte requise.</p>
+              <p className="text-xl text-zinc-400 max-w-xl mx-auto">Rejoignez les établissements d'excellence qui maîtrisent leur e-réputation. Pas de carte requise.</p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link href="/login" className="w-full sm:w-auto">
                   <Button className="w-full sm:w-auto rounded-full bg-[#E85C33] hover:bg-[#D54D26] text-white px-10 h-16 text-lg font-bold shadow-2xl shadow-orange-500/20">
