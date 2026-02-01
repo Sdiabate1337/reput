@@ -2,12 +2,12 @@
 
 import { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { X, Send, Bot, User, Clock, AlertTriangle, Shield, CheckCircle2, Archive } from "lucide-react"
+import { X, Send, Bot, User, Archive } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { Conversation, ConversationMessage } from "@/types/database"
 import { formatDistanceToNow } from "date-fns"
 import { fr } from "date-fns/locale"
-import { toggleConversationAi, sendManualReply, closeConversation } from "@/actions/conversations"
+import { toggleConversationAi, closeConversation } from "@/actions/conversations"
 
 interface ConversationSheetProps {
     conversation: Conversation | null
@@ -17,11 +17,8 @@ interface ConversationSheetProps {
 }
 
 export function ConversationSheet({ conversation, isOpen, onClose, onUpdate }: ConversationSheetProps) {
-    const [replyText, setReplyText] = useState("")
-    const [isSending, setIsSending] = useState(false)
     const [aiEnabled, setAiEnabled] = useState(conversation?.ai_enabled ?? true)
     const scrollRef = useRef<HTMLDivElement>(null)
-    const inputRef = useRef<HTMLInputElement>(null)
 
     // Sync state
     useEffect(() => {
@@ -38,31 +35,6 @@ export function ConversationSheet({ conversation, isOpen, onClose, onUpdate }: C
             }, 50)
         }
     }, [isOpen, conversation?.messages])
-
-    // Focus input when manual mode enabled
-    useEffect(() => {
-        if (!aiEnabled && inputRef.current) {
-            inputRef.current.focus()
-        }
-    }, [aiEnabled])
-
-    const handleSend = async (e: React.FormEvent) => {
-        e.preventDefault()
-        if (!replyText.trim() || !conversation) return
-
-        setIsSending(true)
-        try {
-            const result = await sendManualReply(conversation.id, replyText)
-            if (result.success) {
-                setReplyText("")
-                onUpdate()
-            }
-        } catch (error) {
-            console.error("Failed to send", error)
-        } finally {
-            setIsSending(false)
-        }
-    }
 
     const handleToggleAi = async () => {
         if (!conversation) return
@@ -230,23 +202,25 @@ export function ConversationSheet({ conversation, isOpen, onClose, onUpdate }: C
                                     </div>
                                 </div>
                             ) : (
-                                <form onSubmit={handleSend} className="relative flex gap-3">
-                                    <input
-                                        ref={inputRef}
-                                        type="text"
-                                        value={replyText}
-                                        onChange={(e) => setReplyText(e.target.value)}
-                                        placeholder="Écrivez votre réponse..."
-                                        className="flex-1 h-12 pl-4 pr-12 rounded-xl border border-zinc-200 bg-zinc-50/50 focus:bg-white focus:border-[#E85C33] focus:ring-4 focus:ring-orange-500/10 outline-none transition-all placeholder:text-zinc-400"
-                                    />
-                                    <Button
-                                        type="submit"
-                                        disabled={isSending || !replyText.trim()}
-                                        className="h-12 w-12 rounded-xl bg-[#E85C33] hover:bg-[#d54d26] text-white p-0 shrink-0 shadow-lg shadow-orange-500/20 transition-transform active:scale-95"
-                                    >
-                                        <Send size={20} className={isSending ? 'opacity-0' : 'ml-0.5'} />
-                                    </Button>
-                                </form>
+                                <div className="space-y-3">
+                                    <div className="rounded-xl border border-orange-200 bg-orange-50 p-4">
+                                        <p className="text-sm text-orange-800 mb-3 font-medium">
+                                            Continuez la conversation directement via votre WhatsApp
+                                        </p>
+                                        <a
+                                            href={`https://wa.me/${conversation.client_phone.replace(/[^0-9]/g, '')}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-center justify-center gap-3 w-full h-12 rounded-xl bg-green-500 hover:bg-green-600 text-white font-bold shadow-lg shadow-green-500/20 transition-all active:scale-[0.98]"
+                                        >
+                                            <Send size={20} />
+                                            Ouvrir WhatsApp
+                                        </a>
+                                    </div>
+                                    <p className="text-xs text-zinc-400 text-center">
+                                        Le client recevra votre message depuis votre numéro personnel/professionnel
+                                    </p>
+                                </div>
                             )}
                         </div>
                     </motion.div>

@@ -14,7 +14,11 @@ export interface Establishment {
     custom_message_negative?: string
     custom_message_welcome?: string
     custom_message_positive?: string
-    custom_message_request?: string // NEW: For manual review request customization
+    custom_message_request?: string // For manual review request customization
+    // FSM Reminder Messages
+    custom_message_reminder_note?: string
+    custom_message_reminder_feedback?: string
+    custom_message_reminder_google?: string
 
     plan: 'startup' | 'pro' | 'enterprise'
     whatsapp_onboarding_status: 'PENDING' | 'REQUESTED' | 'CODE_SENT' | 'VERIFYING' | 'ACTIVE' | 'FAILED'
@@ -44,6 +48,11 @@ export interface Conversation {
     qr_ref: string | null
     created_at: string
     updated_at: string
+    // FSM State Machine Fields
+    current_state: ConversationState
+    last_interaction_at: string
+    reminder_count: number
+    reminder_last_sent_at: string | null
 }
 
 export interface ConversationMessage {
@@ -56,6 +65,15 @@ export type Sentiment = 'POSITIVE' | 'NEUTRAL' | 'NEGATIVE' | 'CRITICAL'
 export type Language = 'FR' | 'EN' | 'AR' | 'DARIJA'
 export type ConversationStatus = 'OPEN' | 'NEEDS_ATTENTION' | 'CLOSED' | 'CONVERTED'
 export type ConversationSource = 'QR_SCAN' | 'MANUAL_SEND' | 'CSV_IMPORT'
+
+// FSM State Machine States
+export type ConversationState =
+    | 'INIT'               // Scanned QR, waiting for rating
+    | 'FEEDBACK_PENDING'   // Rated 1-3, waiting for feedback details
+    | 'CONVERSION_PENDING' // Rated 4-5, waiting for Google click
+    | 'COMPLETED'          // Clicked Google review link
+    | 'RESOLVED'           // Negative feedback received
+    | 'ARCHIVED'           // Session expired (>24h)
 
 export interface Event {
     id: string
@@ -83,6 +101,16 @@ export interface OutboundMessage {
     status: 'PENDING' | 'SENT' | 'DELIVERED' | 'FAILED'
     twilio_sid: string | null
     error_message: string | null
+    created_at: string
+}
+
+// Redirect Events (Google link click tracking)
+export interface RedirectEvent {
+    id: string
+    establishment_id: string
+    conversation_id: string | null
+    user_agent: string | null
+    ip_hash: string | null
     created_at: string
 }
 

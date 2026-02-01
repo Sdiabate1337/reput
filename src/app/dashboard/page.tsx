@@ -16,6 +16,7 @@ import { DateRangePicker } from "@/components/dashboard/date-range-picker"
 import { SentimentEvolutionChart } from "@/components/dashboard/charts/sentiment-evolution"
 import { AnalyticsKPI } from "@/components/dashboard/charts/analytics-kpi"
 import { ShowcaseModal } from "@/components/dashboard/showcase-modal"
+import { QrKitModal } from "@/components/dashboard/qr-kit-modal"
 import { Share2 } from "lucide-react"
 
 import { SetupGuide } from "@/components/dashboard/setup-guide"
@@ -45,8 +46,19 @@ function DashboardContent() {
     const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null)
     const [conversations, setConversations] = useState<Conversation[]>([])
     const [isShowcaseModalOpen, setIsShowcaseModalOpen] = useState(false)
+    const [isQrKitModalOpen, setIsQrKitModalOpen] = useState(false)
 
     const router = useRouter()
+
+    // Check for showQrKit parameter (from onboarding redirect)
+    useEffect(() => {
+        const showQrKit = searchParams.get('showQrKit')
+        if (showQrKit === 'true') {
+            setIsQrKitModalOpen(true)
+            // Clean URL without refreshing
+            router.replace('/dashboard', { scroll: false })
+        }
+    }, [searchParams, router])
 
     // Auto-refresh for live feed
     useEffect(() => {
@@ -175,6 +187,12 @@ function DashboardContent() {
                 </div>
             </div>
             {/* Bottom Nav is now global in AppShell */}
+
+            {/* QR Kit Modal (opens automatically after onboarding) */}
+            <QrKitModal
+                isOpen={isQrKitModalOpen}
+                onClose={() => setIsQrKitModalOpen(false)}
+            />
         </div>
     )
 }

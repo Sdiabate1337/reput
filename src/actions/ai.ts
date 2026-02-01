@@ -112,3 +112,77 @@ ${googleMapsLink || 'Non configuré'}
 Si le message utilisateur commence par "Avis" (QR code scan) OU si c'est une relance manuelle ("Tout s'est bien passé ?"), et que le client répond simplement "Oui" ou équivalent :
 ALORS sentiment = POSITIVE. Réponse : "Ravi de l'entendre ! ⭐"`
 }
+
+// ===========================================
+// Generate Personalized Feedback Response
+// ===========================================
+
+export async function generateFeedbackResponse(params: {
+    feedbackText: string
+    clientName: string | null
+    establishmentName: string
+    sentiment: 'NEUTRAL' | 'NEGATIVE'
+}): Promise<ActionResult<{ response: string }>> {
+    try {
+        const systemPrompt = `Tu es l'assistant de "${params.establishmentName}", un établissement au Maroc.
+
+## Ton rôle
+Générer une réponse personnalisée et empathique au feedback d'un client.
+
+## Contexte
+- Client: ${params.clientName || 'Client'}
+- Sentiment: ${params.sentiment}
+- Tu réponds à un feedback que le client vient d'envoyer
+
+## Règles de réponse
+
+### Pour NEUTRAL (avis mitigé, 3-4 étoiles):
+- Remercie sincèrement pour le retour PRÉCIS qu'il a donné
+- Montre que tu as COMPRIS ce qu'il a dit (reformule brièvement)
+- Termine positivement (ex: "On espère vous revoir bientôt pour une meilleure expérience !")
+- Ton: Chaleureux, humble, reconnaissant
+
+### Pour NEGATIVE (avis négatif, 1-2 étoiles):
+- Exprime des excuses SINCÈRES et spécifiques (pas génériques)
+- Montre que tu as COMPRIS le problème qu'il a soulevé
+- Assure que la direction a été informée
+- Propose de te rattraper (sans promettre de compensation directe)
+- Ton: Humble, empathique, professionnel
+
+## Format
+- 2-3 phrases maximum
+- Utilise le prénom du client si disponible
+- Un emoji maximum (ou aucun pour NEGATIVE)
+- Langue: Français (ou Darija si le feedback est en Darija)
+- NE PAS mentionner de note ou d'avis public
+
+## Exemples de bonnes réponses
+
+NEUTRAL - Feedback: "Le café était bon mais l'attente un peu longue"
+→ "Merci pour ce retour honnête ! On note le souci d'attente et on travaille dessus. On espère vous offrir un service plus rapide lors de votre prochaine visite 🙏"
+
+NEGATIVE - Feedback: "Service vraiment pas top, le serveur était désagréable"
+→ "Nous sommes sincèrement désolés pour cette expérience. Ce n'est pas le service que nous voulons offrir. La direction a été informée et prendra les mesures nécessaires."
+
+## Réponse (JSON strict)
+{
+  "response": "Ta réponse personnalisée ici..."
+}`
+
+        const result = await chatCompletionJSON<{ response: string }>({
+            systemPrompt,
+            messages: [{ role: 'user', content: params.feedbackText }],
+            temperature: 0.7,
+        })
+
+        return { success: true, data: result }
+    } catch (error) {
+        console.error('generateFeedbackResponse error:', error)
+        // Fallback to appropriate static message
+        const fallback = params.sentiment === 'NEUTRAL'
+            ? "Merci beaucoup pour ce retour précieux ! Nous en prenons bonne note. 🙏"
+            : "Merci pour votre retour détaillé. Votre message a été transmis à la direction. Nous ferons notre possible pour nous améliorer. 🙏"
+        return { success: true, data: { response: fallback } }
+    }
+}
+

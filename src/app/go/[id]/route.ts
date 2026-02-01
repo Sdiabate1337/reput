@@ -45,6 +45,15 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             [establishmentId, conversationId || null, userAgent]
         )
         console.log(`[Redirect] Logged successfully`)
+
+        // FSM: Update conversation state to COMPLETED if we have a conversation ID
+        if (conversationId) {
+            await execute(
+                `UPDATE conversations SET current_state = 'COMPLETED', status = 'CONVERTED' WHERE id = $1 AND current_state = 'CONVERSION_PENDING'`,
+                [conversationId]
+            )
+            console.log(`[Redirect] Updated FSM state to COMPLETED for conversation ${conversationId}`)
+        }
     } catch (err) {
         console.error("[Redirect] Log error:", err)
         // Don't block redirect on log error

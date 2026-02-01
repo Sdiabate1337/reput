@@ -174,7 +174,7 @@ function SidebarContent({ pathname, establishment }: { pathname: string, establi
 
     const trialDays = establishment ? getTrialDaysLeft(establishment) : 0
     const quotaUsed = establishment?.outbound_quota_used || 0
-    const quotaLimit = establishment?.outbound_quota_limit || 2000
+    const quotaLimit = 100 // Relances WhatsApp mensuelles
     const percentUsed = Math.min((quotaUsed / quotaLimit) * 100, 100)
 
     const planName = establishment?.plan === 'pro' ? 'Pro Plan' : establishment?.plan === 'enterprise' ? 'Enterprise' : 'Startup Plan'
@@ -227,7 +227,7 @@ function SidebarContent({ pathname, establishment }: { pathname: string, establi
                             style={{ width: `${percentUsed}%` }}
                         />
                     </div>
-                    <p className="text-[10px] text-white/60 mt-2 font-medium">{quotaUsed} / {quotaLimit} credits used</p>
+                    <p className="text-[10px] text-white/60 mt-2 font-medium">Relances WhatsApp : {quotaUsed} / 100 ce mois</p>
                 </div>
             </div>
 

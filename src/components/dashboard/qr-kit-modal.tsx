@@ -115,49 +115,27 @@ export function QrKitModal({ isOpen, onClose }: QrKitModalProps) {
                                 <div className="flex justify-between items-start mb-6">
                                     <div>
                                         <h2 className="text-xl font-bold text-zinc-900">Mon QR Kit</h2>
-                                        <p className="text-zinc-500 text-sm">QR Code & Puce NFC</p>
+                                        <p className="text-zinc-500 text-sm">Votre kit de collecte d&apos;avis</p>
                                     </div>
                                     <button onClick={onClose} className="p-2 -mr-2 text-zinc-400 hover:text-zinc-600 rounded-full hover:bg-zinc-100">
                                         <X size={20} />
                                     </button>
                                 </div>
 
-                                <div className="space-y-6 flex-1 overflow-y-auto">
-                                    <div className="p-4 rounded-xl bg-blue-50 border border-blue-100">
-                                        <h3 className="font-semibold text-blue-900 flex items-center gap-2 mb-2">
-                                            <Info size={16} /> Ce qui est encodé
-                                        </h3>
-                                        <p className="text-sm text-blue-800 mb-2">
-                                            Le QR Code et la puce NFC contiennent exactement le même lien :
-                                        </p>
-                                        <code className="block bg-white/50 p-2 rounded text-xs break-all text-blue-900 font-mono">
-                                            {qrData?.waLink || 'https://wa.me/...'}
-                                        </code>
-                                    </div>
-
-                                    <div className="space-y-4">
-                                        <div className="flex gap-3">
-                                            <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center shrink-0 text-[#E85C33]">
-                                                <QrCode size={20} />
+                                <div className="flex-1 flex flex-col justify-center">
+                                    {/* Simple Usage Guide */}
+                                    <div className="p-6 rounded-2xl bg-gradient-to-br from-[#E85C33]/10 via-orange-50 to-amber-50 border border-[#E85C33]/20 shadow-sm">
+                                        <div className="flex items-start gap-4">
+                                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#E85C33] to-orange-500 flex items-center justify-center shrink-0 shadow-md">
+                                                <span className="text-white text-xl">📋</span>
                                             </div>
                                             <div>
-                                                <h4 className="font-semibold text-zinc-900">QR Code</h4>
-                                                <p className="text-sm text-zinc-500">
-                                                    Imprimez-le sur vos menus, cartes de visite ou chevalets de table.
-                                                    Le client scanne avec sa caméra.
+                                                <h3 className="font-bold text-zinc-900 text-lg mb-2">Comment utiliser</h3>
+                                                <p className="text-zinc-600 leading-relaxed">
+                                                    Téléchargez le QR Code et imprimez-le sur vos <strong className="text-zinc-800">menus</strong>, <strong className="text-zinc-800">tables</strong> ou <strong className="text-zinc-800">au comptoir</strong>.
                                                 </p>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex gap-3">
-                                            <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center shrink-0 text-[#E85C33]">
-                                                <Smartphone size={20} />
-                                            </div>
-                                            <div>
-                                                <h4 className="font-semibold text-zinc-900">Puce NFC</h4>
-                                                <p className="text-sm text-zinc-500">
-                                                    Programmez vos tags NFC (si vous en avez) avec l&pos;URL ci-dessus.
-                                                    Le client approche simplement son téléphone.
+                                                <p className="text-zinc-500 text-sm mt-3">
+                                                    Vos clients n&apos;ont qu&apos;à le scanner pour laisser leur avis instantanément.
                                                 </p>
                                             </div>
                                         </div>

@@ -130,69 +130,6 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="grid gap-6 md:gap-8">
-                    {/* WhatsApp Status Card */}
-                    <div className="bg-white rounded-3xl border border-zinc-200 p-6 md:p-8 shadow-sm overflow-hidden relative">
-                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 md:gap-4">
-                            <div className="flex gap-4">
-                                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${whatsappStatus === 'ACTIVE' ? 'bg-green-100 text-green-600' :
-                                    whatsappStatus === 'VERIFYING' ? 'bg-blue-100 text-blue-600' :
-                                        'bg-orange-100 text-orange-600'
-                                    }`}>
-                                    <MessageSquare size={24} />
-                                </div>
-                                <div>
-                                    <h2 className="text-lg md:text-xl font-bold text-zinc-900">Connexion WhatsApp</h2>
-                                    <p className="text-zinc-500 text-sm mt-1 flex flex-wrap items-center gap-1">
-                                        Status:
-                                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold ${whatsappStatus === 'ACTIVE' ? 'bg-green-100 text-green-700' :
-                                            whatsappStatus === 'VERIFYING' ? 'bg-blue-100 text-blue-700' :
-                                                'bg-orange-100 text-orange-700'
-                                            }`}>
-                                            {whatsappStatus === 'ACTIVE' ? 'Actif' :
-                                                whatsappStatus === 'VERIFYING' ? 'Vérification...' :
-                                                    whatsappStatus === 'PENDING' ? 'Non configuré' :
-                                                        'En cours...'}
-                                        </span>
-                                    </p>
-                                </div>
-                            </div>
-
-                            {whatsappStatus !== 'ACTIVE' && (
-                                <Button
-                                    onClick={() => setIsWhatsAppDialogOpen(true)}
-                                    className={`${whatsappStatus === 'VERIFYING'
-                                        ? 'bg-blue-600 hover:bg-blue-700'
-                                        : 'bg-[#E85C33] hover:bg-[#d54d26]'
-                                        } text-white rounded-xl font-bold px-6 w-full md:w-auto h-12 md:h-10`}
-                                >
-                                    {whatsappStatus === 'PENDING' ? 'Connecter' : 'Continuer'}
-                                </Button>
-                            )}
-                        </div>
-
-                        <div className="mt-6 pt-6 border-t border-zinc-100">
-                            {whatsappStatus === 'ACTIVE' ? (
-                                <div className="flex flex-col md:flex-row items-start md:items-center gap-3 text-sm text-zinc-600 bg-zinc-50 p-4 rounded-xl border border-zinc-200">
-                                    <div className="flex items-center gap-2">
-                                        <CheckCircle2 className="text-green-500 shrink-0" size={18} />
-                                        <span>Numéro connecté :</span>
-                                    </div>
-                                    <code className="bg-white px-2 py-1 rounded border border-zinc-100 font-mono font-bold">{twilioNumber}</code>
-                                </div>
-                            ) : (
-                                <div className="text-sm text-zinc-500 leading-relaxed">
-                                    <p className="flex items-start gap-2 mb-2">
-                                        <AlertTriangle size={16} className="text-orange-500 shrink-0 mt-0.5" />
-                                        <span>Configuration requise pour répondre aux avis.</span>
-                                    </p>
-                                    <p className="pl-6 text-xs md:text-sm">
-                                        Nous connectons votre numéro via l'API officielle WhatsApp Business.
-                                        <br className="hidden md:block" /> Aucun smartphone requis pour que ça fonctionne.
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
 
                     {/* General Form */}
                     <div className="bg-white rounded-3xl border border-zinc-200 p-6 md:p-8 shadow-sm">

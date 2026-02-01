@@ -14,10 +14,13 @@ import {
     addMessageToConversation,
     updateConversationAnalysis
 } from '@/actions/conversations'
-import { analyzeAndRespond } from '@/actions/ai'
+import { analyzeAndRespond, generateFeedbackResponse } from '@/actions/ai'
 import { parseQRRef } from '@/lib/utils'
 import { canAccessFeature, checkQuota } from '@/lib/access-control'
 import { execute } from '@/lib/db'
+import { updateConversationState, isTerminalState } from '@/lib/state-machine'
+import { isVoiceNote, transcribeAudio } from '@/lib/whisper'
+import type { ConversationState } from '@/types/database'
 
 // Force dynamic to ensure headers are read correctly
 export const dynamic = 'force-dynamic'
@@ -101,35 +104,36 @@ export async function POST(request: NextRequest) {
             // VISUAL FLOW LOGIC (Scan-to-Chat)
             // ==================================================
 
-            // Case A: QR Scan (Anytime) -> Send Visual Welcome (Interactive Buttons)
+            // Case A: QR Scan (Anytime) -> Send Visual Welcome with Interactive Buttons
             if (source === 'QR_SCAN') {
-                console.log('[Twilio Webhook] QR Scan detected - Sending Visual Welcome (Interactive)')
+                console.log('[Twilio Webhook] QR Scan detected - Sending Interactive Welcome')
 
-                // Dynamic Welcome Template (Text Only support in body)
-                const contentSid = 'HX95c32af4619c2900260e9f8e714ab20f'
+                // FSM: Ensure state is INIT
+                await updateConversationState(conversation.id, 'INIT')
 
-                // Defaults if not customized
-                const defaultWelcome = `Marhba {{name}} ! 🧡\nMerci de votre visite chez ${establishment.name}.\n\nQuelle a été votre impression ?`
-                const rawMessage = establishment.custom_message_welcome || defaultWelcome
+                // NEW Template with Quick Reply Buttons - V2 Modern (created 2026-02-01)
+                const contentSid = 'HX6cb24c095eedd46a724800defb6ccf78'
 
-                // Replace {{name}} with profileName or "cher client"
                 const safeName = profileName || 'cher client'
-                const finalMessage = rawMessage.replace('{{name}}', safeName)
 
+                // Send template with variables: {{1}} = name, {{2}} = establishment
                 const result = await import('@/lib/twilio').then(mod => mod.sendWhatsAppTemplate({
                     to: from.replace('whatsapp:', ''),
                     templateSid: contentSid,
                     contentVariables: {
-                        '1': finalMessage
+                        '1': safeName,
+                        '2': establishment.name
                     }
                 }))
 
                 console.log('[Twilio Webhook] Interactive Welcome Result:', result)
 
+                const logMessage = `Marhba ${safeName} ! 🧡 Merci de votre visite chez ${establishment.name}. Quelle a été votre impression ? [Buttons: Top/Bien/Déçu]`
+
                 // Save Assistant Message
                 await addMessageToConversation(conversation.id, {
                     role: 'assistant',
-                    content: '[Interactive Welcome Sent] ' + finalMessage
+                    content: logMessage
                 })
 
                 return new NextResponse('<Response></Response>', { headers: { 'Content-Type': 'text/xml' } })
@@ -139,8 +143,8 @@ export async function POST(request: NextRequest) {
             // Match against the button titles we defined
             const cleanBody = messageBody.trim()
 
-            // Check for Rating Button Clicks
-            if (cleanBody.includes('Top !') || cleanBody.includes('5/5') || cleanBody === '1') {
+            // Check for Rating Button Clicks (supports both old and new button texts)
+            if (cleanBody.includes('Top !') || cleanBody.includes('Excellente') || cleanBody.includes('5/5') || cleanBody === '1') {
                 // RATING 5 matches
                 // USE TRACKING LINK
                 // establishment.id is available from getEstablishmentByTwilioNumber call earlier? 
@@ -153,11 +157,9 @@ export async function POST(request: NextRequest) {
                 const safeBaseUrl = baseUrl.replace(/\/$/, '')
                 const trackingLink = `${safeBaseUrl}/go/${establishment.id}`
 
-                // NEW TEMPLATE (Created via Content API script)
-                // Hardcoded domain: https://reviewme.ma/go/{{2}}
-                // Variable 1: Body text (with dynamic fallback link)
-                // Variable 2: Establishment UUID
-                const contentSid = 'HX42d3b18e50c737475c7fab05a8c30969'
+                // NEW TEMPLATE: Positive CTA with button (created 2026-02-01)
+                // Button URL: https://reviewme.ma/go/{{2}}
+                const contentSid = 'HXafbfac19a16cc2a2da65b756f7b792c7'
 
                 const defaultPositive = "Génial ! Toute l'équipe vous remercie. 🥰\n\nUn dernier petit clic pour nous donner de la force ? 💪"
                 const rawPositive = establishment.custom_message_positive || defaultPositive
@@ -180,67 +182,55 @@ export async function POST(request: NextRequest) {
                     }
                 }))
 
-                // Update analysis
+                // Update analysis + FSM state
                 await updateConversationAnalysis(conversation.id, { sentiment: 'POSITIVE', status: 'CONVERTED', language: 'FR' })
+                await updateConversationState(conversation.id, 'CONVERSION_PENDING', { sentiment: 'POSITIVE' })
 
                 await addMessageToConversation(conversation.id, { role: 'assistant', content: '[CTA Sent] ' + finalPositive })
                 return new NextResponse('<Response></Response>', { headers: { 'Content-Type': 'text/xml' } })
 
-            } else if (cleanBody.includes('Bien') || cleanBody.includes('Moyen') || cleanBody.includes('3-4') || cleanBody === '2') {
-                // RATING 3-4 matches -> Send Link + Feedback Question
+            } else if (cleanBody.includes('Bien') || cleanBody.includes('Correcte') || cleanBody.includes('Moyen') || cleanBody.includes('3-4') || cleanBody === '2') {
+                // RATING 3-4 matches -> Ask for feedback FIRST, CTA link comes AFTER feedback received
 
-                // USE TRACKING LINK
-                const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://reviewme.ma'
-                const safeBaseUrl = baseUrl.replace(/\/$/, '')
-                const trackingLink = `${safeBaseUrl}/go/${establishment.id}`
-
-                const contentSid = 'HX01112ace1de5bf48fd75dd446de26071'
-
-                const defaultPositive = "Merci ! Un petit clic pour nous donner de la force ? 💪"
-                const rawPositive = establishment.custom_message_positive || defaultPositive
-                const safeName = profileName || 'cher client'
-                const finalPositive = rawPositive.replace('{{name}}', safeName) + `\n\n${trackingLink}`
-
-                await import('@/lib/twilio').then(mod => mod.sendWhatsAppMessage({
-                    to: from.replace('whatsapp:', ''),
-                    body: finalPositive
-                }))
-
-                // 2. Send Feedback Question (Text)
-                const responseText = establishment.custom_message_neutral || `Merci pour votre retour. Que pourrions-nous améliorer pour obtenir 5 étoiles la prochaine fois ?`
+                // 1. Send Feedback Question ONLY (no link yet)
+                const responseText = establishment.custom_message_neutral || `Merci pour votre visite ! 🙏\n\nVotre avis compte vraiment pour nous. Qu'est-ce qui aurait pu rendre votre expérience encore meilleure ?`
 
                 await import('@/lib/twilio').then(mod => mod.sendWhatsAppMessage({
                     to: from.replace('whatsapp:', ''),
                     body: responseText
                 }))
 
-                // Set status to NEEDS_ATTENTION.
-                // The AI blocker below will prevent auto-reply if status is NEEDS_ATTENTION.
+                // Set FSM state to FEEDBACK_PENDING - CTA will be sent when feedback is received
                 await updateConversationAnalysis(conversation.id, { sentiment: 'NEUTRAL', status: 'NEEDS_ATTENTION', language: 'FR' })
+                await updateConversationState(conversation.id, 'FEEDBACK_PENDING', { sentiment: 'NEUTRAL' })
 
                 await addMessageToConversation(conversation.id, { role: 'assistant', content: responseText })
                 return new NextResponse('<Response></Response>', { headers: { 'Content-Type': 'text/xml' } })
 
-            } else if (cleanBody.includes('Déçu') || cleanBody.includes('1-2') || cleanBody === '3') {
+            } else if (cleanBody.includes('Déçu') || cleanBody.includes('Décevante') || cleanBody.includes('1-2') || cleanBody === '3') {
                 // RATING 1-2 matches
                 const responseText = establishment.custom_message_negative || `Nous sommes navrés d'apprendre que votre expérience n'a pas été satisfaisante. Pourriez-vous nous donner plus de détails afin que nous puissions nous améliorer ?`
                 await updateConversationAnalysis(conversation.id, { sentiment: 'NEGATIVE', status: 'NEEDS_ATTENTION', language: 'FR' })
+                await updateConversationState(conversation.id, 'FEEDBACK_PENDING', { sentiment: 'NEGATIVE' })
 
                 await import('@/lib/twilio').then(mod => mod.sendWhatsAppMessage({
                     to: from.replace('whatsapp:', ''),
                     body: responseText
                 }))
 
-                // ALERT ADMIN (US-5.2)
+                // ALERT ADMIN (US-5.2) - Send template with CTA button to conversation
                 if (establishment.admin_phone) {
                     console.log(`[Twilio Webhook] Sending Admin Alert to ${establishment.admin_phone} for conversation ${conversation.id}`)
                     try {
+                        // Admin Alert Template with button to conversation
+                        const adminTemplateSid = 'HXe54f36c257e5665ed36cba9b4e59038a'
                         await import('@/lib/twilio').then(mod => mod.sendWhatsAppTemplate({
-                            to: establishment.admin_phone!.replace('whatsapp:', ''), // Support both with/without prefix
-                            templateSid: 'HX5d4167524642530159aee640f417b8f5',
+                            to: establishment.admin_phone!.replace('whatsapp:', ''),
+                            templateSid: adminTemplateSid,
                             contentVariables: {
-                                '1': profileName || 'Client Inconnu',
-                                '2': conversation.id
+                                '1': profileName || 'Client',
+                                '2': establishment.name,
+                                '3': conversation.id
                             }
                         }))
                     } catch (err) {
@@ -256,9 +246,117 @@ export async function POST(request: NextRequest) {
             // DEFAULT AI FLOW (Fallback)
             // ==================================================
 
-            // STOP: If conversation is already CONVERTED (Link Sent), do not reply to small talk ("ok", "merci")
-            // This prevents spamming the user after they have the link.
-            console.log(`[Twilio Webhook] AI Flow Check. Status: ${conversation.status}`)
+            // FSM: Check if conversation is in FEEDBACK_PENDING and has voice/text feedback
+            const currentState = conversation.current_state || 'INIT'
+
+            // Handle FEEDBACK_PENDING: Process feedback (voice or text)
+            if (currentState === 'FEEDBACK_PENDING') {
+                let feedbackText = messageBody
+
+                // Check for voice note
+                if (isVoiceNote(body) && body.MediaUrl0) {
+                    console.log('[Twilio Webhook] Voice note detected, transcribing...')
+                    const transcription = await transcribeAudio(body.MediaUrl0)
+
+                    if (transcription.success && transcription.text) {
+                        feedbackText = transcription.text
+                        console.log(`[Twilio Webhook] Transcribed: "${feedbackText.substring(0, 100)}..."`)
+                    } else {
+                        console.warn('[Twilio Webhook] Transcription failed:', transcription.error)
+                        // Fall back to any text that might accompany the voice note
+                    }
+                }
+
+                // Analyze the feedback
+                const feedbackAnalysis = await analyzeAndRespond({
+                    conversationHistory: [{ role: 'client', content: feedbackText }],
+                    establishmentName: establishment.name,
+                    googleMapsLink: ''
+                })
+
+                // Check if this was a NEUTRAL feedback (Correcte button)
+                const wasNeutral = conversation.sentiment === 'NEUTRAL'
+
+                if (wasNeutral) {
+                    // 1. Generate personalized thank you using GPT
+                    const aiResponse = await generateFeedbackResponse({
+                        feedbackText,
+                        clientName: conversation.client_name,
+                        establishmentName: establishment.name,
+                        sentiment: 'NEUTRAL'
+                    })
+                    const thankYouMessage = aiResponse.success ? aiResponse.data!.response : "Merci beaucoup pour ce retour précieux ! Nous en prenons bonne note. 🙏"
+
+                    await sendWhatsAppMessage({
+                        to: conversation.client_phone,
+                        body: thankYouMessage
+                    })
+                    await addMessageToConversation(conversation.id, { role: 'assistant', content: thankYouMessage })
+
+                    // 2. NOW send the CTA link (using template with button)
+                    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://reviewme.ma'
+                    const safeBaseUrl = baseUrl.replace(/\/$/, '')
+                    const trackingLink = `${safeBaseUrl}/go/${establishment.id}`
+
+                    const ctaMessage = "Si vous avez 30 secondes, un petit avis public serait vraiment apprécié ! 🙌"
+                    const contentSid = 'HXafbfac19a16cc2a2da65b756f7b792c7' // Positive CTA template
+
+                    await import('@/lib/twilio').then(mod => mod.sendWhatsAppTemplate({
+                        to: from.replace('whatsapp:', ''),
+                        templateSid: contentSid,
+                        contentVariables: {
+                            '1': ctaMessage,
+                            '2': establishment.id
+                        }
+                    }))
+
+                    // Transition to CONVERSION_PENDING (waiting for click)
+                    await updateConversationState(conversation.id, 'CONVERSION_PENDING')
+                    await updateConversationAnalysis(conversation.id, { status: 'CONVERTED' })
+
+                    await addMessageToConversation(conversation.id, { role: 'assistant', content: `[CTA Sent] ${trackingLink}` })
+                    return new NextResponse('<Response></Response>', { headers: { 'Content-Type': 'text/xml' } })
+                }
+
+                // NEGATIVE feedback: Generate personalized response using GPT
+                const aiResponse = await generateFeedbackResponse({
+                    feedbackText,
+                    clientName: conversation.client_name,
+                    establishmentName: establishment.name,
+                    sentiment: 'NEGATIVE'
+                })
+                const thankYouMessage = aiResponse.success ? aiResponse.data!.response : "Merci pour votre retour détaillé. Votre message a été transmis à la direction. Nous ferons notre possible pour nous améliorer. 🙏"
+
+                await sendWhatsAppMessage({
+                    to: conversation.client_phone,
+                    body: thankYouMessage
+                })
+
+                // Update state to RESOLVED
+                await updateConversationState(conversation.id, 'RESOLVED')
+                await updateConversationAnalysis(conversation.id, { status: 'CLOSED' })
+
+                // Alert admin if critical
+                if (feedbackAnalysis.success && feedbackAnalysis.data?.isCritical && establishment.admin_phone) {
+                    const adminNumber = formatPhoneForWhatsApp(establishment.admin_phone)
+                    await sendWhatsAppMessage({
+                        to: adminNumber,
+                        body: `🚨 Feedback critique reçu:\n"${feedbackText.substring(0, 200)}..."\n\nConversation: ${conversation.id}`
+                    })
+                }
+
+                await addMessageToConversation(conversation.id, { role: 'assistant', content: thankYouMessage })
+                return new NextResponse('<Response></Response>', { headers: { 'Content-Type': 'text/xml' } })
+            }
+
+            // STOP: If conversation is in terminal FSM state
+            if (isTerminalState(currentState as any)) {
+                console.log(`[Twilio Webhook] Conversation is in terminal state (${currentState}). Suppressing AI response.`)
+                return new NextResponse('<Response></Response>', { headers: { 'Content-Type': 'text/xml' } })
+            }
+
+            // STOP: Legacy check - If conversation is already CONVERTED (Link Sent), do not reply to small talk ("ok", "merci")
+            console.log(`[Twilio Webhook] AI Flow Check. Status: ${conversation.status}, FSM State: ${currentState}`)
 
             // STOP: If conversation is already FINAL (CONVERTED or NEEDS_ATTENTION), 
             // do not reply to subsequent messages ("ok", "merci", etc.)

@@ -1,42 +1,19 @@
 "use client"
 
-import { CheckCircle2, ChevronRight, MessageSquare, Phone, MapPin, AlertCircle, RefreshCw } from "lucide-react"
+import { ChevronRight, Phone, MapPin, AlertCircle, RefreshCw } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
-import { useState } from "react"
-import { WhatsAppConnectionDialog } from "./whatsapp-connection-dialog"
 
 interface SetupGuideProps {
     establishment: {
         id: string
-        twilio_number?: string | null
         admin_phone?: string | null
         google_maps_link?: string | null
-        whatsapp_onboarding_status?: 'PENDING' | 'REQUESTED' | 'CODE_SENT' | 'VERIFYING' | 'ACTIVE' | 'FAILED'
     }
 }
 
 export function SetupGuide({ establishment }: SetupGuideProps) {
-    const [isWhatsAppDialogOpen, setIsWhatsAppDialogOpen] = useState(false)
-
-    const waStatus = establishment.whatsapp_onboarding_status || 'PENDING'
-    const waIsPending = waStatus === 'REQUESTED' || waStatus === 'CODE_SENT'
-    const waIsVerifying = waStatus === 'VERIFYING'
-
     const steps = [
-        {
-            key: 'twilio',
-            label: waIsVerifying ? 'Vérification...' : waIsPending ? 'Connexion en cours...' : 'Connecter WhatsApp',
-            isDone: waStatus === 'ACTIVE', // Only ACTIVE means done (twilio_number might be set during REQUESTED so check status too?)
-            // Actually, requestWhatsAppConnection sets twilio_number. 
-            // Better check: isDone: waStatus === 'ACTIVE' 
-            // OR keep using twilio_number but if status is verifying it's NOT done.
-            // Let's use waStatus === 'ACTIVE' for strict checking.
-            description: waIsVerifying ? "L'équipe technique valide votre code." : waIsPending ? "Vérifiez vos SMS/WhatsApp" : "Indispensable pour recevoir les messages.",
-            action: () => setIsWhatsAppDialogOpen(true),
-            icon: MessageSquare,
-            highlight: waIsPending || waIsVerifying
-        },
         {
             key: 'admin',
             label: 'Numéro Admin',
@@ -92,46 +69,31 @@ export function SetupGuide({ establishment }: SetupGuideProps) {
                 </div>
 
                 <div className="flex flex-col gap-3 w-full md:w-auto min-w-[300px]">
-                    {steps.map((step) => {
-                        const Wrapper = step.href ? Link : 'div'
-                        const props = step.href ? { href: step.href } : { onClick: step.action }
-
-                        return (
-                            // @ts-ignore
-                            <Wrapper
-                                key={step.key}
-                                {...props}
-                                className={cn(
-                                    "flex items-center justify-between p-3 rounded-xl border transition-all select-none",
-                                    step.isDone
-                                        ? "bg-white/5 border-white/5 text-zinc-400 cursor-default"
-                                        : step.highlight
-                                            ? "bg-orange-500/10 border-orange-500/50 text-white animate-pulse cursor-pointer"
-                                            : "bg-white/10 border-white/20 hover:bg-white/15 text-white hover:scale-[1.02] cursor-pointer"
-                                )}
-                            >
-                                <div className="flex items-center gap-3">
-                                    <div className={cn("w-5 h-5 rounded-full flex items-center justify-center border", step.isDone ? "bg-green-500/20 border-green-500 text-green-500" : "border-zinc-500 text-transparent")}>
-                                        <step.icon size={12} />
-                                    </div>
-                                    <div className="text-sm">
-                                        <div className={cn("font-medium", step.isDone && "line-through")}>{step.label}</div>
-                                        {!step.isDone && <div className="text-[10px] text-zinc-400">{step.description}</div>}
-                                    </div>
+                    {steps.map((step) => (
+                        <Link
+                            key={step.key}
+                            href={step.href}
+                            className={cn(
+                                "flex items-center justify-between p-3 rounded-xl border transition-all select-none",
+                                step.isDone
+                                    ? "bg-white/5 border-white/5 text-zinc-400 cursor-default"
+                                    : "bg-white/10 border-white/20 hover:bg-white/15 text-white hover:scale-[1.02] cursor-pointer"
+                            )}
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className={cn("w-5 h-5 rounded-full flex items-center justify-center border", step.isDone ? "bg-green-500/20 border-green-500 text-green-500" : "border-zinc-500 text-transparent")}>
+                                    <step.icon size={12} />
                                 </div>
-                                {!step.isDone && <ChevronRight size={16} className="text-zinc-500" />}
-                            </Wrapper>
-                        )
-                    })}
+                                <div className="text-sm">
+                                    <div className={cn("font-medium", step.isDone && "line-through")}>{step.label}</div>
+                                    {!step.isDone && <div className="text-[10px] text-zinc-400">{step.description}</div>}
+                                </div>
+                            </div>
+                            {!step.isDone && <ChevronRight size={16} className="text-zinc-500" />}
+                        </Link>
+                    ))}
                 </div>
-            </div >
-
-            <WhatsAppConnectionDialog
-                open={isWhatsAppDialogOpen}
-                onOpenChange={setIsWhatsAppDialogOpen}
-                establishmentId={establishment.id}
-                currentStatus={waStatus}
-            />
-        </div >
+            </div>
+        </div>
     )
 }
