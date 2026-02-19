@@ -252,10 +252,10 @@ export default function PricingPage() {
                 <section className="px-6 mb-32 max-w-3xl mx-auto">
                     <h3 className="text-3xl font-bold text-center mb-12">Questions fréquentes</h3>
                     <div className="space-y-4">
-                        <FAQItem question="Le numéro WhatsApp est-il inclus ?" answer="Oui, nous vous guidons pour connecter votre propre numéro WhatsApp Business ou utiliser notre numéro partagé pour démarrer instantanément." />
-                        <FAQItem question="Comment fonctionne le Kit QR ?" answer="Dés votre inscription, nous personnalisons un kit (Chevalet de comptoir + Stickers) que nous vous expédions via Amana (Livraison 24-48h partout au Maroc)." />
-                        <FAQItem question="Puis-je annuler à tout moment ?" answer="Absolument. Nos offres mensuelles sont sans engagement. Vous pouvez arrêter quand vous voulez depuis votre espace client." />
-                        <FAQItem question="Qu'est-ce que l'Auto-Réponse Google ?" answer="Le Pack Pro permet à l'IA de répondre automatiquement aux avis publiés sur votre fiche Google Maps (Intégration Bientôt Dispatchée). Sur WhatsApp, l'IA assiste déjà nativement tous les échanges." />
+                        <FAQItem question="Comment fonctionne le QR Code ?" answer="Votre QR Code est généré instantanément lors de l'inscription. Quand un client le scanne, il ouvre WhatsApp avec un message pré-rempli. Notre IA prend ensuite le relais pour collecter son avis et, s'il est positif, le rediriger vers votre fiche Google pour laisser un avis 5 étoiles." />
+                        <FAQItem question="L'IA est-elle multilingue ?" answer="Oui. Notre IA détecte automatiquement la langue du client — Français, Anglais, Arabe et Darija marocain — et répond dans la même langue. Peu importe comment votre client s'exprime, l'IA s'adapte." />
+                        <FAQItem question="Le numéro WhatsApp est-il inclus ?" answer="Oui, nous mettons à disposition un numéro WhatsApp partagé pour démarrer instantanément. Vous pouvez aussi connecter votre propre numéro WhatsApp Business pour une expérience 100% brandée." />
+                        <FAQItem question="Puis-je essayer gratuitement ?" answer="Absolument. Chaque inscription inclut un essai gratuit de 14 jours avec accès complet à toutes les fonctionnalités Pro. Aucune carte bancaire n'est requise. Vous pouvez annuler à tout moment, sans engagement." />
                     </div>
                 </section>
 

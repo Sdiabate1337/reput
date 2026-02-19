@@ -1010,90 +1010,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* QR KIT PHYSIQUE SECTION */}
-        <section className="mb-32 px-6 relative">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-orange-100/30 rounded-full blur-[120px] mix-blend-multiply pointer-events-none" />
 
-          <div className="max-w-6xl mx-auto relative z-10">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-
-              {/* Left: Visual */}
-              <div className="relative flex items-center justify-center">
-                <div className="absolute w-[400px] h-[400px] bg-gradient-to-br from-orange-100 to-amber-50 rounded-full blur-3xl opacity-60" />
-
-                {/* QR Kit Box Visual */}
-                <div className="relative z-10 bg-white/80 backdrop-blur-md rounded-[3rem] p-10 shadow-[0_40px_80px_-20px_rgba(232,92,51,0.15)] border border-white ring-1 ring-white/50">
-                  <div className="flex items-center gap-6 mb-8">
-                    <div className="w-20 h-20 bg-gradient-to-br from-[#E85C33] to-[#ff8c69] rounded-3xl flex items-center justify-center text-white shadow-lg shadow-orange-500/30">
-                      <QrCode size={36} />
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1">Inclus dans votre offre</div>
-                      <div className="text-2xl font-extrabold text-zinc-900">Kit QR Premium</div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    {[
-                      { icon: <Shield size={18} />, text: "Support plexiglass haute qualité" },
-                      { icon: <Inbox size={18} />, text: "Livraison offerte" },
-                      { icon: <Sparkles size={18} />, text: "Design personnalisé à votre marque" },
-                      { icon: <Zap size={18} />, text: "QR dynamique (modifiable)" }
-                    ].map((item, i) => (
-                      <div key={i} className="flex items-center gap-4 p-4 bg-gradient-to-r from-orange-50/80 to-white rounded-2xl border border-orange-100/50 group hover:shadow-md hover:border-orange-200/50 transition-all duration-300">
-                        <div className="w-10 h-10 rounded-xl bg-[#E85C33]/10 flex items-center justify-center text-[#E85C33] group-hover:bg-[#E85C33] group-hover:text-white transition-all duration-300">
-                          {item.icon}
-                        </div>
-                        <span className="text-base font-medium text-zinc-700">{item.text}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Floating Badge */}
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8, rotate: -12 }}
-                  whileInView={{ opacity: 1, scale: 1, rotate: -6 }}
-                  transition={{ delay: 0.3, type: "spring" }}
-                  className="absolute -top-6 -right-6 bg-[#E85C33] text-white px-5 py-2.5 rounded-full font-bold text-sm shadow-lg shadow-orange-500/30 flex items-center gap-2"
-                >
-                  <Check size={16} strokeWidth={3} /> Livré chez vous
-                </motion.div>
-              </div>
-
-              {/* Right: Copy */}
-              <div className="space-y-6">
-                <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-100 rounded-full pl-1.5 pr-3 py-1 shadow-sm">
-                  <span className="bg-[#E85C33] text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded-full shadow-sm">Différenciant</span>
-                  <span className="text-xs font-bold text-[#E85C33]">Inclus dans tous les packs</span>
-                </div>
-
-                <h3 className="text-4xl md:text-5xl font-extrabold text-zinc-900 leading-tight tracking-tight">
-                  On vous livre votre <span className="font-serif italic text-[#E85C33]">Kit QR.</span>
-                </h3>
-
-                <p className="text-lg text-zinc-600 leading-relaxed font-medium">
-                  Pas de bricolage, pas d'impression maison. Nous vous envoyons un support professionnel prêt à poser sur vos tables ou comptoir. Vos clients scannent, vous récoltez les avis.
-                </p>
-
-                <div className="flex flex-wrap gap-3 pt-4">
-                  <div className="flex items-center gap-2 text-sm font-medium text-zinc-700 bg-white px-4 py-2.5 rounded-full border border-zinc-100 shadow-sm hover:border-orange-200 hover:shadow-md transition-all">
-                    <Clock size={14} className="text-[#E85C33]" />
-                    Prêt en 48h
-                  </div>
-                  <div className="flex items-center gap-2 text-sm font-medium text-zinc-700 bg-white px-4 py-2.5 rounded-full border border-zinc-100 shadow-sm hover:border-orange-200 hover:shadow-md transition-all">
-                    <Inbox size={14} className="text-[#E85C33]" />
-                    Livraison Maroc entier
-                  </div>
-                  <div className="flex items-center gap-2 text-sm font-medium text-zinc-700 bg-white px-4 py-2.5 rounded-full border border-zinc-100 shadow-sm hover:border-orange-200 hover:shadow-md transition-all">
-                    <Zap size={14} className="text-[#E85C33]" />
-                    QR modifiable
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* FEATURE: ANALYTICS */}
         <section className="mb-32 px-6 relative">
@@ -1218,10 +1135,12 @@ export default function LandingPage() {
         <section id="faq" className="mb-40 px-6 max-w-3xl mx-auto">
           <h3 className="text-3xl font-bold text-center mb-12">Questions fréquentes</h3>
           <div className="space-y-4">
-            <FAQItem question="Le numéro WhatsApp est-il inclus ?" answer="Oui, nous vous guidons pour connecter votre propre numéro WhatsApp Business ou utiliser notre numéro partagé pour démarrer instantanément." />
-            <FAQItem question="Comment fonctionne le Kit QR ?" answer="Dés votre inscription, nous personnalisons un kit (Chevalet de comptoir + Stickers) que nous vous expédions via Amana (Livraison 24-48h partout au Maroc)." />
-            <FAQItem question="Puis-je annuler à tout moment ?" answer="Absolument. Nos offres mensuelles sont sans engagement. Vous pouvez arrêter quand vous voulez depuis votre espace client." />
-            <FAQItem question="Qu'est-ce que l'Auto-Réponse Google ?" answer="Le Pack Pro permet à l'IA de répondre automatiquement aux avis publiés sur votre fiche Google Maps (Intégration Bientôt Dispatchée). Sur WhatsApp, l'IA assiste déjà nativement tous les échanges." />
+            <FAQItem question="Comment fonctionne le QR Code ?" answer="Votre QR Code est généré instantanément lors de l'inscription. Quand un client le scanne, il ouvre WhatsApp avec un message pré-rempli. Notre IA prend ensuite le relais pour collecter son avis et, s'il est positif, le rediriger vers votre fiche Google pour laisser un avis 5 étoiles." />
+            <FAQItem question="L'IA est-elle multilingue ?" answer="Oui. Notre IA détecte automatiquement la langue du client — Français, Anglais, Arabe et Darija marocain — et répond dans la même langue. Peu importe comment votre client s'exprime, l'IA s'adapte." />
+            <FAQItem question="Que se passe-t-il en cas d'avis négatif ?" answer="L'IA détecte 4 niveaux de sentiment : Positif, Neutre, Négatif et Critique. Les avis négatifs ne sont jamais redirigés vers Google. L'IA pose des questions pour comprendre le problème, et les cas critiques déclenchent une alerte immédiate à la direction." />
+            <FAQItem question="Qu'est-ce qu'une Relance Manuelle ?" answer="Depuis votre dashboard, vous pouvez envoyer un message WhatsApp personnalisé à un client pour lui demander son avis. Le message utilise le nom de votre établissement et celui du client. Le quota dépend de votre plan (100/mois pour le Pack Pro)." />
+            <FAQItem question="Le numéro WhatsApp est-il inclus ?" answer="Oui, nous mettons à disposition un numéro WhatsApp partagé pour démarrer instantanément. Vous pouvez aussi connecter votre propre numéro WhatsApp Business pour une expérience 100% brandée." />
+            <FAQItem question="Puis-je essayer gratuitement ?" answer="Absolument. Chaque inscription inclut un essai gratuit de 14 jours avec accès complet à toutes les fonctionnalités Pro. Aucune carte bancaire n'est requise. Vous pouvez annuler à tout moment, sans engagement." />
           </div>
         </section>
 
